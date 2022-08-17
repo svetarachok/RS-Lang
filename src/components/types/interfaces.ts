@@ -32,3 +32,13 @@ export interface AuthorizationData {
 export interface User extends Pick<UserCreationData, 'name' | 'email'> {
   id: string,
 }
+
+export interface RouterOptions {
+  mode: 'history' | 'hash',
+  root: string,
+}
+
+export interface Route {
+  path: string,
+  cb: Function;
+}
