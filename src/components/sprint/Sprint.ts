@@ -4,6 +4,8 @@ import { createHTMLElement } from '../utils/functions';
 export class Sprint {
   api: Api;
 
+  currentLevel: number | undefined;
+
   constructor() {
     this.api = new Api();
   }
@@ -31,7 +33,8 @@ export class Sprint {
       level.addEventListener('click', (e: Event) => {
         const target = <HTMLElement>e.target;
         const levelNumber = target.dataset.level;
-        this.startGame(Number(levelNumber));
+        this.currentLevel = Number(levelNumber);
+        this.startGame();
       });
       levels.append(level);
     }
@@ -39,7 +42,7 @@ export class Sprint {
     return select;
   }
 
-  private startGame(level: number): void {
+  private startGame(): void {
     const select = <HTMLElement>document.querySelector('.sprint__select');
     if (select) {
       select.remove();
@@ -51,7 +54,6 @@ export class Sprint {
     this.renderTimer(ready, 'timer--ready');
     ready.append(timerTitle);
     this.startTimer('timer--ready', 2, this.renderGameContol.bind(this));
-    console.log(level);
   }
 
   private renderTimer(container: HTMLElement, className:string) {
@@ -94,5 +96,27 @@ export class Sprint {
     ready.remove();
     this.renderTimer(main, 'timer--control');
     this.startTimer('timer--control', 60, () => console.log('end'));
+    const sprintControl = createHTMLElement('div', ['sprint__control']);
+    const score = createHTMLElement('h2', ['control__score'], undefined, '0');
+    const sound = createHTMLElement('div', ['control__sound']);
+    const controlContainer = createHTMLElement('div', ['control__container']);
+    const voice = createHTMLElement('div', ['control__voice']);
+    const controlSeriesList = createHTMLElement('div', ['control__series-list']);
+    for (let i = 1; i <= 3; i += 1) {
+      const controlSeries = createHTMLElement('div', ['control__series'], [['data-series', `${i}`]]);
+      controlSeriesList.append(controlSeries);
+    }
+    const parrots = createHTMLElement('div', ['control__parrots']);
+    const blueParrot = createHTMLElement('img', ['control__parrot'], [['src', './assets/sprint/bird-blue.svg'], ['alt', 'blue parrot']]);
+    const wordEn = createHTMLElement('span', ['control__word-en'], undefined, 'hello');
+    const wordRu = createHTMLElement('span', ['control__word-ru'], undefined, 'привет');
+    const buttons = createHTMLElement('div', ['control__buttons']);
+    const buttonFalse = createHTMLElement('button', ['control__button', 'control__button--false'], [['data-answer', 'false']], 'Неверно');
+    const buttonTrue = createHTMLElement('button', ['control__button', 'control__button--true'], [['data-answer', 'true']], 'Верно');
+    buttons.append(buttonFalse, buttonTrue);
+    parrots.append(blueParrot);
+    controlContainer.append(controlSeriesList, voice, parrots, wordEn, wordRu, buttons);
+    sprintControl.append(score, sound, controlContainer);
+    main.append(sprintControl);
   }
 }

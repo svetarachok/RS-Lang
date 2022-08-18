@@ -133,3 +133,122 @@
   top: 20px;
   left: 0;
 }
+
+.sprint__control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.control__sound {
+  position: absolute;
+  right: 0;
+  width: 23px;
+  height: 24px;
+  background-image: url('./assets/sprint/sound-default.svg');
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.control__container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 500px;
+  padding: 30px;
+  margin-top: 10px;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  background-color: hsla(0,0%,100%,.06);
+}
+
+.control__voice {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 33px;
+  height: 33px;
+  background-image: url('./assets/sprint/voice.svg');
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.control__series-list {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.control__series {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: #000000;
+  opacity: 0.25;
+}
+
+.control__parrots {
+  width: 204px;
+  height: 57px;
+  margin-top: 50px;
+  background-image: url('./assets/sprint/branch.svg');
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+.control__word-en {
+  font-size: 36px;
+  margin-top: 20px;
+}
+
+.control__word-ru {
+  font-size: 24px;
+  color: hsla(0,0%,100%,.6);
+}
+
+.control__buttons {
+  display: flex;
+  gap: 20px;
+  margin-top: 40px;
+  padding-bottom: 40px;
+}
+
+.control__button {
+  position: relative;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 400;
+  height: 50px;
+  text-align: center;
+  width: 183px;
+  cursor: pointer;
+
+  &::before {
+    bottom: -45px;
+    color: #7e919f;
+    display: block;
+    font-size: 28px;
+    position: absolute;
+  }
+
+  &--false {
+    background-color: #ed593b;
+
+    &::before {
+      content: "←";
+      left: 40%;
+    }
+  }
+
+  &--true {
+    background-color: #28c38a;
+
+    &::before {
+      content: "→";
+      right: 40%;
+    }
+  }
+}
