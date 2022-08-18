@@ -16,7 +16,7 @@ export class LevelSelect {
   constructor(container: HTMLElement, callback: (selectedValue: string)=> void) {
     this.container = container;
     this.callback = callback;
-    this.wrapper = createNode({ tag: 'div', classes: ['game'] });
+    this.wrapper = createNode({ tag: 'div', classes: ['level-select'] });
   }
 
   createSelect() {

@@ -1,3 +1,4 @@
+import { AudioCall } from './components/audiocall/audioCall';
 import Router from './components/Model/Router';
 import './global.scss';
 
@@ -14,6 +15,7 @@ router
   })
   .add('audiocall', () => {
     console.log('Render audiocall page');
+    new AudioCall().start();
   })
   .add('sprint', () => {
     console.log('Render sprint page');
