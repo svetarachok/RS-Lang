@@ -9,12 +9,15 @@ const router = new Router({
 });
 
 router
-  .add('main', () => {
-    console.log('Render main page');
+  .add('book', () => {
+    console.log('Render book page');
   })
-  .add('games', () => {
-    console.log('Render games page');
+  .add('audiocall', () => {
+    console.log('Render audiocall page');
   })
-  .add('words', () => {
-    console.log('Render words page');
+  .add('sprint', () => {
+    console.log('Render sprint page');
+  })
+  .add('statistic', () => {
+    console.log('Render statistic page');
   });
