@@ -1,4 +1,5 @@
 import Router from './components/Model/Router';
+import { Sprint } from './components/sprint/Sprint';
 import './global.scss';
 
 console.log('Lets go');
@@ -8,6 +9,8 @@ const router = new Router({
   root: '/',
 });
 
+const sprint = new Sprint();
+
 router
   .add('book', () => {
     console.log('Render book page');
@@ -16,7 +19,7 @@ router
     console.log('Render audiocall page');
   })
   .add('sprint', () => {
-    console.log('Render sprint page');
+    sprint.penderGame();
   })
   .add('statistic', () => {
     console.log('Render statistic page');

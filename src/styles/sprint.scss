@@ -1,0 +1,135 @@
+.body {
+  &--sprint {
+    color: #ffffff;
+    background-color: #0d3848;
+    background-image:
+      url('./assets/sprint/sprint-bg-bottom.svg'),
+      url('./assets/sprint/sprint-bg-left.svg'),
+      url('./assets/sprint/sprint-bg-right.svg');
+    background-repeat: no-repeat, no-repeat, no-repeat;
+    background-size: 100%, auto, auto;
+    background-position: bottom, 0 0, 100% 0;
+  }
+}
+
+.main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &--sprint {
+    min-height: 100vh;
+  }
+}
+
+.sprint__select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 50%;
+}
+
+.sprint__levels {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.sprint__level {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  cursor: pointer;
+}
+
+.sprint__close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+  z-index: 1;
+  margin: 20px auto;
+  cursor: pointer;
+
+  &::before {
+    content: '+';
+    color: #ffffff;
+    position: absolute;
+    z-index: 2;
+    transform: rotate(45deg);
+    font-size: 50px;
+    line-height: 1;
+    top: -5px;
+    left: 6px;
+    transition: all 0.3s cubic-bezier(0.77, 0, 0.2, 0.85);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    background: #ffffff;
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.77, 0, 0.2, 0.85);
+    transform: scale(0.01);
+  }
+}
+
+.sprint__close:hover:after {
+  transform: scale(1);
+}
+
+.sprint__close:hover:before {
+  transform: scale(0.8) rotate(45deg);
+  color: #0d3848;
+}
+
+.timer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.timer__time {
+  font-size: 30px;
+  font-weight: lighter;
+  width: 160px;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer__svg {
+  transform: rotate(90deg) scaleX(-1);
+}
+
+.circle_animation {
+  stroke-dasharray: 440;
+  stroke-dashoffset: 0;
+  transition: all 1s linear;
+}
+
+.sprint__ready {
+  display: flex;
+  flex-direction: column;
+}
+
+.timer--control {
+  position: absolute;
+  top: 20px;
+  left: 0;
+}

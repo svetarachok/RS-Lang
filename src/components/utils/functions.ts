@@ -12,3 +12,24 @@ export const makeUrl = (
   const paramString = queryParam ? generateQueryString(queryParam) : '';
   return new URL(`${endpoint}${paramString}`, base);
 };
+
+export function createHTMLElement(
+  tag: string,
+  classes?: string[],
+  atributesAdnValues?: [string, string][],
+  content?: string,
+): HTMLElement {
+  const node = document.createElement(tag);
+  if (classes) {
+    node.classList.add(...classes);
+  }
+  if (atributesAdnValues) {
+    atributesAdnValues.forEach((atributeAndValue) => {
+      node.setAttribute(atributeAndValue[0], atributeAndValue[1]);
+    });
+  }
+  if (content) {
+    node.innerHTML = content;
+  }
+  return node;
+}
