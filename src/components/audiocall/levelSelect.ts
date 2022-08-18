@@ -35,7 +35,7 @@ export class LevelSelect {
     const titleNode = createNode({ tag: 'div', classes: ['select-block__title'], inner: title });
     const select = createNode({ tag: 'select', classes: ['select-block__select'] });
     for (let i = 1; i <= LEVEL_COUNT; i += 1) {
-      const option = createNode({ tag: 'option', atributesAdnValues: [['value', String(i)]], inner: String(i) });
+      const option = createNode({ tag: 'option', atributesAdnValues: [['value', String(i - 1)]], inner: String(i) });
       if (i === 1) (option as HTMLOptionElement).selected = true;
       select.append(option);
     }
