@@ -1,0 +1,38 @@
+.header {
+  @include display-flex-space-between;
+  font-family: $headers-font;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.2;
+  height: 75px;
+  margin: auto;
+  width: 100%;
+  border-bottom: 1px solid $light-grey;
+}
+
+.logo {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  font-weight: 800;
+}
+
+.menu-items {
+  @include display-flex-center;
+  list-style: none;
+}
+
+.menu-item {
+  cursor: pointer;
+  padding: 29px;
+  font-weight: 600; 
+  &:hover {
+    border-bottom: 2px solid $dark-color;
+    padding-bottom: 27px;
+  }
+}
+
+.auth {
+  @include display-flex-center;
+  gap: 1rem;
+}
+

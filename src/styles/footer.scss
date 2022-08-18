@@ -1,0 +1,25 @@
+.footer {
+  @include display-flex-space-between;
+  font-family: $headers-font;
+  font-weight: 400;
+  font-size: 0.9rem;
+  line-height: 1.1;
+  height: 90px;
+  margin: auto;
+  width: 100%;
+  background-color: $dark-color;
+  color: $white-color;
+  padding: 0 20px;
+}
+
+.team-github {
+  @include display-flex-center;
+  gap: 1rem;
+  a {
+    color: $white-color;
+  }
+}
+
+.rs-logo img {
+    width: 7rem;
+}
