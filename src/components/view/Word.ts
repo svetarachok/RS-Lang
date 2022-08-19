@@ -32,7 +32,7 @@ export class WordUI {
     this.playWord();
   }
 
-  public drawCard() {
+  public drawCard(): HTMLDivElement {
     const cardInnerWrapper: HTMLDivElement = createNode({ tag: 'div', classes: ['card-inner-wrapper'] }) as HTMLDivElement;
     const cardMainInfoWrapper: HTMLDivElement = createNode({ tag: 'div', classes: ['card-main-info-wrapper'] }) as HTMLDivElement;
     const wordExamplesWrapper: HTMLDivElement = createNode({ tag: 'div', classes: ['card-examples-wrapper'] }) as HTMLDivElement;
@@ -49,6 +49,7 @@ export class WordUI {
     cardMainInfoWrapper.append(this.word, this.transcription, this.translate);
     cardInnerWrapper.append(cardMainInfoWrapper, wordExamplesWrapper);
     this.card.append(this.img, this.playBtn, cardInnerWrapper);
+    return this.card;
   }
 
   private makeSoundURL(): string[] {
