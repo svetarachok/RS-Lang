@@ -25,6 +25,30 @@ export class Answer {
     this.answerTextSpan = createNode({ tag: 'span', classes: ['answer__text'], inner: this.word.wordTranslate });
     this.div = createNode({ tag: 'div', classes: ['answer'], atributesAdnValues: [['data-id', this.word.id]] });
     this.div.append(this.answerNumberSpan, this.answerTextSpan);
-    this.div.addEventListener('click', () => this.callback(this));
+    this.div.addEventListener('click', this.eventHandler);
+  }
+
+  eventHandler = () => {
+    this.addEndStageStyle();
+    this.callback(this);
+  };
+
+  addTextOpacity() {
+    if (this.isCorrect) return;
+    this.answerTextSpan.style.opacity = '0.5';
+  }
+
+  addEndStageStyle() {
+    if (this.isCorrect) {
+      this.answerNumberSpan.innerText = '✔';
+    } else {
+      this.answerTextSpan.style.textDecoration = 'line-through';
+    }
+  }
+
+  removeListener() {
+    console.log('removeListener');
+    this.div.removeEventListener('click', this.eventHandler);
+    this.addTextOpacity();
   }
 }

@@ -19,11 +19,17 @@ export class Stage {
 
   answers: Answer[] = [];
 
+  skipButton: HTMLElement;
+
+  nextStageButton: HTMLElement;
+
   constructor(container: HTMLElement, word: Word) {
     this.container = container;
     this.word = word;
     this.wrapper = createNode({ tag: 'div', classes: ['stage'] });
     this.wordText = createNode({ tag: 'span', classes: ['word__text'] });
+    this.skipButton = createNode({ tag: 'button', classes: ['button', 'button-skip'], inner: 'не знаю' });
+    this.nextStageButton = createNode({ tag: 'button', classes: ['button', 'button-next'], inner: '⟶' });
   }
 
   async start() {
@@ -45,12 +51,12 @@ export class Stage {
       }
       return new Answer(word, index + 1, false, this.answerHandler.bind(this));
     });
-    console.log(this.answers[0].div);
   }
 
   answerHandler(answer: Answer) {
     console.log('answerHandler');
     console.log(answer);
+    this.showCorrectAnswer();
   }
 
   render() {
@@ -58,9 +64,9 @@ export class Stage {
     const answersWrapper = createNode({ tag: 'div', classes: ['answers'] });
     const answerButtons = this.answers.map((answer) => answer.div);
     answersWrapper.append(...answerButtons);
-    const skipButton = createNode({ tag: 'button', classes: ['skip-button'], inner: 'не знаю' });
-    this.bindSkipButtonEvent(skipButton);
-    this.wrapper.append(wordBlock, answersWrapper, skipButton);
+    this.skipButton = createNode({ tag: 'button', classes: ['skip-button'], inner: 'не знаю' });
+    this.bindSkipButtonEvent(this.skipButton);
+    this.wrapper.append(wordBlock, answersWrapper, this.skipButton);
     this.container.append(this.wrapper);
   }
 
@@ -100,5 +106,7 @@ export class Stage {
     });
     this.wrapper.prepend(wordImage);
     this.wordText.innerHTML = this.word.word;
+    this.answers.forEach((answer) => answer.removeListener());
+    this.skipButton.replaceWith(this.nextStageButton);
   }
 }
