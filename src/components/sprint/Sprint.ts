@@ -1,13 +1,28 @@
-import Api from '../Model/api';
-import { createHTMLElement } from '../utils/functions';
+import { api } from '../Model/api';
+import { createHTMLElement, getRandomIntInclusive } from '../utils/functions';
+import { Word } from '../types/interfaces';
 
 export class Sprint {
-  api: Api;
+  api: typeof api;
 
-  currentLevel: number | undefined;
+  currentLevel: string | undefined;
+
+  wordsInLevel: Word[];
+
+  wordsInGame: Word[];
+
+  isPairTrue: boolean | undefined;
+
+  countTrue: number;
+
+  countFalse: number;
 
   constructor() {
-    this.api = new Api();
+    this.api = api;
+    this.wordsInLevel = [];
+    this.wordsInGame = [];
+    this.countTrue = 0;
+    this.countFalse = 0;
   }
 
   public penderGame(): void {
@@ -29,11 +44,12 @@ export class Sprint {
     const selectTitle = createHTMLElement('h2', ['sprint__select-title'], undefined, 'Выберите уровень:');
     const levels = createHTMLElement('div', ['sprint__levels']);
     for (let i = 1; i <= 6; i += 1) {
-      const level = createHTMLElement('div', ['sprint__level'], [['data-level', `${i}`]], `${i}`);
-      level.addEventListener('click', (e: Event) => {
+      const level = createHTMLElement('div', ['sprint__level'], [['data-level', `${i - 1}`]], `${i}`);
+      level.addEventListener('click', async (e: Event) => {
         const target = <HTMLElement>e.target;
         const levelNumber = target.dataset.level;
-        this.currentLevel = Number(levelNumber);
+        this.currentLevel = levelNumber!;
+        await this.getWordsInLevel(this.currentLevel);
         this.startGame();
       });
       levels.append(level);
@@ -53,7 +69,8 @@ export class Sprint {
     main.append(ready);
     this.renderTimer(ready, 'timer--ready');
     ready.append(timerTitle);
-    this.startTimer('timer--ready', 2, this.renderGameContol.bind(this));
+    const randomPair = this.getRandomPair();
+    this.startTimer('timer--ready', 3, this.renderGameContol.bind(this, randomPair.word, randomPair.wordTranslate));
   }
 
   private renderTimer(container: HTMLElement, className:string) {
@@ -67,11 +84,12 @@ export class Sprint {
     container.append(timer);
   }
 
-  public startTimer(className:string, time: number, cb: Function) {
+  public startTimer(className: string, time: number, cb: Function) {
     let i = 0;
     const finalOffset = 440;
     const step = finalOffset / time;
-    const timeCaption = <HTMLElement>document.querySelector('.timer__time');
+    const timer = <HTMLElement>document.querySelector(`.${className}`);
+    const timeCaption = <HTMLElement>timer.querySelector('.timer__time');
     const circle = <HTMLElement>document.querySelector('.circle_animation');
     const circleStyle = circle.style;
 
@@ -90,7 +108,7 @@ export class Sprint {
     }, 1000);
   }
 
-  public renderGameContol(): void {
+  public renderGameContol(firstWordEn: string, firstWordRu: string): void {
     const main = <HTMLElement>document.querySelector('.main');
     const ready = <HTMLElement>document.querySelector('.sprint__ready');
     ready.remove();
@@ -108,8 +126,8 @@ export class Sprint {
     }
     const parrots = createHTMLElement('div', ['control__parrots']);
     const blueParrot = createHTMLElement('img', ['control__parrot'], [['src', './assets/sprint/bird-blue.svg'], ['alt', 'blue parrot']]);
-    const wordEn = createHTMLElement('span', ['control__word-en'], undefined, 'hello');
-    const wordRu = createHTMLElement('span', ['control__word-ru'], undefined, 'привет');
+    const wordEn = createHTMLElement('span', ['control__word-en'], undefined, firstWordEn);
+    const wordRu = createHTMLElement('span', ['control__word-ru'], undefined, firstWordRu);
     const buttons = createHTMLElement('div', ['control__buttons']);
     const buttonFalse = createHTMLElement('button', ['control__button', 'control__button--false'], [['data-answer', 'false']], 'Неверно');
     const buttonTrue = createHTMLElement('button', ['control__button', 'control__button--true'], [['data-answer', 'true']], 'Верно');
@@ -118,5 +136,70 @@ export class Sprint {
     controlContainer.append(controlSeriesList, voice, parrots, wordEn, wordRu, buttons);
     sprintControl.append(score, sound, controlContainer);
     main.append(sprintControl);
+    buttonFalse.addEventListener('click', (e) => this.selectAnswer(e));
+    buttonTrue.addEventListener('click', (e) => this.selectAnswer(e));
+  }
+
+  private async getWordsInLevel(level: string) {
+    this.wordsInLevel.length = 0;
+    const pages = [];
+    for (let i = 0; i <= 29; i += 1) {
+      const wordsInPage = api.getWords({ group: level, page: String(i) });
+      pages.push(wordsInPage);
+    }
+    await Promise.all(pages)
+      .then((data) => data.forEach(((page) => this.wordsInLevel.push(...page))));
+    console.log(this.wordsInLevel);
+  }
+
+  private getRandomWord() {
+    const maxIndex = this.wordsInLevel.length - 1;
+    const randomWordIndex = getRandomIntInclusive(0, maxIndex);
+    const randomWord = this.wordsInLevel[randomWordIndex];
+    return randomWord;
+  }
+
+  private getRandomPair() {
+    const randomWord = this.getRandomWord();
+    const randomPair = { word: randomWord.word, wordTranslate: '' };
+    this.wordsInGame.push(randomWord);
+    const isTrue = Math.random() < 0.5;
+    if (isTrue) {
+      this.isPairTrue = true;
+      randomPair.wordTranslate = randomWord.wordTranslate;
+    } else {
+      this.isPairTrue = false;
+      randomPair.wordTranslate = this.getRandomWord().wordTranslate;
+    }
+    return randomPair;
+  }
+
+  private selectAnswer(e: Event) {
+    const button = <HTMLElement>e.target;
+    const { answer } = button.dataset;
+    let isTrue: boolean;
+    if (answer === 'true') {
+      isTrue = true;
+    } else {
+      isTrue = false;
+    }
+
+    if (isTrue === this.isPairTrue) {
+      this.countTrue += 1;
+      console.log(true);
+    } else {
+      this.countFalse += 1;
+      console.log(false);
+    }
+
+    this.updateWord();
+  }
+
+  private updateWord() {
+    const wordInDOM = <HTMLElement>document.querySelector('.control__word-en');
+    const translateInDOM = <HTMLElement>document.querySelector('.control__word-ru');
+    const randomPair = this.getRandomPair();
+    wordInDOM.innerHTML = randomPair.word;
+    translateInDOM.innerHTML = randomPair.wordTranslate;
   }
 }
