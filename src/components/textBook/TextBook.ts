@@ -16,7 +16,7 @@ export class TextBook {
 
   constructor(numberOfLevels: number) {
     this.textBook = createNode({ tag: 'section', classes: ['textbook'] }) as HTMLDivElement;
-    this.level1Btns = this.createLeveluttons(numberOfLevels);
+    this.level1Btns = this.createLevelButtons(numberOfLevels);
     this.auduoCallBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Аудиовызов' });
     this.sprintBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Спринт' });
     // this.pagination = createPagination();
@@ -61,7 +61,7 @@ export class TextBook {
     return sideBar;
   }
 
-  private createLeveluttons(levelsNumber: number) {
+  private createLevelButtons(levelsNumber: number) {
     const arr: HTMLButtonElement[] = [];
     let i: number = 1;
     while (levelsNumber) {

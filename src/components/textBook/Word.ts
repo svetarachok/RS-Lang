@@ -28,7 +28,7 @@ export class WordUI {
     this.obj = obj;
     this.id = obj.id;
     this.card = createNode({ tag: 'div', classes: ['card'] }) as HTMLDivElement;
-    this.img = createNode({ tag: 'img', classes: ['card-img'] }) as HTMLImageElement;
+    this.img = createNode({ tag: 'div', classes: ['card-img'] }) as HTMLImageElement;
     this.playBtn = createNode({ tag: 'button', classes: ['btn', 'btn-play'] }) as HTMLButtonElement;
     this.word = createNode({ tag: 'p', classes: ['word'], inner: `${this.obj.word}` }) as HTMLParagraphElement;
     this.addToUserWordsBtn = createNode({ tag: 'button', classes: ['btn', 'btn-add'] }) as HTMLButtonElement;
@@ -49,6 +49,7 @@ export class WordUI {
     const wordExample: HTMLParagraphElement = createNode({ tag: 'p', classes: ['word-ex'], inner: `${this.obj.textExample}` }) as HTMLParagraphElement;
     const wordExampleTranslate: HTMLParagraphElement = createNode({ tag: 'p', classes: ['word-ex-translate'], inner: `${this.obj.textExampleTranslate}` }) as HTMLParagraphElement;
     this.playBtn.innerHTML = soundIcon;
+    this.img.style.background = `center / cover no-repeat url(${BASE_LINK}/${this.obj.image})`;
     wordExamplesWrapper.append(
       wordMeaning,
       wordMeaningTranslate,
@@ -67,21 +68,29 @@ export class WordUI {
     const exampleSound = this.obj.audioExample as string;
     const meaningSound = this.obj.audioMeaning as string;
     const arr: string[] = [];
-    arr.push(`${BASE_LINK}/${wordSoundString}`, `${BASE_LINK}/${exampleSound}`, `${BASE_LINK}/${meaningSound}`);
+    arr.push(`${BASE_LINK}/${wordSoundString}`, `${BASE_LINK}/${meaningSound}`, `${BASE_LINK}/${exampleSound}`);
     return arr;
   }
 
-  private play(src: string) {
-    const audio = new Audio();
-    audio.preload = 'auto';
-    audio.src = src;
-    audio.play();
+  private playNext(audioPointer: number, audioArray: string[]) {
+    if (audioPointer < audioArray.length) {
+      const audio = new Audio(audioArray[audioPointer]);
+      audio.addEventListener('ended', () => this.playNext(audioPointer, audioArray));
+      audio.play();
+      // eslint-disable-next-line no-param-reassign
+      audioPointer += 1;
+    }
+  }
+
+  private play(arr: string[]) {
+    const audioPointer = 0;
+    this.playNext(audioPointer, arr);
   }
 
   public playWord() {
     this.playBtn.addEventListener('click', () => {
       const soundUrl: string[] = this.makeSoundURL();
-      soundUrl.map((url) => this.play(url));
+      this.play(soundUrl);
     });
   }
 }
