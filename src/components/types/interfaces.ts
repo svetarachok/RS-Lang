@@ -42,3 +42,9 @@ export interface Route {
   path: string,
   cb: Function;
 }
+
+export interface GameResult {
+  userAuthData?: AuthorizationData,
+  correct: Word[],
+  incorrect: Word[],
+}

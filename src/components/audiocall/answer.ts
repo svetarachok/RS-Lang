@@ -47,7 +47,6 @@ export class Answer {
   }
 
   removeListener() {
-    console.log('removeListener');
     this.div.removeEventListener('click', this.eventHandler);
     this.addTextOpacity();
   }

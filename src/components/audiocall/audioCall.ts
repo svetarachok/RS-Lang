@@ -1,5 +1,5 @@
 import Api from '../Model/api';
-import { Word } from '../types/interfaces';
+import { GameResult, Word } from '../types/interfaces';
 import { getRandomWordsByGroup } from '../utils/getRandomWords';
 import { LevelSelect } from './levelSelect';
 import { Stage } from './stage';
@@ -13,6 +13,13 @@ export class AudioCall {
 
   words: Word[] = [];
 
+  result: GameResult = {
+    correct: [],
+    incorrect: [],
+  };
+
+  currentStage: number = 0;
+
   start() {
     console.log('start');
     new LevelSelect(this.container, this.startGame.bind(this)).createSelect();
@@ -25,7 +32,22 @@ export class AudioCall {
   }
 
   startGameStage() {
-    const stage = new Stage(this.container, this.words[0]);
+    const stage = new Stage(
+      this.container,
+      this.words[this.currentStage],
+      this.stageHandler.bind(this),
+    );
     stage.start();
+  }
+
+  stageHandler(word: Word, stageResult: boolean) {
+    if (stageResult) this.result.correct.push(word);
+    else this.result.incorrect.push(word);
+
+    if (this.currentStage < COUNT_WORDS_PER_GAME - 1) {
+      this.currentStage += 1;
+      this.startGameStage();
+    }
+    console.log(this.result);
   }
 }

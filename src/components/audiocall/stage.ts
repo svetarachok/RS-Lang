@@ -13,6 +13,8 @@ export class Stage {
 
   word: Word;
 
+  callback: (word: Word, result: boolean) => void;
+
   wrapper: HTMLElement;
 
   wordText: HTMLElement;
@@ -23,9 +25,12 @@ export class Stage {
 
   nextStageButton: HTMLElement;
 
-  constructor(container: HTMLElement, word: Word) {
+  result: boolean = false;
+
+  constructor(container: HTMLElement, word: Word, callback: (word: Word, result: boolean) => void) {
     this.container = container;
     this.word = word;
+    this.callback = callback;
     this.wrapper = createNode({ tag: 'div', classes: ['stage'] });
     this.wordText = createNode({ tag: 'span', classes: ['word__text'] });
     this.skipButton = createNode({ tag: 'button', classes: ['button', 'button-skip'], inner: 'не знаю' });
@@ -54,9 +59,9 @@ export class Stage {
   }
 
   answerHandler(answer: Answer) {
-    console.log('answerHandler');
-    console.log(answer);
     this.showCorrectAnswer();
+    if (answer.isCorrect) this.result = true;
+    console.log('result of stage', this.result);
   }
 
   render() {
@@ -89,6 +94,14 @@ export class Stage {
     });
   }
 
+  bindNextStageButtonEvent(button: HTMLElement) {
+    button.addEventListener('click', () => {
+      console.log('stage is over');
+      this.wrapper.remove();
+      this.callback(this.word, this.result);
+    });
+  }
+
   playAudio = () => {
     const audio = new Audio(`${BASE_LINK}/${this.word.audio}`);
     audio.addEventListener('canplaythrough', audio.play);
@@ -107,6 +120,7 @@ export class Stage {
     this.wrapper.prepend(wordImage);
     this.wordText.innerHTML = this.word.word;
     this.answers.forEach((answer) => answer.removeListener());
+    this.bindNextStageButtonEvent(this.nextStageButton);
     this.skipButton.replaceWith(this.nextStageButton);
   }
 }
