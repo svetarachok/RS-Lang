@@ -9,7 +9,6 @@ export class Api {
   public async getWords(queryParam?: { group: string, page: string }): Promise<Word[]> {
     const url: URL = makeUrl(BASE_LINK, Endpoint.words, queryParam);
     const response = await fetch(url);
-    console.log(response);
     return response.json();
   }
 

@@ -1,4 +1,4 @@
-// import { Controller } from './components/controller/Controller';
+import { TextBook } from './components/textBook/TextBook';
 import Router from './components/Model/Router';
 import './global.scss';
 
@@ -9,12 +9,12 @@ const router = new Router({
   root: '/',
 });
 
-// const controller = new Controller();
+const textBook = new TextBook(7);
 
 router
   .add('book', () => {
     console.log('Render book page');
-    // controller.initTextBook();
+    textBook.startTextBook();
   })
   .add('audiocall', () => {
     console.log('Render audiocall page');

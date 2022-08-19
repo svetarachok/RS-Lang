@@ -1,6 +1,7 @@
 import { WordUI } from './Word';
 import createNode from '../utils/createNode';
 import { Word } from '../types/interfaces';
+import { Api } from '../Model/api';
 
 export class TextBook {
   textBook: HTMLDivElement;
@@ -11,6 +12,8 @@ export class TextBook {
 
   sprintBtn: HTMLElement;
 
+  api: Api = new Api();
+
   constructor(numberOfLevels: number) {
     this.textBook = createNode({ tag: 'section', classes: ['textbook'] }) as HTMLDivElement;
     this.level1Btns = this.createLeveluttons(numberOfLevels);
@@ -19,7 +22,15 @@ export class TextBook {
     // this.pagination = createPagination();
   }
 
-  public renderTextBook(cardsData: Word[]): HTMLDivElement {
+  public async startTextBook() {
+    const conatiner: HTMLElement = document.querySelector('.main') as HTMLElement;
+    conatiner.innerHTML = '';
+    const textBook = await this.renderTextBook();
+    conatiner.append(textBook);
+  }
+
+  public async renderTextBook(): Promise<HTMLDivElement> {
+    const cardsData = await this.api.getWords({ group: '0', page: '1' });
     const page = this.renderPage(cardsData);
     const sidebar = this.rendeSidebar();
     this.textBook.append(sidebar, page);
@@ -53,6 +64,8 @@ export class TextBook {
       const btn = createNode({ tag: 'button', classes: ['btn-level'], inner: `${i}` }) as HTMLButtonElement;
       arr.push(btn);
       i += 1;
+      // eslint-disable-next-line no-param-reassign
+      levelsNumber -= 1;
     }
     return arr;
   }
