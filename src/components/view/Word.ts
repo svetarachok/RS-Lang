@@ -29,6 +29,7 @@ export class WordUI {
     this.transcription = createNode({ tag: 'p', classes: ['word-transcription'], inner: `${this.obj.transcription}` }) as HTMLParagraphElement;
     this.translate = createNode({ tag: 'p', classes: ['word-translate'], inner: `${this.obj.wordTranslate}` }) as HTMLParagraphElement;
     this.transcription = createNode({ tag: 'p', classes: ['word-transcription'], inner: `${this.obj.transcription}` }) as HTMLParagraphElement;
+    this.playWord();
   }
 
   public drawCard() {
@@ -59,17 +60,17 @@ export class WordUI {
     return arr;
   }
 
-  private playWord(src: string) {
+  private play(src: string) {
     const audio = new Audio();
     audio.preload = 'auto';
     audio.src = src;
     audio.play();
   }
 
-  public listenWordPlay() {
+  public playWord() {
     this.playBtn.addEventListener('click', () => {
       const soundUrl: string[] = this.makeSoundURL();
-      soundUrl.map((url) => this.playWord(url));
+      soundUrl.map((url) => this.play(url));
     });
   }
 }
