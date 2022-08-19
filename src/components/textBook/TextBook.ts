@@ -40,7 +40,7 @@ export class TextBook {
   private renderPage(cardsData: Word[]) {
     const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
     const pageHead: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page-head'] }) as HTMLDivElement;
-    const pageHeadText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['cards-wrapper'], inner: 'Играть с текущим набором слов:' }) as HTMLParagraphElement;
+    const pageHeadText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['page-head-wrapper'], inner: 'Играть с текущим набором слов:' }) as HTMLParagraphElement;
     const cardsWrapper: HTMLDivElement = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
     pageHead.append(pageHeadText, this.auduoCallBtn, this.sprintBtn);
     cardsData.forEach((card) => {
@@ -53,7 +53,11 @@ export class TextBook {
 
   private rendeSidebar(): HTMLElement {
     const sideBar: HTMLElement = createNode({ tag: 'aside', classes: ['aside'] });
-    this.level1Btns.forEach((btn) => sideBar.append(btn));
+    const sideBarContent: HTMLElement = createNode({ tag: 'div', classes: ['sidebar-content'] });
+    const sidebarText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['sidebar-text'], inner: 'Уровни сложности' }) as HTMLParagraphElement;
+    sideBarContent.append(sidebarText);
+    this.level1Btns.forEach((btn) => sideBarContent.append(btn));
+    sideBar.append(sideBarContent);
     return sideBar;
   }
 
