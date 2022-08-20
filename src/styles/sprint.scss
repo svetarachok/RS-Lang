@@ -185,17 +185,33 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background-color: #000000;
-  opacity: 0.25;
+  background-image: url('./assets/sprint/circle-empty.svg');
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: contain;
+
+  &--active {
+    background-image: url('./assets/sprint/true-series.svg');
+  }
+}
+
+.control__multiply {
+  margin-top: 10px;
 }
 
 .control__parrots {
+  display: flex;
   width: 204px;
   height: 57px;
-  margin-top: 50px;
+  margin-top: 30px;
   background-image: url('./assets/sprint/branch.svg');
   background-repeat: no-repeat;
   background-position: bottom;
+}
+
+.control__parrot {
+  position: relative;
+  top: 6px;
 }
 
 .control__word-en {
