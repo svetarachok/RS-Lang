@@ -21,3 +21,22 @@ a {
   border: 1px solid $light-grey;
   color: $dark-color;
 }
+
+.btn-play {
+  width: 3.5rem;
+  height: 3.5rem;
+  padding: 0;
+  background-color: $white-color;
+  box-shadow: 0px 1px 4px 1px rgba(50, 50, 71, 0.15);;
+}
+
+.btn-active {
+  background-color: red;
+  color: white;
+}
+
+.btn:disabled {
+  background-color: $light-grey;
+  border-color: $light-grey;
+  color: $mid-grey;
+}

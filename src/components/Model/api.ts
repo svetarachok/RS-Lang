@@ -5,7 +5,7 @@ import {
 import { BASE_LINK } from '../utils/constants';
 import { makeUrl } from '../utils/functions';
 
-class Api {
+export class Api {
   public async getWords(queryParam?: { group: string, page: string }): Promise<Word[]> {
     const url: URL = makeUrl(BASE_LINK, Endpoint.words, queryParam);
     const response = await fetch(url);
@@ -73,4 +73,4 @@ class Api {
   }
 }
 
-export const api = new Api();
+export const api: Api = new Api();
