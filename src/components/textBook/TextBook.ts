@@ -6,49 +6,90 @@ import { Api } from '../Model/api';
 export class TextBook {
   textBook: HTMLDivElement;
 
+  cardsWrapper: HTMLDivElement;
+
   level1Btns: HTMLButtonElement[];
 
-  auduoCallBtn: HTMLElement;
+  auduoCallBtn: HTMLButtonElement;
 
-  sprintBtn: HTMLElement;
+  sprintBtn: HTMLButtonElement;
 
   api: Api = new Api();
 
+  currentPage: number = 1;
+
+  currentLevel: number = 0;
+
+  prevPageBtn: HTMLButtonElement;
+
+  nextPageBtn: HTMLButtonElement;
+
+  pageInput: HTMLInputElement;
+
   constructor(numberOfLevels: number) {
     this.textBook = createNode({ tag: 'section', classes: ['textbook'] }) as HTMLDivElement;
+    this.cardsWrapper = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
     this.level1Btns = this.createLevelButtons(numberOfLevels);
-    this.auduoCallBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Аудиовызов' });
-    this.sprintBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Спринт' });
-    // this.pagination = createPagination();
+    this.auduoCallBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Аудиовызов' }) as HTMLButtonElement;
+    this.sprintBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Спринт' }) as HTMLButtonElement;
+    this.prevPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Предыдущая' }) as HTMLButtonElement;
+    this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
+    this.pageInput = createNode({ tag: 'input', classes: ['page-input'] }) as HTMLInputElement;
+    this.pageInput.value = String(this.currentPage);
   }
 
-  public async startTextBook() {
+  listenLevels(handler: (group: string, page: string) => void) {
+    this.level1Btns.forEach((button) => {
+      button.addEventListener('click', (e: Event) => {
+        const target: number = Number((e.target as HTMLButtonElement).innerHTML);
+        const level = target - 1;
+        handler(String(level), '1');
+      });
+    });
+  }
+
+  listenPages(handler: (group: string, page: string) => void) {
+    this.level1Btns.forEach((button) => {
+      button.addEventListener('click', (e: Event) => {
+        const target: number = Number((e.target as HTMLButtonElement).innerHTML);
+        const level = target - 1;
+        handler(String(level), '1');
+      });
+    });
+  }
+
+  public startTextBook(data: Word[]) {
     const conatiner: HTMLElement = document.querySelector('.main') as HTMLElement;
     conatiner.innerHTML = '';
-    const textBook = await this.renderTextBook();
+    const textBook = this.renderTextBook(data);
     conatiner.append(textBook);
   }
 
-  public async renderTextBook(): Promise<HTMLDivElement> {
-    const cardsData = await this.api.getWords({ group: '0', page: '1' });
-    const page = this.renderPage(cardsData);
+  public renderTextBook(data: Word[]): HTMLDivElement {
+    const conatiner: HTMLElement = document.querySelector('.main') as HTMLElement;
+    conatiner.innerHTML = '';
+    const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
+    const pageHead: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page-head'] }) as HTMLDivElement;
+    const pageHeadText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['page-head-wrapper'], inner: 'Играть с текущим набором слов:' }) as HTMLParagraphElement;
+    pageHead.append(pageHeadText, this.auduoCallBtn, this.sprintBtn);
+    this.renderCards(data);
+    page.append(pageHead, this.cardsWrapper);
     const sidebar = this.rendeSidebar();
     this.textBook.append(sidebar, page);
     return this.textBook;
   }
 
-  private renderPage(cardsData: Word[]) {
-    const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
-    const pageHead: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page-head'] }) as HTMLDivElement;
-    const pageHeadText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['page-head-wrapper'], inner: 'Играть с текущим набором слов:' }) as HTMLParagraphElement;
-    const cardsWrapper: HTMLDivElement = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
-    pageHead.append(pageHeadText, this.auduoCallBtn, this.sprintBtn);
+  public updateCards(data: Word[]) {
+    this.cardsWrapper.innerHTML = '';
+    this.renderCards(data);
+  }
+
+  private renderCards(cardsData: Word[]) {
     cardsData.forEach((card) => {
       const cardItem = new WordUI(card);
-      cardsWrapper.append(cardItem.drawCard());
+      this.cardsWrapper.append(cardItem.drawCard());
     });
-    page.append(pageHead, cardsWrapper);
-    return page;
+    return this.cardsWrapper;
   }
 
   private rendeSidebar(): HTMLElement {
