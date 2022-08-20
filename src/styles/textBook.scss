@@ -42,6 +42,10 @@
   transition: 0.3s ease-in-out;
 }
 
+.text-book-page {
+  padding: 1.5rem 2.5rem;
+}
+
 .text-book-page-head {
   display: flex;
   padding: 2.5rem;
@@ -55,7 +59,6 @@
   justify-content: space-around;
   flex-wrap: wrap;
   row-gap: 1rem;
-  padding: 1.5rem 2.5rem;
 }
 
 .card {
@@ -126,4 +129,22 @@
 
 .word-mean-translate {
   padding-bottom: 1rem;
+}
+
+.pagination {
+  @include display-flex-center;
+  padding: 2.5rem 1rem 0.5rem;
+}
+
+.page-input {
+  margin: 0 3rem;
+  width: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: $headers-font;
+  border-bottom: 1px solid;
+  text-align: center;
+  &:focus-visible {
+    outline: none;
+  }
 }

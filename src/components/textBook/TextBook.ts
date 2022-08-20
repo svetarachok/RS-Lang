@@ -73,7 +73,9 @@ export class TextBook {
     const pageHeadText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['page-head-wrapper'], inner: 'Играть с текущим набором слов:' }) as HTMLParagraphElement;
     pageHead.append(pageHeadText, this.auduoCallBtn, this.sprintBtn);
     this.renderCards(data);
-    page.append(pageHead, this.cardsWrapper);
+    const paginationWrapper: HTMLDivElement = createNode({ tag: 'div', classes: ['pagination'] }) as HTMLDivElement;
+    paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
+    page.append(pageHead, this.cardsWrapper, paginationWrapper);
     const sidebar = this.rendeSidebar();
     this.textBook.append(sidebar, page);
     return this.textBook;
