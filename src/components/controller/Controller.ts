@@ -7,7 +7,7 @@ export class Controller {
   api: Api;
 
   constructor() {
-    this.textBook = new TextBook(7);
+    this.textBook = new TextBook(6);
     this.api = new Api();
   }
 
