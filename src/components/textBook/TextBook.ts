@@ -84,15 +84,17 @@ export class TextBook {
 
   // Handle changes when switching pages (buttons and input) and levels
   private handlePageButtons() {
+    console.log(this.currentPage);
     if (this.currentPage > 0) {
       this.prevPageBtn.disabled = false;
     } else if (this.currentPage <= 0) {
       this.prevPageBtn.disabled = true;
-    } else if (this.currentPage > 30) {
-      console.log(this.currentPage);
-      this.nextPageBtn.disabled = true;
     } else {
       this.prevPageBtn.disabled = false;
+    }
+    if (this.currentPage === 29) {
+      this.nextPageBtn.disabled = true;
+    } else {
       this.nextPageBtn.disabled = false;
     }
   }
