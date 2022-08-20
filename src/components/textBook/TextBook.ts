@@ -2,6 +2,7 @@ import { WordUI } from './Word';
 import createNode from '../utils/createNode';
 import { Word } from '../types/interfaces';
 import { Api } from '../Model/api';
+import { MAX_PAGE_NUMBER } from '../utils/constants';
 
 export class TextBook {
   textBook: HTMLDivElement;
@@ -16,7 +17,7 @@ export class TextBook {
 
   api: Api = new Api();
 
-  currentPage: number = 1;
+  currentPage: number = 0;
 
   currentLevel: number = 0;
 
@@ -35,45 +36,106 @@ export class TextBook {
     this.prevPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Предыдущая' }) as HTMLButtonElement;
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
     this.pageInput = createNode({ tag: 'input', classes: ['page-input'] }) as HTMLInputElement;
-    this.pageInput.value = String(this.currentPage);
+    this.pageInput.type = 'number';
+    this.pageInput.value = String(this.currentPage + 1);
   }
 
   listenLevels(handler: (group: string, page: string) => void) {
     this.level1Btns.forEach((button) => {
       button.addEventListener('click', (e: Event) => {
+        this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
+        button.classList.add('btn-active');
+        this.currentPage = 0;
+        this.pageInput.value = String(this.currentPage + 1);
         const target: number = Number((e.target as HTMLButtonElement).innerHTML);
         const level = target - 1;
-        handler(String(level), '1');
+        this.handlePageButtons();
+        handler(String(level), '0');
       });
     });
   }
 
-  listenPages(handler: (group: string, page: string) => void) {
-    this.level1Btns.forEach((button) => {
-      button.addEventListener('click', (e: Event) => {
-        const target: number = Number((e.target as HTMLButtonElement).innerHTML);
-        const level = target - 1;
-        handler(String(level), '1');
-      });
+  listenPagination(handler: (group: string, page: string) => void) {
+    this.prevPageBtn.addEventListener('click', () => {
+      const level = this.handleLevelButtons();
+      this.currentPage -= 1;
+      this.pageInput.value = String(this.currentPage + 1);
+      this.handleInput(this.pageInput);
+      this.handlePageButtons();
+      handler(String(level), String(this.currentPage));
+    });
+    this.nextPageBtn.addEventListener('click', () => {
+      const level = this.handleLevelButtons();
+      this.currentPage += 1;
+      this.pageInput.value = String(this.currentPage + 1);
+      this.handleInput(this.pageInput);
+      this.handlePageButtons();
+      handler(String(level), String(this.currentPage));
+    });
+    this.pageInput.addEventListener('input', (e: Event) => {
+      const level = this.handleLevelButtons();
+      const newPageNumber: number = Number((e.target as HTMLInputElement).value);
+      this.currentPage = newPageNumber - 1;
+      this.handleInput(this.pageInput);
+      this.handlePageButtons();
+      handler(String(level), String(this.currentPage));
     });
   }
 
+  // Handle changes when switching pages (buttons and input) and levels
+  private handlePageButtons() {
+    if (this.currentPage > 0) {
+      this.prevPageBtn.disabled = false;
+    } else if (this.currentPage <= 0) {
+      this.prevPageBtn.disabled = true;
+    } else if (this.currentPage > 30) {
+      console.log(this.currentPage);
+      this.nextPageBtn.disabled = true;
+    } else {
+      this.prevPageBtn.disabled = false;
+      this.nextPageBtn.disabled = false;
+    }
+  }
+
+  private handleLevelButtons() {
+    const levelBtn = this.level1Btns.filter((btn) => btn.classList.contains('btn-active'));
+    const level = levelBtn.length > 0 ? Number(levelBtn[0].innerHTML) - 1 : '0';
+    return level;
+  }
+
+  private handleInput(input: HTMLInputElement) {
+    const currInput = input;
+    if (Number(input.value) > MAX_PAGE_NUMBER) {
+      currInput.value = '30';
+      this.currentPage = 29;
+    } else if (Number(input.value) <= 0) {
+      currInput.value = '1';
+      this.currentPage = 0;
+    } else {
+      currInput.value = String(this.currentPage + 1);
+    }
+    return currInput;
+  }
+
+  // Render TextBook and components
   public startTextBook(data: Word[]) {
-    const conatiner: HTMLElement = document.querySelector('.main') as HTMLElement;
-    conatiner.innerHTML = '';
+    const container: HTMLElement = document.querySelector('.main') as HTMLElement;
+    console.log(container);
+    container.innerHTML = '';
     const textBook = this.renderTextBook(data);
-    conatiner.append(textBook);
+    container.append(textBook);
   }
 
   public renderTextBook(data: Word[]): HTMLDivElement {
-    const conatiner: HTMLElement = document.querySelector('.main') as HTMLElement;
-    conatiner.innerHTML = '';
+    this.textBook.innerHTML = '';
     const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
     const pageHead: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page-head'] }) as HTMLDivElement;
     const pageHeadText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['page-head-wrapper'], inner: 'Играть с текущим набором слов:' }) as HTMLParagraphElement;
     pageHead.append(pageHeadText, this.auduoCallBtn, this.sprintBtn);
     this.renderCards(data);
     const paginationWrapper: HTMLDivElement = createNode({ tag: 'div', classes: ['pagination'] }) as HTMLDivElement;
+    this.prevPageBtn.disabled = true;
+    this.nextPageBtn.disabled = false;
     paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
     page.append(pageHead, this.cardsWrapper, paginationWrapper);
     const sidebar = this.rendeSidebar();

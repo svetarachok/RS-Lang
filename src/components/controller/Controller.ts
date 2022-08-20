@@ -12,15 +12,15 @@ export class Controller {
   }
 
   public async initTextBook() {
-    const data = await this.api.getWords({ group: '0', page: '1' });
+    const data = await this.api.getWords({ group: '0', page: '0' });
     this.handlePageUpdate = this.handlePageUpdate.bind(this);
     this.textBook.startTextBook(data);
     this.textBook.listenLevels(this.handlePageUpdate);
+    this.textBook.listenPagination(this.handlePageUpdate);
   }
 
   public async handlePageUpdate(groupStr: string, pageStr: string) {
     const data = await this.api.getWords({ group: groupStr, page: pageStr });
-    console.log(data);
     this.textBook.updateCards(data);
     return data;
   }
