@@ -173,7 +173,12 @@
   height: 33px;
   background-image: url('./assets/sprint/voice.svg');
   background-repeat: no-repeat;
+  background-position: center;
   cursor: pointer;
+
+  &:hover {
+    background-image: url('./assets/sprint/voice-hover.svg');
+  }
 }
 
 .control__series-list {
@@ -318,6 +323,9 @@
 }
 
 .result__word {
+  display: flex;
+  gap: 10px;
+  align-items: center;
   color: #37383c;
   font-size: 16px;
   line-height: 1.25;
@@ -328,4 +336,17 @@
 
 .result__word-en {
   font-weight: 700;
+}
+
+.result__voice {
+  width: 33px;
+  height: 33px;
+  background-image: url('./assets/sprint/voice-grey.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+
+  &:hover {
+    background-image: url('./assets/sprint/voice-hover.svg');
+  }
 }

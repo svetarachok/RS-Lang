@@ -51,6 +51,7 @@ export class Sprint {
     const header = <HTMLElement>document.querySelector('.header');
     const main = <HTMLElement>document.querySelector('.main');
     const footer = <HTMLElement>document.querySelector('.footer');
+    main.innerHTML = '';
     body.classList.add('body--sprint');
     main.classList.add('main--sprint');
     header.style.display = 'none';
@@ -138,7 +139,7 @@ export class Sprint {
     const ready = <HTMLElement>document.querySelector('.sprint__ready');
     ready.remove();
     this.renderTimer(main, 'timer--control');
-    this.startTimer('timer--control', 60, this.renderResult.bind(this), this.createFinishSound());
+    this.startTimer('timer--control', 5, this.renderResult.bind(this), this.createFinishSound());
     const sprintControl = createHTMLElement('div', ['sprint__control']);
     const score = createHTMLElement('h2', ['control__score'], undefined, '0');
     const sound = createHTMLElement('div', ['control__sound']);
@@ -339,7 +340,14 @@ export class Sprint {
     const wordEn = createHTMLElement('span', ['result__word-en'], undefined, `${word.word}: `);
     const wordRu = createHTMLElement('span', ['result__word-ru'], undefined, `${word.wordTranslate}`);
     const wordEnRu = createHTMLElement('li', ['result__word']);
-    wordEnRu.append(wordEn, wordRu);
+    const voice = createHTMLElement('div', ['result__voice']);
+    voice.addEventListener('click', () => this.voiceWordInResult(word.audio));
+    wordEnRu.append(voice, wordEn, wordRu);
     list.append(wordEnRu);
+  }
+
+  private voiceWordInResult(url: string): void {
+    const audio = new Audio(`${BASE_LINK}/${url}`);
+    audio.play();
   }
 }
