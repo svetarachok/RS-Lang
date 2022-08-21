@@ -15,7 +15,7 @@ export class LoginForm extends Form {
     this.formName = formName;
     this.btnName = btnName;
     this.email = createNode({ tag: 'input', classes: ['email-input'], atributesAdnValues: [['type', 'email'], ['placeholder', 'Your e-mail']] }) as HTMLInputElement;
-    this.password = createNode({ tag: 'input', classes: ['password-input'], atributesAdnValues: [['type', 'password'], ['placeholder', 'Password']] }) as HTMLInputElement;
+    this.password = createNode({ tag: 'input', classes: ['password-input'], atributesAdnValues: [['type', 'password'], ['placeholder', 'Password'], ['autocomplete', 'on']] }) as HTMLInputElement;
   }
 
   public renderForm(): HTMLDivElement {
@@ -24,7 +24,7 @@ export class LoginForm extends Form {
     return formWrapper;
   }
 
-  public listenLoginForm(callback: (mail: string, pass: string) => void) {
+  public listenForm(callback: (mail: string, pass: string) => void) {
     this.submitBtn.addEventListener('click', () => {
       const email = super.checkInputValue(this.email);
       const password = super.checkInputValue(this.password);
@@ -35,15 +35,8 @@ export class LoginForm extends Form {
       } else if (!password) {
         console.log('Enter password');
       } else {
-        // eslint-disable-next-line prefer-template
-        console.log(this.email.value + ' ' + this.password.value);
         callback(this.email.value, this.password.value);
       }
     });
   }
-
-  // public checkInputValue(input: HTMLInputElement): Boolean {
-  //   const data = super.checkInputValue(input);
-  //   return data;
-  // }
 }

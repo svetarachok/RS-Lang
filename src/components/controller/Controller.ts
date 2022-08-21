@@ -4,6 +4,7 @@ import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import { REGISTER_BTN, LOGIN_BTN } from '../utils/constants';
+import { AuthorizationData, UserCreationData } from '../types/interfaces';
 
 export class Controller {
   textBook: TextBook;
@@ -34,7 +35,8 @@ export class Controller {
 
   public initUserForms() {
     this.activateUserForms();
-    this.loginForm.listenLoginForm(this.handleLogin.bind(this));
+    this.loginForm.listenForm(this.handleLogin.bind(this));
+    this.registerForm.listenForm(this.handleRegistartion.bind(this));
   }
 
   public async handlePageUpdate(groupStr: string, pageStr: string) {
@@ -50,11 +52,24 @@ export class Controller {
     LOGIN_BTN.addEventListener('click', () => this.modal.renderModal(loginFormHTML));
   }
 
-  public handleLogin(email: string, password: string) {
-    console.log(email, password);
+  public async handleLogin(email: string, password: string) {
+    const object: Pick<UserCreationData, 'email' | 'password'> = { email, password };
+    const res = await this.api.authorize(object);
+    const { message } = res as AuthorizationData;
+    if (res) {
+      console.log(message);
+    } else {
+      console.log('User does not exist');
+    }
   }
 
-  public handleRegistartion(name: string, email: string, password: string) {
-    console.log(email, name, password);
+  public async handleRegistartion(name: string, email: string, password: string) {
+    const object: UserCreationData = {
+      name,
+      email,
+      password,
+    };
+    const res = await this.api.createUser(object);
+    console.log(res);
   }
 }
