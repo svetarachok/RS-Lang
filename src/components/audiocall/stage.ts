@@ -44,7 +44,7 @@ export class Stage {
 
   async start() {
     await this.setAnswers();
-    this.playAudio();
+    this.sayWord();
     this.render();
     document.addEventListener('keydown', this.keyHandler);
   }
@@ -66,8 +66,8 @@ export class Stage {
 
   answerHandler(answer?: Answer) {
     this.hasAnswer = true;
-    this.showCorrectAnswer();
     if (answer?.isCorrect) this.result = true;
+    this.showCorrectAnswer();
     console.log('result of stage', this.result);
   }
 
@@ -90,7 +90,7 @@ export class Stage {
   }
 
   bindSoundButtonEvent(button: HTMLElement) {
-    button.addEventListener('click', this.playAudio);
+    button.addEventListener('click', this.sayWord);
   }
 
   bindSkipButtonEvent(button: HTMLElement) {
@@ -110,7 +110,7 @@ export class Stage {
     this.callback(this.word, this.result);
   };
 
-  playAudio = () => {
+  sayWord = () => {
     const audio = new Audio(`${BASE_LINK}/${this.word.audio}`);
     audio.addEventListener('canplaythrough', audio.play);
   };
@@ -131,12 +131,12 @@ export class Stage {
     this.answers.forEach((answer) => answer.removeListener());
     this.bindNextStageButtonEvent(this.nextStageButton);
     this.skipButton.replaceWith(this.nextStageButton);
+    this.playAnswerSound();
   }
 
   keyHandler = (e: KeyboardEvent) => {
-    console.log(e);
     if (e.code === 'Space') {
-      this.playAudio();
+      this.sayWord();
       return;
     }
     if (e.key === 'Enter') {
@@ -154,4 +154,9 @@ export class Stage {
       }
     }
   };
+
+  playAnswerSound() {
+    const audio = new Audio(`./assets/audiocall/sounds/${this.result}.mp3`);
+    audio.addEventListener('canplaythrough', audio.play);
+  }
 }

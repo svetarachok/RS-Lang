@@ -51,12 +51,6 @@ export class Answer {
   addEndStageStyleByKeyboard(answer: Answer) {
     console.log(answer === this);
     if (answer === this) this.addEndStageStyleByClick();
-    // if (this.isCorrect) {
-    //   this.answerNumberSpan.innerText = '✔';
-    //   this.answerNumberSpan.classList.add('checked');
-    // } else {
-    //   this.answerTextSpan.style.textDecoration = 'line-through';
-    // }
   }
 
   removeListener() {
