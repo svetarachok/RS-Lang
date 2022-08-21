@@ -59,6 +59,7 @@ export class AudioCall {
     console.log(this.result);
     console.log('game over');
     const resultPage = new ResultPage(this.container, this.result);
+    resultPage.start();
     console.log(resultPage);
   }
 }
