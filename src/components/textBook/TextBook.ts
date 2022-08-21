@@ -35,8 +35,7 @@ export class TextBook {
     this.sprintBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Спринт' }) as HTMLButtonElement;
     this.prevPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Предыдущая' }) as HTMLButtonElement;
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
-    this.pageInput = createNode({ tag: 'input', classes: ['page-input'] }) as HTMLInputElement;
-    this.pageInput.type = 'number';
+    this.pageInput = createNode({ tag: 'input', classes: ['page-input'], atributesAdnValues: [['type', 'number']] }) as HTMLInputElement;
     this.pageInput.value = String(this.currentPage + 1);
   }
 
