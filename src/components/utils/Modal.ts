@@ -14,6 +14,7 @@ export class Modal {
   }
 
   renderModal(htmlNode: HTMLElement) {
+    this.modalContent.innerHTML = '';
     this.closeBtn.innerHTML = '<span class="material-icons-outlined material-modal-close-icon">close</span>';
     this.modalContent.append(htmlNode);
     this.modalContent.prepend(this.closeBtn);

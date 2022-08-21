@@ -121,7 +121,6 @@ export class TextBook {
   // Render TextBook and components
   public startTextBook(data: Word[]) {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
-    console.log(container);
     container.innerHTML = '';
     const textBook = this.renderTextBook(data);
     container.append(textBook);
