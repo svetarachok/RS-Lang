@@ -29,6 +29,8 @@ export class Stage {
 
   soundButton: HTMLElement;
 
+  hasAnswer: boolean = false;
+
   constructor(container: HTMLElement, word: Word, callback: (word: Word, result: boolean) => void) {
     this.container = container;
     this.word = word;
@@ -44,6 +46,7 @@ export class Stage {
     await this.setAnswers();
     this.playAudio();
     this.render();
+    document.addEventListener('keydown', this.keyHandler);
   }
 
   async setAnswers() {
@@ -61,9 +64,10 @@ export class Stage {
     });
   }
 
-  answerHandler(answer: Answer) {
+  answerHandler(answer?: Answer) {
+    this.hasAnswer = true;
     this.showCorrectAnswer();
-    if (answer.isCorrect) this.result = true;
+    if (answer?.isCorrect) this.result = true;
     console.log('result of stage', this.result);
   }
 
@@ -97,12 +101,14 @@ export class Stage {
   }
 
   bindNextStageButtonEvent(button: HTMLElement) {
-    button.addEventListener('click', () => {
-      console.log('stage is over');
-      this.wrapper.remove();
-      this.callback(this.word, this.result);
-    });
+    button.addEventListener('click', this.loadNextStage);
   }
+
+  loadNextStage = () => {
+    document.removeEventListener('keydown', this.keyHandler);
+    this.wrapper.remove();
+    this.callback(this.word, this.result);
+  };
 
   playAudio = () => {
     const audio = new Audio(`${BASE_LINK}/${this.word.audio}`);
@@ -126,4 +132,26 @@ export class Stage {
     this.bindNextStageButtonEvent(this.nextStageButton);
     this.skipButton.replaceWith(this.nextStageButton);
   }
+
+  keyHandler = (e: KeyboardEvent) => {
+    console.log(e);
+    if (e.code === 'Space') {
+      this.playAudio();
+      return;
+    }
+    if (e.key === 'Enter') {
+      if (!this.hasAnswer) this.answerHandler();
+      else this.loadNextStage();
+      return;
+    }
+    if (this.hasAnswer) return;
+    const answerNumber = Number(e.key);
+    if (answerNumber > 0 && answerNumber <= this.answers.length) {
+      const currentAnswer = this.answers.find((answer) => answer.number === answerNumber);
+      if (currentAnswer) {
+        this.answerHandler(currentAnswer);
+        this.answers.forEach((answer) => answer.addEndStageStyleByKeyboard(currentAnswer));
+      }
+    }
+  };
 }

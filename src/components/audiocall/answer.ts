@@ -29,7 +29,8 @@ export class Answer {
   }
 
   eventHandler = () => {
-    this.addEndStageStyle();
+    console.log('eventHandler');
+    this.addEndStageStyleByClick();
     this.callback(this);
   };
 
@@ -38,13 +39,24 @@ export class Answer {
     this.answerTextSpan.style.opacity = '0.5';
   }
 
-  addEndStageStyle() {
+  addEndStageStyleByClick() {
     if (this.isCorrect) {
       this.answerNumberSpan.innerText = '✔';
       this.answerNumberSpan.classList.add('checked');
     } else {
       this.answerTextSpan.style.textDecoration = 'line-through';
     }
+  }
+
+  addEndStageStyleByKeyboard(answer: Answer) {
+    console.log(answer === this);
+    if (answer === this) this.addEndStageStyleByClick();
+    // if (this.isCorrect) {
+    //   this.answerNumberSpan.innerText = '✔';
+    //   this.answerNumberSpan.classList.add('checked');
+    // } else {
+    //   this.answerTextSpan.style.textDecoration = 'line-through';
+    // }
   }
 
   removeListener() {
