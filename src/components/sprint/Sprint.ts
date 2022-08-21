@@ -14,6 +14,10 @@ export class Sprint {
 
   currentWord: Word | undefined;
 
+  trueWords: Word[];
+
+  falseWords: Word[];
+
   isPairTrue: boolean | undefined;
 
   countTrue: number;
@@ -38,6 +42,8 @@ export class Sprint {
     this.POINTS_FOR_WORD = 10;
     this.multiplier = 1;
     this.seriesOfCorrect = 0;
+    this.trueWords = [];
+    this.falseWords = [];
   }
 
   public penderGame(): void {
@@ -132,7 +138,7 @@ export class Sprint {
     const ready = <HTMLElement>document.querySelector('.sprint__ready');
     ready.remove();
     this.renderTimer(main, 'timer--control');
-    this.startTimer('timer--control', 60, () => console.log('end'), this.createFinishSound());
+    this.startTimer('timer--control', 60, this.renderResult.bind(this), this.createFinishSound());
     const sprintControl = createHTMLElement('div', ['sprint__control']);
     const score = createHTMLElement('h2', ['control__score'], undefined, '0');
     const sound = createHTMLElement('div', ['control__sound']);
@@ -176,6 +182,7 @@ export class Sprint {
     const maxIndex = this.wordsInLevel.length - 1;
     const randomWordIndex = getRandomIntInclusive(0, maxIndex);
     const randomWord = this.wordsInLevel[randomWordIndex];
+    this.wordsInLevel.splice(randomWordIndex, 1);
     return randomWord;
   }
 
@@ -211,6 +218,7 @@ export class Sprint {
       this.checkSeriesOfCorrect();
       this.updateScore();
       this.changeStyleSeries(this.seriesOfCorrect);
+      this.trueWords.push(this.currentWord!);
     } else {
       this.palayAnswerSoud(false);
       this.countFalse += 1;
@@ -219,9 +227,12 @@ export class Sprint {
       this.changeMultiplyDescr(1);
       this.clearStyleSeries();
       this.clearParrots();
+      this.falseWords.push(this.currentWord!);
     }
 
     this.updateWord();
+    console.log(this.trueWords);
+    console.log(this.falseWords);
   }
 
   private updateWord(): void {
@@ -304,5 +315,31 @@ export class Sprint {
     const url = './assets/sprint/sounds/finish_tick.mp3';
     const audio = new Audio(url);
     return audio;
+  }
+
+  private renderResult() {
+    const main = <HTMLElement>document.querySelector('.main');
+    const control = <HTMLElement>document.querySelector('.sprint__control');
+    const timer = <HTMLElement>document.querySelector('.timer--control');
+    control.remove();
+    timer.remove();
+    const resultContainer = createHTMLElement('div', ['sprint__result']);
+    const score = createHTMLElement('h2', ['result__score'], undefined, `Твой результат: ${this.score} очков`);
+    const listsContainer = createHTMLElement('div', ['sprint__lists']);
+    const trueList = createHTMLElement('ul', ['result__true'], undefined, `Знаю: ${this.trueWords.length}`);
+    const falseList = createHTMLElement('ul', ['result__false'], undefined, `Ошибок: ${this.falseWords.length}`);
+    this.trueWords.forEach((word) => this.addWordInResult(trueList, word));
+    this.falseWords.forEach((word) => this.addWordInResult(falseList, word));
+    listsContainer.append(falseList, trueList);
+    resultContainer.append(score, listsContainer);
+    main.append(resultContainer);
+  }
+
+  private addWordInResult(list: HTMLElement, word: Word): void {
+    const wordEn = createHTMLElement('span', ['result__word-en'], undefined, `${word.word}: `);
+    const wordRu = createHTMLElement('span', ['result__word-ru'], undefined, `${word.wordTranslate}`);
+    const wordEnRu = createHTMLElement('li', ['result__word']);
+    wordEnRu.append(wordEn, wordRu);
+    list.append(wordEnRu);
   }
 }
