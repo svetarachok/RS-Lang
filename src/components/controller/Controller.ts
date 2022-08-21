@@ -4,7 +4,8 @@ import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import { REGISTER_BTN, LOGIN_BTN } from '../utils/constants';
-import { AuthorizationData, UserCreationData } from '../types/interfaces';
+import { UserCreationData } from '../types/interfaces';
+import { UserUI } from '../user/UserUI';
 
 export class Controller {
   textBook: TextBook;
@@ -17,12 +18,15 @@ export class Controller {
 
   registerForm: RegisterForm;
 
+  userUI: UserUI;
+
   constructor() {
     this.textBook = new TextBook(6);
     this.api = new Api();
     this.modal = new Modal();
     this.loginForm = new LoginForm('login', 'Login');
     this.registerForm = new RegisterForm('register', 'Register');
+    this.userUI = new UserUI();
   }
 
   public async initTextBook() {
@@ -55,11 +59,14 @@ export class Controller {
   public async handleLogin(email: string, password: string) {
     const object: Pick<UserCreationData, 'email' | 'password'> = { email, password };
     const res = await this.api.authorize(object);
-    const { message } = res as AuthorizationData;
-    if (res) {
-      console.log(message);
+    // const { message } = res as AuthorizationData;
+    if (typeof res === 'object') {
+      console.log(res);
+      this.modal.overLay.remove();
+      document.body.classList.remove('hidden-overflow');
+      this.userUI.renderAuthorisedUI(res);
     } else {
-      console.log('User does not exist');
+      console.log(res);
     }
   }
 
