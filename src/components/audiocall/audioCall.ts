@@ -1,4 +1,5 @@
 import { GameResult, Word } from '../types/interfaces';
+import createNode from '../utils/createNode';
 import { getRandomWordsByGroup } from '../utils/getRandomWords';
 import { LevelSelect } from './levelSelect';
 import { ResultPage } from './resultPage';
@@ -7,7 +8,7 @@ import { Stage } from './stage';
 const COUNT_WORDS_PER_GAME = 10;
 
 export class AudioCall {
-  container: HTMLElement = document.querySelector('main') as HTMLElement;
+  container: HTMLElement;
 
   words: Word[] = [];
 
@@ -18,7 +19,13 @@ export class AudioCall {
 
   currentStage: number = 0;
 
+  constructor() {
+    this.container = createNode({ tag: 'div', classes: ['audio-call'] });
+  }
+
   start() {
+    document.querySelector('main')?.append(this.container);
+    (document.querySelector('footer') as HTMLElement).style.display = 'none';
     console.log('start');
     new LevelSelect(this.container, this.startGame.bind(this)).createSelect();
   }

@@ -13,6 +13,8 @@ export class LevelSelect {
 
   wrapper: HTMLElement;
 
+  levelButtons: HTMLElement[] = [];
+
   constructor(container: HTMLElement, callback: (selectedValue: string)=> void) {
     this.container = container;
     this.callback = callback;
@@ -33,20 +35,24 @@ export class LevelSelect {
   createSelectBlock(title: string) {
     const wrapper = createNode({ tag: 'div', classes: ['select-block'] });
     const titleNode = createNode({ tag: 'div', classes: ['select-block__title'], inner: title });
-    const select = createNode({ tag: 'select', classes: ['select-block__select'] });
+    const select = createNode({ tag: 'div', classes: ['select-block__select'] });
     for (let i = 1; i <= LEVEL_COUNT; i += 1) {
-      const option = createNode({ tag: 'option', atributesAdnValues: [['value', String(i - 1)]], inner: String(i) });
-      if (i === 1) (option as HTMLOptionElement).selected = true;
-      select.append(option);
+      const levelButton = createNode({ tag: 'button', atributesAdnValues: [['data-level', String(i - 1)]], inner: String(i) });
+      if (i === 1) levelButton.classList.add('selected');
+      this.levelButtons.push(levelButton);
+      select.append(levelButton);
     }
-    this.addSelectHandler(select as HTMLSelectElement);
+    this.levelButtons.forEach((button) => this.addSelectButtonHandler(button));
     wrapper.append(titleNode, select);
     return wrapper;
   }
 
-  addSelectHandler(select: HTMLSelectElement) {
-    select.addEventListener('change', () => {
-      this.selectedValue = select.value;
+  addSelectButtonHandler(button: HTMLElement) {
+    button.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      this.selectedValue = target.dataset.level || this.selectedValue;
+      this.levelButtons.forEach((levelButton) => levelButton.classList.remove('selected'));
+      target.classList.add('selected');
     });
   }
 
