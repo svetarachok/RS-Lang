@@ -27,6 +27,8 @@ export class Stage {
 
   result: boolean = false;
 
+  soundButton: HTMLElement;
+
   constructor(container: HTMLElement, word: Word, callback: (word: Word, result: boolean) => void) {
     this.container = container;
     this.word = word;
@@ -35,6 +37,7 @@ export class Stage {
     this.wordText = createNode({ tag: 'span', classes: ['word__text'] });
     this.skipButton = createNode({ tag: 'button', classes: ['button', 'button-skip'], inner: 'не знаю' });
     this.nextStageButton = createNode({ tag: 'button', classes: ['button', 'button-next'], inner: '⟶' });
+    this.soundButton = createNode({ tag: 'button', classes: ['speaker-button'], inner: SPEAKER });
   }
 
   async start() {
@@ -77,9 +80,8 @@ export class Stage {
 
   createWordBlock() {
     const wrapper = createNode({ tag: 'div', classes: ['word'] });
-    const soundButton = createNode({ tag: 'button', classes: ['speaker-button'], inner: SPEAKER });
-    this.bindSoundButtonEvent(soundButton);
-    wrapper.append(soundButton, this.wordText);
+    this.bindSoundButtonEvent(this.soundButton);
+    wrapper.append(this.soundButton, this.wordText);
     return wrapper;
   }
 
@@ -117,6 +119,7 @@ export class Stage {
       classes: ['stage__img'],
       atributesAdnValues: [['src', `${BASE_LINK}/${this.word.image}`], ['alt', this.word.word]],
     });
+    this.soundButton.classList.add('speaker-button_min');
     this.wrapper.prepend(wordImage);
     this.wordText.innerHTML = this.word.word;
     this.answers.forEach((answer) => answer.removeListener());

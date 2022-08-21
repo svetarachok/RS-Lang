@@ -41,6 +41,7 @@ export class Answer {
   addEndStageStyle() {
     if (this.isCorrect) {
       this.answerNumberSpan.innerText = '✔';
+      this.answerNumberSpan.classList.add('checked');
     } else {
       this.answerTextSpan.style.textDecoration = 'line-through';
     }
