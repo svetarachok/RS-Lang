@@ -1,7 +1,6 @@
-export const SPEAKER = `<?xml version="1.0" encoding="iso-8859-1"?>
-<!-- Generator: Adobe Illustrator 18.1.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+export const SPEAKER = `
 <svg width="200" height="200" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-   viewBox="0 0 422.686 422.686" style="enable-background:new 0 0 422.686 422.686;" xml:space="preserve">
+   viewBox="0 0 422.686 422.686" xml:space="preserve">
 <g>
   <g>
     <path style="fill:#52455f;" d="M211.343,422.686C94.812,422.686,0,327.882,0,211.343C0,94.812,94.812,0,211.343,0
@@ -16,36 +15,6 @@ export const SPEAKER = `<?xml version="1.0" encoding="iso-8859-1"?>
     c-1.073,0.48-2.211,0.715-3.333,0.715c-1.951,0-3.869-0.691-5.381-2.024l-37.578-33.091h-41.049c-4.495,0-8.129-3.633-8.129-8.129
     v-58.51c0-4.487,3.633-8.129,8.129-8.129h38.107l41.277-28.515c1.374-0.951,2.983-1.431,4.601-1.431
     c1.292,0,2.593,0.309,3.78,0.927c2.682,1.406,4.365,4.178,4.365,7.202v123.579H261.472z"/>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
-</g>
-<g>
 </g>
 </svg>
 `;

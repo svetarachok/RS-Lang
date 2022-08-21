@@ -81,15 +81,24 @@
 
   .word {
     display: flex;
-    gap: 3rem;
     align-items: center;
     justify-content: center;
     font-size: 2.5rem;
   }
 
   .speaker-button {
+    border: none;
+    border-radius: 50%;
+    &:hover {
+      border: none;
+    }
     svg {
       padding: 0.2rem;
+      &:hover {
+        path {
+          fill: #3c3e3d !important;
+        }
+      }
     }
     padding: 0;
     margin: 0;
@@ -98,6 +107,7 @@
   }
 
   .speaker-button_min {
+    padding: 0 1rem;
     svg {
       width: 3rem;
       height: 3rem;
