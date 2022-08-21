@@ -1,5 +1,5 @@
+import { Controller } from './components/controller/Controller';
 import Router from './components/Model/Router';
-import { Sprint } from './components/sprint/Sprint';
 import './global.scss';
 
 console.log('Lets go');
@@ -9,17 +9,18 @@ const router = new Router({
   root: '/',
 });
 
-const sprint = new Sprint();
+const controller = new Controller();
 
 router
   .add('book', () => {
     console.log('Render book page');
+    controller.initTextBook();
   })
   .add('audiocall', () => {
     console.log('Render audiocall page');
   })
   .add('sprint', () => {
-    sprint.penderGame();
+    controller.initSprint();
   })
   .add('statistic', () => {
     console.log('Render statistic page');
