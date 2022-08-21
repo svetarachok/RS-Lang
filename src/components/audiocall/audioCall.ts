@@ -1,15 +1,13 @@
-import Api from '../Model/api';
 import { GameResult, Word } from '../types/interfaces';
 import { getRandomWordsByGroup } from '../utils/getRandomWords';
 import { LevelSelect } from './levelSelect';
+import { ResultPage } from './resultPage';
 import { Stage } from './stage';
 
 const COUNT_WORDS_PER_GAME = 10;
 
 export class AudioCall {
   container: HTMLElement = document.querySelector('main') as HTMLElement;
-
-  api: Api = new Api();
 
   words: Word[] = [];
 
@@ -47,7 +45,13 @@ export class AudioCall {
     if (this.currentStage < COUNT_WORDS_PER_GAME - 1) {
       this.currentStage += 1;
       this.startGameStage();
-    }
+    } else { this.endGameHandler(); }
+  }
+
+  endGameHandler() {
     console.log(this.result);
+    console.log('game over');
+    const resultPage = new ResultPage(this.container, this.result);
+    console.log(resultPage);
   }
 }
