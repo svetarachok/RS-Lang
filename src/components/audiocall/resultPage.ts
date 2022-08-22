@@ -9,10 +9,13 @@ export class ResultPage {
 
   wrapper: HTMLElement;
 
+  button: HTMLElement;
+
   constructor(container: HTMLElement, result: GameResult) {
     this.container = container;
     this.result = result;
     this.wrapper = createNode({ tag: 'div', classes: ['game__result'] });
+    this.button = createNode({ tag: 'button', classes: ['result__button'], inner: 'сыграть еще раз' });
   }
 
   start() {
@@ -30,7 +33,7 @@ export class ResultPage {
     trueList.append(...trueLi);
     falseList.append(...falseLi);
     listsContainer.append(trueList, falseList);
-    this.wrapper.append(title, listsContainer);
+    this.wrapper.append(title, listsContainer, this.button);
     this.container.append(this.wrapper);
   }
 
