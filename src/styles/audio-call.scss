@@ -209,4 +209,15 @@
     left: 0;
     font-size: 3rem;
   }
+
+  .result__button {
+    margin-top: 1rem;
+    border: 2px solid #28c38a;
+    color: #3c3e3d;
+    font-size: 1.2rem;
+    &:hover {
+      background-color: #28c38a;
+      border: 2px solid #28c38a;
+    }
+  }
 }
