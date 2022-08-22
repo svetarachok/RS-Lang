@@ -19,15 +19,23 @@ export class AudioCall {
 
   currentStage: number = 0;
 
+  closeButton: HTMLElement;
+
   constructor() {
     this.container = createNode({ tag: 'div', classes: ['audio-call'] });
+    this.closeButton = createNode({ tag: 'button', classes: ['close-button'], inner: 'X' });
   }
 
   start() {
-    document.querySelector('main')?.append(this.container);
-    (document.querySelector('footer') as HTMLElement).style.display = 'none';
+    this.render();
     console.log('start');
     new LevelSelect(this.container, this.startGame.bind(this)).createSelect();
+  }
+
+  render() {
+    this.container.append(this.closeButton);
+    document.querySelector('main')?.append(this.container);
+    (document.querySelector('footer') as HTMLElement).style.display = 'none';
   }
 
   async startGame(wordsGroup: string) {
