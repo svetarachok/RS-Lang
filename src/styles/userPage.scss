@@ -1,0 +1,21 @@
+.user-page {
+  display: flex;
+}
+
+.user-sidebar {
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: column;
+  width: 25%;
+  background-color: lightyellow;
+  margin-top: 2.5rem;
+  padding: 2.5rem 1.5rem 1.5rem;
+}
+
+.statistic-block {
+  padding: 3rem 2rem 1rem;
+}
+
+.exit-cabinet-btn {
+  width: 10rem;
+}

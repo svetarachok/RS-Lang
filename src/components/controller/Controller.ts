@@ -65,6 +65,7 @@ export class Controller {
       this.modal.overLay.remove();
       document.body.classList.remove('hidden-overflow');
       this.userUI.renderAuthorisedUI(res);
+      this.userUI.listenHeaderButton(res.name, email);
     } else {
       console.log(res);
     }
