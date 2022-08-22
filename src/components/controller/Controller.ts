@@ -33,9 +33,11 @@ export class Controller {
         this.initSprintFromBook();
       })
       .on('/audiocall', () => {
+        this.initAudioCallfromMenu();
         console.log('Render audiocall from menu');
       })
       .on('/book/audiocall', () => {
+        this.initAudioCallfromBook();
         console.log('Render audiocall from book');
       })
       .on('/statistic', () => {
@@ -72,8 +74,13 @@ export class Controller {
     console.log('from menu');
   }
 
-  public initAudioCall() {
+  public initAudioCallfromMenu() {
     const game = new AudioCall();
     game.start();
+  }
+
+  public initAudioCallfromBook() {
+    const game = new AudioCall();
+    game.start({ group: this.textBook.currentLevel, page: this.textBook.currentPage });
   }
 }

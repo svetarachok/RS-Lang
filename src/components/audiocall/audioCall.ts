@@ -1,9 +1,12 @@
+import { api } from '../Model/api';
 import { GameResult, Word } from '../types/interfaces';
 import createNode from '../utils/createNode';
 import { getRandomWordsByGroup } from '../utils/getRandomWords';
+import { shuffleArray } from '../utils/shuffleArray';
 import { LevelSelect } from './levelSelect';
 import { ResultPage } from './resultPage';
 import { Stage } from './stage';
+import { StartPage } from './startPage';
 
 const COUNT_WORDS_PER_GAME = 10;
 
@@ -25,6 +28,8 @@ export class AudioCall {
 
   isMute: boolean = false;
 
+  settings: { group: string; page: string; } | undefined;
+
   constructor() {
     this.container = createNode({ tag: 'div', classes: ['audio-call'] });
     this.closeButton = createNode({
@@ -36,11 +41,20 @@ export class AudioCall {
     this.muteButton = createNode({ tag: 'span', classes: ['material-icons-outlined', 'mute-button'], inner: 'volume_up' });
   }
 
-  start() {
+  start(settings?: { group: number, page: number }) {
     this.render();
     console.log('start');
-    const levelSelect = new LevelSelect(this.container, this.startGame.bind(this));
-    levelSelect.render();
+    if (!settings) {
+      const levelSelect = new LevelSelect(this.container, this.startGameFromMenu.bind(this));
+      levelSelect.render();
+    } else {
+      this.settings = {
+        group: String(settings.group),
+        page: String(settings.page),
+      };
+      const startPage = new StartPage(this.container, this.startGameFromBook.bind(this));
+      startPage.render();
+    }
   }
 
   render() {
@@ -53,10 +67,21 @@ export class AudioCall {
     (document.querySelector('footer') as HTMLElement).style.display = 'none';
   }
 
-  async startGame(wordsGroup: string) {
+  async startGameFromMenu(wordsGroup: string) {
     this.words = await getRandomWordsByGroup(wordsGroup, COUNT_WORDS_PER_GAME);
     console.log(this.words);
     this.startGameStage();
+  }
+
+  async startGameFromBook() {
+    if (this.settings) this.words = await this.getWordsForGame(this.settings);
+    console.log(this.words);
+    this.startGameStage();
+  }
+
+  async getWordsForGame(settings: { group: string, page: string }) {
+    const wordsOnPage = await api.getWords(settings);
+    return shuffleArray(wordsOnPage).slice(0, COUNT_WORDS_PER_GAME);
   }
 
   startGameStage() {
