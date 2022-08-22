@@ -1,7 +1,6 @@
 import { GameResult, Word } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
 import createNode from '../utils/createNode';
-import { SPEAKER } from './speakerSVG';
 
 export class ResultPage {
   container: HTMLElement;
@@ -39,7 +38,7 @@ export class ResultPage {
     const wordEn = createNode({ tag: 'span', classes: ['result__word-en'], inner: `${word.word}: ` });
     const wordRu = createNode({ tag: 'span', classes: ['result__word-ru'], inner: `${word.wordTranslate}` });
     const wordEnRu = createNode({ tag: 'li', classes: ['result__word'] });
-    const voice = createNode({ tag: 'div', classes: ['result__voice'], inner: SPEAKER });
+    const voice = createNode({ tag: 'div', classes: ['result__voice'] });
     this.voiceHandler(voice, word);
     wordEnRu.append(voice, wordEn, wordRu);
     return wordEnRu;
