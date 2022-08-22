@@ -30,7 +30,7 @@ export class LevelSelect {
     document.addEventListener('keydown', this.keyHandler);
 
     this.wrapper.append(title, description, selectBlock, button);
-    this.container?.append(this.wrapper);
+    this.container.append(this.wrapper);
   }
 
   createSelectBlock(title: string) {
@@ -59,7 +59,7 @@ export class LevelSelect {
 
   returnLevel = () => {
     this.wrapper.remove();
-    document.removeEventListener('keydown', this.returnLevel);
+    document.removeEventListener('keydown', this.keyHandler);
     console.log(this.selectedValue);
     this.callback(this.selectedValue);
   };

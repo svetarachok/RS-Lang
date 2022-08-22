@@ -29,7 +29,7 @@ export class StartPage {
 
   startGame = () => {
     this.wrapper.remove();
-    document.removeEventListener('keydown', this.startGame);
+    document.removeEventListener('keydown', this.keyHandler);
     this.callback();
   };
 
