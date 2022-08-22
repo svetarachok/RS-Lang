@@ -27,7 +27,12 @@ export class AudioCall {
 
   constructor() {
     this.container = createNode({ tag: 'div', classes: ['audio-call'] });
-    this.closeButton = createNode({ tag: 'button', classes: ['close-button'], inner: 'X' });
+    this.closeButton = createNode({
+      tag: 'a',
+      classes: ['close-button'],
+      atributesAdnValues: [['href', '/'], ['data-navigo', 'true']],
+      inner: 'X',
+    });
     this.muteButton = createNode({ tag: 'span', classes: ['material-icons-outlined', 'mute-button'], inner: 'volume_up' });
   }
 
@@ -40,6 +45,7 @@ export class AudioCall {
   render() {
     const main = document.querySelector('main') as HTMLElement;
     this.muteButton.addEventListener('click', this.muteButtonHandler);
+    this.closeButton.addEventListener('click', this.closeButtonHandler);
     main.innerHTML = '';
     this.container.append(this.muteButton, this.closeButton);
     main.append(this.container);
@@ -90,4 +96,8 @@ export class AudioCall {
     const audio = new Audio(`./assets/audiocall/sounds/${isCorrect}.mp3`);
     audio.addEventListener('canplaythrough', audio.play);
   }
+
+  closeButtonHandler = () => {
+    this.container.remove();
+  };
 }
