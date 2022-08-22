@@ -4,11 +4,15 @@ import { Word, RandomPairInSprint } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
 
 export class Sprint {
+  mode: 'menu' | 'book';
+
   api: typeof api;
 
   currentLevel: string | undefined;
 
-  wordsInLevel: Word[];
+  wordsInGame: Word[];
+
+  wordsOnPage: Word[];
 
   currentWord: Word | undefined;
 
@@ -30,9 +34,15 @@ export class Sprint {
 
   seriesOfCorrect: number;
 
-  constructor() {
+  bookPage: number | undefined;
+
+  bookLevel: number | undefined;
+
+  constructor(mode: 'menu' | 'book') {
+    this.mode = mode;
     this.api = api;
-    this.wordsInLevel = [];
+    this.wordsInGame = [];
+    this.wordsOnPage = [];
     this.countTrue = 0;
     this.countFalse = 0;
     this.score = 0;
@@ -44,18 +54,20 @@ export class Sprint {
   }
 
   public renderGame(): void {
-    const body = <HTMLBodyElement>document.querySelector('.body');
-    const header = <HTMLElement>document.querySelector('.header');
+    const body = <HTMLElement>document.querySelector('.body');
     const main = <HTMLElement>document.querySelector('.main');
-    const footer = <HTMLElement>document.querySelector('.footer');
-    main.innerHTML = '';
+    const sprint = createHTMLElement('section', ['sprint']);
     body.classList.add('body--sprint');
-    main.classList.add('main--sprint');
-    header.style.display = 'none';
-    footer.style.display = 'none';
+    main.innerHTML = '';
     const btnClose = createHTMLElement('a', ['sprint__close'], [['href', '/'], ['data-navigo', 'true']]);
-    const select = this.renderSelectLevel();
-    main.append(select, btnClose);
+    if (this.mode === 'book') {
+      sprint.append(btnClose);
+      this.startGame();
+    } else if (this.mode === 'menu') {
+      const select = this.renderSelectLevel();
+      sprint.append(select, btnClose);
+    }
+    main.append(sprint);
   }
 
   private renderSelectLevel(): HTMLElement {
@@ -77,15 +89,17 @@ export class Sprint {
   }
 
   private async startGame(): Promise<void> {
-    const select = <HTMLElement>document.querySelector('.sprint__select');
-    if (select) {
+    if (this.mode === 'menu') {
+      const select = <HTMLElement>document.querySelector('.sprint__select');
       select.remove();
+      await this.getWordsInLevel(this.currentLevel!);
+    } else if (this.mode === 'book') {
+      await this.getWordsOnPage(String(this.bookLevel), String(this.bookPage));
     }
-    const main = <HTMLElement>document.querySelector('.main');
+    const sprint = <HTMLElement>document.querySelector('.sprint');
     const ready = createHTMLElement('div', ['sprint__ready']);
     const timerTitle = createHTMLElement('h2', ['timer__title'], undefined, 'Приготовьтесь');
-    main.append(ready);
-    await this.getWordsInLevel(this.currentLevel!);
+    sprint.append(ready);
     this.renderTimer(ready, 'timer--ready');
     ready.append(timerTitle);
     const randomPair = this.getRandomPair();
@@ -132,11 +146,11 @@ export class Sprint {
   }
 
   public renderGameContol(firstWordEn: string, firstWordRu: string): void {
-    const main = <HTMLElement>document.querySelector('.main');
+    const sprint = <HTMLElement>document.querySelector('.sprint');
     const ready = <HTMLElement>document.querySelector('.sprint__ready');
     ready.remove();
-    this.renderTimer(main, 'timer--control');
-    this.startTimer('timer--control', 5, this.renderResult.bind(this), this.createFinishSound());
+    this.renderTimer(sprint, 'timer--control');
+    this.startTimer('timer--control', 60, this.renderResult.bind(this), this.createFinishSound());
     const sprintControl = createHTMLElement('div', ['sprint__control']);
     const score = createHTMLElement('h2', ['control__score'], undefined, '0');
     const sound = createHTMLElement('div', ['control__sound']);
@@ -160,27 +174,31 @@ export class Sprint {
     parrots.append(blueParrot);
     controlContainer.append(controlSeriesList, multiply, voice, parrots, wordEn, wordRu, buttons);
     sprintControl.append(score, sound, controlContainer);
-    main.append(sprintControl);
+    sprint.append(sprintControl);
     buttonFalse.addEventListener('click', (e) => this.selectAnswer(e));
     buttonTrue.addEventListener('click', (e) => this.selectAnswer(e));
   }
 
   private async getWordsInLevel(level: string): Promise<void> {
-    this.wordsInLevel.length = 0;
+    this.wordsInGame.length = 0;
     const pages = [];
     for (let i = 0; i <= 29; i += 1) {
-      const wordsInPage = api.getWords({ group: level, page: String(i) });
-      pages.push(wordsInPage);
+      const wordsOnPage = api.getWords({ group: level, page: String(i) });
+      pages.push(wordsOnPage);
     }
     await Promise.all(pages)
-      .then((data) => data.forEach(((page) => this.wordsInLevel.push(...page))));
+      .then((data) => data.forEach(((page) => this.wordsInGame.push(...page))));
+  }
+
+  private async getWordsOnPage(level: string, page: string): Promise<void> {
+    this.wordsInGame = await api.getWords({ group: level, page });
+    console.log(this.wordsInGame);
   }
 
   private getRandomWord(): Word {
-    const maxIndex = this.wordsInLevel.length - 1;
+    const maxIndex = this.wordsInGame.length - 1;
     const randomWordIndex = getRandomIntInclusive(0, maxIndex);
-    const randomWord = this.wordsInLevel[randomWordIndex];
-    this.wordsInLevel.splice(randomWordIndex, 1);
+    const randomWord = this.wordsInGame[randomWordIndex];
     return randomWord;
   }
 
@@ -195,7 +213,16 @@ export class Sprint {
       this.isPairTrue = false;
       randomPair.wordTranslate = this.getRandomWord().wordTranslate;
     }
+    const currentId = this.wordsInGame.indexOf(this.currentWord);
+    this.wordsInGame.splice(currentId, 1);
+    console.log(this.wordsInGame);
     return randomPair;
+  }
+
+  private checkCounWordsInGame(): void {
+    if (this.wordsInGame.length === 0) {
+      console.log('no words');
+    }
   }
 
   private selectAnswer(e: Event): void {
@@ -313,7 +340,7 @@ export class Sprint {
   }
 
   private renderResult() {
-    const main = <HTMLElement>document.querySelector('.main');
+    const sprint = <HTMLElement>document.querySelector('.sprint');
     const control = <HTMLElement>document.querySelector('.sprint__control');
     const timer = <HTMLElement>document.querySelector('.timer--control');
     control.remove();
@@ -327,7 +354,7 @@ export class Sprint {
     this.falseWords.forEach((word) => this.addWordInResult(falseList, word));
     listsContainer.append(falseList, trueList);
     resultContainer.append(score, listsContainer);
-    main.append(resultContainer);
+    sprint.append(resultContainer);
   }
 
   private addWordInResult(list: HTMLElement, word: Word): void {
@@ -343,5 +370,10 @@ export class Sprint {
   private voiceWordInResult(url: string): void {
     const audio = new Audio(`${BASE_LINK}/${url}`);
     audio.play();
+  }
+
+  public setBookPageAndLevel(level: number, page: number) {
+    this.bookPage = page;
+    this.bookLevel = level;
   }
 }
