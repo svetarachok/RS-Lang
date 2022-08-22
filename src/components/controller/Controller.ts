@@ -1,14 +1,43 @@
+import Navigo from 'navigo';
 import { TextBook } from '../textBook/TextBook';
 import { Api } from '../Model/api';
+import { Sprint } from '../sprint/Sprint';
 
 export class Controller {
-  textBook: TextBook;
+  router: Navigo;
 
   api: Api;
 
+  textBook: TextBook;
+
+  sprint: Sprint;
+
   constructor() {
-    this.textBook = new TextBook(6);
+    this.router = new Navigo('/', { hash: true });
     this.api = new Api();
+    this.textBook = new TextBook(6);
+    this.sprint = new Sprint();
+  }
+
+  public initRouter(): void {
+    this.router
+      .on(() => {
+        console.log('Render home page');
+      })
+      .on('/book', async () => {
+        await this.initTextBook();
+        this.router.updatePageLinks();
+      })
+      .on('/sprint', () => {
+        this.initSprint();
+      })
+      .on('/audiocall', () => {
+        console.log('Render audiocall page');
+      })
+      .on('/statistic', () => {
+        console.log('Render statistic page');
+      })
+      .resolve();
   }
 
   public async initTextBook() {
@@ -23,5 +52,9 @@ export class Controller {
     const data = await this.api.getWords({ group: groupStr, page: pageStr });
     this.textBook.updateCards(data);
     return data;
+  }
+
+  public initSprint() {
+    this.sprint.renderGame();
   }
 }
