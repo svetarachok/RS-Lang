@@ -4,7 +4,7 @@ import { Api } from '../Model/api';
 import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
-import { REGISTER_BTN, LOGIN_BTN } from '../utils/constants';
+import { REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK } from '../utils/constants';
 import { UserCreationData } from '../types/interfaces';
 import { UserUI } from '../user/UserUI';
 import { Sprint } from '../sprint/Sprint';
@@ -29,12 +29,13 @@ export class Controller {
   constructor() {
     this.router = new Navigo('/', { hash: true });
     this.api = new Api();
-    this.textBook = new TextBook(6);
+    this.textBook = new TextBook(LEVELS_OF_TEXTBOOK);
     this.sprint = new Sprint();
     this.modal = new Modal();
     this.loginForm = new LoginForm('login', 'Login');
     this.registerForm = new RegisterForm('register', 'Register');
     this.userUI = new UserUI();
+    this.initUserForms();
   }
 
   public initRouter(): void {
@@ -52,33 +53,34 @@ export class Controller {
       .on('/audiocall', () => {
         console.log('Render audiocall page');
       })
-      .on('/statistic', () => {
-        console.log('Render statistic page');
+      .on('/user', () => {
+        console.log('Render user page');
+        this.userUI.renderUserPage();
       })
       .resolve();
   }
 
   public async initTextBook() {
     const data = await this.api.getWords({ group: '0', page: '0' });
-    this.handlePageUpdate = this.handlePageUpdate.bind(this);
+    this.handleTextBoookPageUpdate = this.handleTextBoookPageUpdate.bind(this);
     this.textBook.startTextBook(data);
-    this.textBook.listenLevels(this.handlePageUpdate);
-    this.textBook.listenPagination(this.handlePageUpdate);
+    this.textBook.listenLevels(this.handleTextBoookPageUpdate);
+    this.textBook.listenPagination(this.handleTextBoookPageUpdate);
   }
 
-  public initUserForms() {
-    this.activateUserForms();
-    this.loginForm.listenForm(this.handleLogin.bind(this));
-    this.registerForm.listenForm(this.handleRegistartion.bind(this));
-  }
-
-  public async handlePageUpdate(groupStr: string, pageStr: string) {
+  public async handleTextBoookPageUpdate(groupStr: string, pageStr: string) {
     const data = await this.api.getWords({ group: groupStr, page: pageStr });
     this.textBook.updateCards(data);
     return data;
   }
 
-  public activateUserForms() {
+  public initUserForms() {
+    this.startUserForms();
+    this.loginForm.listenForm(this.handleLogin.bind(this));
+    this.registerForm.listenForm(this.handleRegistartion.bind(this));
+  }
+
+  private startUserForms() {
     const loginFormHTML = this.loginForm.renderForm();
     const regFormHTML = this.registerForm.renderForm();
     REGISTER_BTN.addEventListener('click', () => this.modal.renderModal(regFormHTML));
@@ -88,14 +90,13 @@ export class Controller {
   public async handleLogin(email: string, password: string) {
     const object: Pick<UserCreationData, 'email' | 'password'> = { email, password };
     const res = await this.api.authorize(object);
-    // const { message } = res as AuthorizationData;
     if (typeof res === 'object') {
-      console.log(res);
       this.modal.overLay.remove();
       document.body.classList.remove('hidden-overflow');
-      this.userUI.renderAuthorisedUI(res);
-      this.userUI.listenHeaderButton(res.name, email);
+      this.userUI.changeHeaderOnAuthorise(res);
+      this.router.updatePageLinks();
     } else {
+      // ! Вывести текст ошибки в модалку
       console.log(res);
     }
   }

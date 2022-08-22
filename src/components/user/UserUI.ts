@@ -16,7 +16,7 @@ export class UserUI {
   statistic: HTMLElement;
 
   constructor() {
-    this.headerEnterBtn = createNode({ tag: 'button', classes: ['enter-cabinet', 'btn'], inner: 'Enter Cabinet' }) as HTMLButtonElement;
+    this.headerEnterBtn = createNode({ tag: 'button', classes: ['btn'], inner: '<a href="/user" class="enter-cabinet" data-navigo="true">Enter Cabinet</a>' }) as HTMLButtonElement;
     this.userPage = createNode({ tag: 'div', classes: ['user-page'] });
     this.name = createNode({ tag: 'h2', classes: ['user-name'] });
     this.email = createNode({ tag: 'p', classes: ['user-name'] });
@@ -24,37 +24,25 @@ export class UserUI {
     this.statistic = createNode({ tag: 'div', classes: ['statistic-block'] });
   }
 
-  public renderAuthorisedUI(res: AuthorizationData) {
+  public changeHeaderOnAuthorise(res: AuthorizationData) {
+    this.name.innerHTML = res.name;
     const userName: HTMLParagraphElement = createNode({ tag: 'p', classes: ['user-name'], inner: `${res.name}` }) as HTMLParagraphElement;
     REGISTER_BTN.style.display = 'none';
     LOGIN_BTN.style.display = 'none';
     USER_AUTH_WRAPPER.append(this.headerEnterBtn, userName);
   }
 
-  public listenHeaderButton(name: string, email: string) {
-    this.headerEnterBtn.addEventListener('click', () => {
-      this.renderUserPage.bind(this);
-      this.renderUserPage(name, email);
-    });
-  }
-
-  public renderUserPage(name: string, email: string) {
+  public renderUserPage() {
     console.log('User Page Rendered');
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
-    const sidebar = this.renderUserInfoSidebar(name, email);
+    const sidebar = createNode({ tag: 'aside', classes: ['aside', 'user-sidebar'] });
+    // this.email.innerHTML = email;
+    sidebar.append(this.name, this.email, this.exitBtn);
     const statistic = this.renderStatisticBlock();
     this.userPage.append(sidebar, statistic);
     container.append(this.userPage);
     return container;
-  }
-
-  private renderUserInfoSidebar(name: string, email: string) {
-    const sidebar = createNode({ tag: 'aside', classes: ['aside', 'user-sidebar'] });
-    this.email.innerHTML = email;
-    this.name.innerHTML = name;
-    sidebar.append(this.name, this.email, this.exitBtn);
-    return sidebar;
   }
 
   public renderStatisticBlock() {
