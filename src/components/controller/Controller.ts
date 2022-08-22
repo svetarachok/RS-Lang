@@ -11,13 +11,10 @@ export class Controller {
 
   textBook: TextBook;
 
-  sprint: Sprint;
-
   constructor() {
     this.router = new Navigo('/', { hash: true });
     this.api = new Api();
     this.textBook = new TextBook(6);
-    this.sprint = new Sprint();
   }
 
   public initRouter(): void {
@@ -30,11 +27,16 @@ export class Controller {
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
-        this.initSprint();
+        this.initSprintFromMenu();
+      })
+      .on('/book/sprint', () => {
+        this.initSprintFromBook();
       })
       .on('/audiocall', () => {
-        this.initAudioCall();
-        console.log('Render audiocall page');
+        console.log('Render audiocall from menu');
+      })
+      .on('/book/audiocall', () => {
+        console.log('Render audiocall from book');
       })
       .on('/statistic', () => {
         console.log('Render statistic page');
@@ -56,8 +58,18 @@ export class Controller {
     return data;
   }
 
-  public initSprint() {
-    this.sprint.renderGame();
+  private initSprintFromBook() {
+    const sprint = new Sprint('book');
+    sprint.setBookPageAndLevel(this.textBook.currentLevel, this.textBook.currentPage);
+    sprint.renderGame();
+    console.log('from book');
+    console.log(sprint.bookLevel, sprint.bookPage);
+  }
+
+  private initSprintFromMenu() {
+    const sprint = new Sprint('menu');
+    sprint.renderGame();
+    console.log('from menu');
   }
 
   public initAudioCall() {
