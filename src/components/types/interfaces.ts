@@ -42,3 +42,8 @@ export interface Route {
   path: string,
   cb: Function;
 }
+
+export interface RandomPairInSprint {
+  word: string,
+  wordTranslate: string;
+}

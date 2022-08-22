@@ -1,3 +1,4 @@
+import Navigo from 'navigo';
 import { TextBook } from '../textBook/TextBook';
 import { Api } from '../Model/api';
 import { Modal } from '../utils/Modal';
@@ -6,11 +7,16 @@ import { RegisterForm } from '../forms/RegisterForm';
 import { REGISTER_BTN, LOGIN_BTN } from '../utils/constants';
 import { UserCreationData } from '../types/interfaces';
 import { UserUI } from '../user/UserUI';
+import { Sprint } from '../sprint/Sprint';
 
 export class Controller {
-  textBook: TextBook;
+  router: Navigo;
 
   api: Api;
+
+  textBook: TextBook;
+
+  sprint: Sprint;
 
   modal: Modal;
 
@@ -21,12 +27,35 @@ export class Controller {
   userUI: UserUI;
 
   constructor() {
-    this.textBook = new TextBook(6);
+    this.router = new Navigo('/', { hash: true });
     this.api = new Api();
+    this.textBook = new TextBook(6);
+    this.sprint = new Sprint();
     this.modal = new Modal();
     this.loginForm = new LoginForm('login', 'Login');
     this.registerForm = new RegisterForm('register', 'Register');
     this.userUI = new UserUI();
+  }
+
+  public initRouter(): void {
+    this.router
+      .on(() => {
+        console.log('Render home page');
+      })
+      .on('/book', async () => {
+        await this.initTextBook();
+        this.router.updatePageLinks();
+      })
+      .on('/sprint', () => {
+        this.initSprint();
+      })
+      .on('/audiocall', () => {
+        console.log('Render audiocall page');
+      })
+      .on('/statistic', () => {
+        console.log('Render statistic page');
+      })
+      .resolve();
   }
 
   public async initTextBook() {
@@ -79,5 +108,9 @@ export class Controller {
     };
     const res = await this.api.createUser(object);
     console.log(res);
+  }
+
+  public initSprint() {
+    this.sprint.renderGame();
   }
 }
