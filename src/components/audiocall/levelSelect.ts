@@ -7,7 +7,7 @@ const LEVEL_COUNT = 6;
 export class LevelSelect {
   container: HTMLElement;
 
-  selectedValue: string = '1';
+  selectedValue: string = '0';
 
   callback: (selectedValue: string) => void;
 
@@ -21,12 +21,13 @@ export class LevelSelect {
     this.wrapper = createNode({ tag: 'div', classes: ['level-select'] });
   }
 
-  createSelect() {
+  render() {
     const title = createNode({ tag: 'h2', classes: ['game__title'], inner: GAME_NAME });
     const description = createNode({ tag: 'p', classes: ['game__descpiption'], inner: AUDIO_CALL_DESCRIPTION });
     const selectBlock = this.createSelectBlock('Выбери уровень сложности');
     const button = createNode({ tag: 'button', atributesAdnValues: [['type', 'button']], inner: 'начать' });
-    this.addStartGameHandler(button);
+    button.addEventListener('click', this.returnLevel);
+    document.addEventListener('keydown', this.keyHandler);
 
     this.wrapper.append(title, description, selectBlock, button);
     this.container?.append(this.wrapper);
@@ -56,10 +57,26 @@ export class LevelSelect {
     });
   }
 
-  addStartGameHandler(button: HTMLElement) {
-    button.addEventListener('click', () => {
-      this.wrapper.remove();
-      this.callback(this.selectedValue);
-    });
-  }
+  returnLevel = () => {
+    this.wrapper.remove();
+    document.removeEventListener('keydown', this.returnLevel);
+    console.log(this.selectedValue);
+    this.callback(this.selectedValue);
+  };
+
+  keyHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      this.returnLevel();
+      return;
+    }
+    const level = Number(e.key) - 1;
+    if (level >= 0 && level < LEVEL_COUNT) {
+      console.log(level);
+      this.selectedValue = String(level);
+      this.levelButtons.forEach((levelButton) => levelButton.classList.remove('selected'));
+      const selectedButton = this.levelButtons
+        .find((button) => button.dataset.level === this.selectedValue);
+      selectedButton?.classList.add('selected');
+    }
+  };
 }

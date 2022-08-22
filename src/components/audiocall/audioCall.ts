@@ -39,7 +39,8 @@ export class AudioCall {
   start() {
     this.render();
     console.log('start');
-    new LevelSelect(this.container, this.startGame.bind(this)).createSelect();
+    const levelSelect = new LevelSelect(this.container, this.startGame.bind(this));
+    levelSelect.render();
   }
 
   render() {
