@@ -10,8 +10,6 @@ export class Sprint {
 
   wordsInLevel: Word[];
 
-  wordsInGame: Word[];
-
   currentWord: Word | undefined;
 
   trueWords: Word[];
@@ -35,7 +33,6 @@ export class Sprint {
   constructor() {
     this.api = api;
     this.wordsInLevel = [];
-    this.wordsInGame = [];
     this.countTrue = 0;
     this.countFalse = 0;
     this.score = 0;
@@ -46,7 +43,7 @@ export class Sprint {
     this.falseWords = [];
   }
 
-  public penderGame(): void {
+  public renderGame(): void {
     const body = <HTMLBodyElement>document.querySelector('.body');
     const header = <HTMLElement>document.querySelector('.header');
     const main = <HTMLElement>document.querySelector('.main');
@@ -56,7 +53,7 @@ export class Sprint {
     main.classList.add('main--sprint');
     header.style.display = 'none';
     footer.style.display = 'none';
-    const btnClose = createHTMLElement('a', ['sprint__close'], [['href', '/']]);
+    const btnClose = createHTMLElement('a', ['sprint__close'], [['href', '/'], ['data-navigo', 'true']]);
     const select = this.renderSelectLevel();
     main.append(select, btnClose);
   }
@@ -190,7 +187,6 @@ export class Sprint {
   private getRandomPair(): RandomPairInSprint {
     this.currentWord = this.getRandomWord();
     const randomPair: RandomPairInSprint = { word: this.currentWord.word, wordTranslate: '' };
-    this.wordsInGame.push(this.currentWord);
     const isTrue = Math.random() < 0.5;
     if (isTrue) {
       this.isPairTrue = true;
@@ -232,8 +228,6 @@ export class Sprint {
     }
 
     this.updateWord();
-    console.log(this.trueWords);
-    console.log(this.falseWords);
   }
 
   private updateWord(): void {

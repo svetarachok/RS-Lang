@@ -11,9 +11,9 @@ export class TextBook {
 
   level1Btns: HTMLButtonElement[];
 
-  auduoCallBtn: HTMLButtonElement;
+  auduoCallBtn: HTMLAnchorElement;
 
-  sprintBtn: HTMLButtonElement;
+  sprintBtn: HTMLAnchorElement;
 
   api: Api = new Api();
 
@@ -31,8 +31,12 @@ export class TextBook {
     this.textBook = createNode({ tag: 'section', classes: ['textbook'] }) as HTMLDivElement;
     this.cardsWrapper = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
     this.level1Btns = this.createLevelButtons(numberOfLevels);
-    this.auduoCallBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Аудиовызов' }) as HTMLButtonElement;
-    this.sprintBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Спринт' }) as HTMLButtonElement;
+    this.auduoCallBtn = createNode({
+      tag: 'a', classes: ['btn'], inner: 'Аудиовызов', atributesAdnValues: [['href', '/audiocall'], ['data-navigo', 'true']],
+    }) as HTMLAnchorElement;
+    this.sprintBtn = createNode({
+      tag: 'a', classes: ['btn'], inner: 'Спринт', atributesAdnValues: [['href', '/sprint'], ['data-navigo', 'true']],
+    }) as HTMLAnchorElement;
     this.prevPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Предыдущая' }) as HTMLButtonElement;
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
     this.pageInput = createNode({ tag: 'input', classes: ['page-input'], atributesAdnValues: [['type', 'number']] }) as HTMLInputElement;
