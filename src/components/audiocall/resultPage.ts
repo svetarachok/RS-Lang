@@ -1,6 +1,8 @@
 import { GameResult, Word } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
 import createNode from '../utils/createNode';
+// eslint-disable-next-line import/no-cycle
+import { AudioCall } from './audioCall';
 
 export class ResultPage {
   container: HTMLElement;
@@ -29,6 +31,7 @@ export class ResultPage {
     const falseList = createNode({ tag: 'ul', classes: ['result__false'], inner: `Не знаю: ${this.result.incorrect.length}` });
     const trueLi = this.result.correct.map((word) => this.createResultLi(word));
     const falseLi = this.result.incorrect.map((word) => this.createResultLi(word));
+    this.button.addEventListener('click', this.startNewGame);
 
     trueList.append(...trueLi);
     falseList.append(...falseLi);
@@ -61,4 +64,10 @@ export class ResultPage {
       audio.play();
     });
   }
+
+  startNewGame = () => {
+    this.container.remove();
+    const game = new AudioCall();
+    game.start();
+  };
 }
