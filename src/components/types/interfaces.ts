@@ -48,3 +48,8 @@ export interface GameResult {
   correct: Word[],
   incorrect: Word[],
 }
+
+export interface RandomPairInSprint {
+  word: string,
+  wordTranslate: string;
+}
