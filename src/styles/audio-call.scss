@@ -187,7 +187,6 @@
       height: 2rem;
     }
   }
-
   .close-button {
     position: absolute;
     top: 0;
@@ -198,5 +197,13 @@
     line-height: 0rem;
     font-size: 2rem;
     min-width: min-content;
+  }
+
+  .mute-button {
+    margin: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: 3rem;
   }
 }

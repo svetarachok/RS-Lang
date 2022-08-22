@@ -31,10 +31,18 @@ export class Stage {
 
   hasAnswer: boolean = false;
 
-  constructor(container: HTMLElement, word: Word, callback: (word: Word, result: boolean) => void) {
+  playAnswerSound: (isCorrect: boolean) => void;
+
+  constructor(
+    container: HTMLElement,
+    word: Word,
+    callback: (word: Word, result: boolean) => void,
+    playAnswerSound: (isCorrect: boolean) => void,
+  ) {
     this.container = container;
     this.word = word;
     this.callback = callback;
+    this.playAnswerSound = playAnswerSound;
     this.wrapper = createNode({ tag: 'div', classes: ['stage'] });
     this.wordText = createNode({ tag: 'span', classes: ['word__text'] });
     this.skipButton = createNode({ tag: 'button', classes: ['button', 'button-skip'], inner: 'не знаю' });
@@ -131,7 +139,7 @@ export class Stage {
     this.answers.forEach((answer) => answer.removeListener());
     this.bindNextStageButtonEvent(this.nextStageButton);
     this.skipButton.replaceWith(this.nextStageButton);
-    this.playAnswerSound();
+    this.playAnswerSound(this.result);
   }
 
   keyHandler = (e: KeyboardEvent) => {
@@ -154,9 +162,4 @@ export class Stage {
       }
     }
   };
-
-  playAnswerSound() {
-    const audio = new Audio(`./assets/audiocall/sounds/${this.result}.mp3`);
-    audio.addEventListener('canplaythrough', audio.play);
-  }
 }

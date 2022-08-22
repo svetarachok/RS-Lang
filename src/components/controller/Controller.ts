@@ -2,6 +2,7 @@ import Navigo from 'navigo';
 import { TextBook } from '../textBook/TextBook';
 import { Api } from '../Model/api';
 import { Sprint } from '../sprint/Sprint';
+import { AudioCall } from '../audiocall/audioCall';
 
 export class Controller {
   router: Navigo;
@@ -32,6 +33,7 @@ export class Controller {
         this.initSprint();
       })
       .on('/audiocall', () => {
+        this.initAudioCall();
         console.log('Render audiocall page');
       })
       .on('/statistic', () => {
@@ -56,5 +58,10 @@ export class Controller {
 
   public initSprint() {
     this.sprint.renderGame();
+  }
+
+  public initAudioCall() {
+    const game = new AudioCall();
+    game.start();
   }
 }

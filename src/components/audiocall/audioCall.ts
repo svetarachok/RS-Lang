@@ -21,9 +21,14 @@ export class AudioCall {
 
   closeButton: HTMLElement;
 
+  muteButton: HTMLElement;
+
+  isMute: boolean = false;
+
   constructor() {
     this.container = createNode({ tag: 'div', classes: ['audio-call'] });
     this.closeButton = createNode({ tag: 'button', classes: ['close-button'], inner: 'X' });
+    this.muteButton = createNode({ tag: 'span', classes: ['material-icons-outlined', 'mute-button'], inner: 'volume_up' });
   }
 
   start() {
@@ -33,8 +38,11 @@ export class AudioCall {
   }
 
   render() {
-    this.container.append(this.closeButton);
-    document.querySelector('main')?.append(this.container);
+    const main = document.querySelector('main') as HTMLElement;
+    this.muteButton.addEventListener('click', this.muteButtonHandler);
+    main.innerHTML = '';
+    this.container.append(this.muteButton, this.closeButton);
+    main.append(this.container);
     (document.querySelector('footer') as HTMLElement).style.display = 'none';
   }
 
@@ -49,6 +57,7 @@ export class AudioCall {
       this.container,
       this.words[this.currentStage],
       this.stageHandler.bind(this),
+      this.playAnswerSound.bind(this),
     );
     stage.start();
   }
@@ -69,5 +78,16 @@ export class AudioCall {
     const resultPage = new ResultPage(this.container, this.result);
     resultPage.start();
     console.log(resultPage);
+  }
+
+  muteButtonHandler = () => {
+    this.muteButton.innerHTML = this.isMute ? 'volume_up' : 'volume_off';
+    this.isMute = !this.isMute;
+  };
+
+  playAnswerSound(isCorrect: boolean) {
+    if (this.isMute) return;
+    const audio = new Audio(`./assets/audiocall/sounds/${isCorrect}.mp3`);
+    audio.addEventListener('canplaythrough', audio.play);
   }
 }
