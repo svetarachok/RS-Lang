@@ -41,6 +41,7 @@ export class TextBook {
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
     this.pageInput = createNode({ tag: 'input', classes: ['page-input'], atributesAdnValues: [['type', 'number']] }) as HTMLInputElement;
     this.pageInput.value = String(this.currentPage + 1);
+    this.learnWord();
   }
 
   // Update textBook and cards separately
@@ -57,12 +58,25 @@ export class TextBook {
     }
     if (flag === true) {
       this.level1Btns[6].style.display = 'flex';
+      const learnBtns = document.querySelectorAll('.btn-learn') as NodeListOf<HTMLElement>;
+      const hardBtns = document.querySelectorAll('.btn-add') as NodeListOf<HTMLElement>;
+      // eslint-disable-next-line no-param-reassign, no-return-assign
+      learnBtns.forEach((btn) => btn.style.display = 'flex');
+      // eslint-disable-next-line no-param-reassign, no-return-assign
+      hardBtns.forEach((btn) => btn.style.display = 'flex');
     }
   }
 
   public updateCards(data: Word[]) {
     this.cardsWrapper.innerHTML = '';
     this.renderCards(data);
+  }
+
+  // Listen Learn Button in each word
+  learnWord() {
+    this.cardsWrapper.addEventListener('click', (e: Event) => {
+      console.log((e.target as HTMLElement).innerHTML);
+    });
   }
 
   // Listen level buttons and pagination
@@ -157,6 +171,7 @@ export class TextBook {
     page.append(pageHead, this.cardsWrapper, paginationWrapper);
     this.textBook.append(sidebar, page);
     container.append(this.textBook);
+    this.level1Btns[0].classList.add('btn-active');
     return container;
   }
 
