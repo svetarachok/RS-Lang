@@ -62,7 +62,6 @@ export class Controller {
     sprint.setBookPageAndLevel(this.textBook.currentLevel, this.textBook.currentPage);
     sprint.renderGame();
     console.log('from book');
-    console.log(sprint.bookLevel, sprint.bookPage);
   }
 
   private initSprintFromMenu() {

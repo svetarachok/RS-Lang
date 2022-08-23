@@ -185,6 +185,10 @@
   background-image: url('./assets/sprint/sound-default.svg');
   background-repeat: no-repeat;
   cursor: pointer;
+
+  &--off {
+    background-image: url('./assets/sprint/sound-mute.svg');
+  }
 }
 
 .control__container {
