@@ -16,7 +16,9 @@ export class UserUI {
   statistic: HTMLElement;
 
   constructor() {
-    this.headerEnterBtn = createNode({ tag: 'p', classes: ['enter-cabinet-link'], inner: '<a href="/user" class="enter-cabinet" data-navigo="true">Enter Cabinet</a>' }) as HTMLButtonElement;
+    this.headerEnterBtn = createNode({
+      tag: 'a', classes: ['enter-cabinet-link'], atributesAdnValues: [['href', '/user'], ['data-navigo', 'true']], inner: 'Enter Cabinet',
+    }) as HTMLButtonElement;
     this.userPage = createNode({ tag: 'div', classes: ['user-page'] });
     this.name = createNode({ tag: 'h2', classes: ['user-name'] });
     this.email = createNode({ tag: 'p', classes: ['user-name'] });
@@ -25,23 +27,26 @@ export class UserUI {
   }
 
   public authorise(res: AuthorizationData) {
-    if (res) {
-      this.name.innerHTML = res.name;
-      REGISTER_BTN.style.display = 'none';
-      LOGIN_BTN.style.display = 'none';
-      USER_AUTH_WRAPPER.append(this.headerEnterBtn);
-    } else {
-      USER_AUTH_WRAPPER.innerHTML = '';
+    this.name.innerHTML = res.name;
+    REGISTER_BTN.style.display = 'none';
+    LOGIN_BTN.style.display = 'none';
+    USER_AUTH_WRAPPER.append(this.headerEnterBtn);
+  }
+
+  public unAuthorize(hanlder: () => void) {
+    this.exitBtn.addEventListener('click', () => {
       REGISTER_BTN.style.display = 'block';
       LOGIN_BTN.style.display = 'block';
       this.headerEnterBtn.style.display = 'none';
-    }
+      hanlder();
+    });
   }
 
   public renderUserPage() {
     console.log('User Page Rendered');
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
+    this.userPage.innerHTML = '';
     const sidebar = createNode({ tag: 'aside', classes: ['aside', 'user-sidebar'] });
     // this.email.innerHTML = email;
     sidebar.append(this.name, this.email, this.exitBtn);
@@ -52,6 +57,7 @@ export class UserUI {
   }
 
   public renderStatisticBlock() {
+    this.statistic.innerHTML = '';
     const h = createNode({ tag: 'h1', classes: ['statistic-header'], inner: 'Here gonna be staicstic' });
     this.statistic.append(h);
     console.log('statistic rendered', h);

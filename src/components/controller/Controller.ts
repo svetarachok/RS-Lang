@@ -46,26 +46,21 @@ export class Controller {
     this.router
       .on(() => {
         console.log('Render home page');
-        this.handleUser();
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
-        this.handleUser();
         await this.handleTextBook();
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
-        this.handleUser();
         this.initSprint();
       })
       .on('/audiocall', () => {
-        this.handleUser();
         console.log('Render audiocall page');
         this.router.updatePageLinks();
       })
       .on('/user', () => {
         console.log('Render user page');
-        this.handleUser();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
       })
@@ -78,13 +73,15 @@ export class Controller {
     this.startUserForms();
     this.loginForm.listenForm(this.handleLoginBtn.bind(this));
     this.registerForm.listenForm(this.handleRegistartion.bind(this));
+    this.userUI.unAuthorize(this.handleUnLogin.bind(this));
+    this.handleUser();
   }
 
   public async handleTextBook() {
     const stored = this.storage.getData('textBook');
     const logined = this.storage.getData('UserId');
     if (stored && logined) {
-      console.log('Есть локал бук и залогинен', stored, logined);
+      console.log('Есть локал бук и залогинен');
       const data = await this.api.getWords(stored);
       this.textBook.updateTextbook(data, true, stored.group, stored.page);
     } else if (stored && !logined) {
@@ -124,6 +121,7 @@ export class Controller {
       this.modal.overLay.remove();
       document.body.classList.remove('hidden-overflow');
       this.userUI.authorise(res);
+      this.router.updatePageLinks();
       await this.handleTextBook();
     } else {
       // ! Вывести текст ошибки в модалку
@@ -146,6 +144,12 @@ export class Controller {
     };
     const res = await this.api.createUser(object);
     console.log(res);
+  }
+
+  private handleUnLogin() {
+    this.storage.clear();
+    this.router.navigate('/');
+    this.router.updatePageLinks();
   }
 
   public initSprint() {

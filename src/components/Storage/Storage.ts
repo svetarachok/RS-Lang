@@ -12,16 +12,17 @@ export class Storage {
     const data = localStorage.getItem(key);
     if (data) {
       const parsedData = JSON.parse(data);
-      console.log(data);
       return parsedData;
     } return false;
   }
 
   checkData(key: string): Boolean {
-    console.log(localStorage.getItem(key));
     const keyToCheck: string | null = localStorage.getItem(key);
-    console.log(keyToCheck);
     if (keyToCheck) return true;
     return false;
+  }
+
+  clear() {
+    localStorage.clear();
   }
 }
