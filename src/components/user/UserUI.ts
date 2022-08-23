@@ -24,12 +24,18 @@ export class UserUI {
     this.statistic = createNode({ tag: 'div', classes: ['statistic-block'] });
   }
 
-  public changeHeaderOnAuthorise(res: AuthorizationData) {
-    this.name.innerHTML = res.name;
-    const userName: HTMLParagraphElement = createNode({ tag: 'p', classes: ['user-name'], inner: `${res.name}` }) as HTMLParagraphElement;
-    REGISTER_BTN.style.display = 'none';
-    LOGIN_BTN.style.display = 'none';
-    USER_AUTH_WRAPPER.append(this.headerEnterBtn, userName);
+  public authorise(res: AuthorizationData) {
+    if (res) {
+      this.name.innerHTML = res.name;
+      REGISTER_BTN.style.display = 'none';
+      LOGIN_BTN.style.display = 'none';
+      USER_AUTH_WRAPPER.append(this.headerEnterBtn);
+    } else {
+      USER_AUTH_WRAPPER.innerHTML = '';
+      REGISTER_BTN.style.display = 'block';
+      LOGIN_BTN.style.display = 'block';
+      this.headerEnterBtn.style.display = 'none';
+    }
   }
 
   public renderUserPage() {

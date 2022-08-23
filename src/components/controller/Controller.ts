@@ -46,21 +46,26 @@ export class Controller {
     this.router
       .on(() => {
         console.log('Render home page');
+        this.handleUser();
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
+        this.handleUser();
         await this.handleTextBook();
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
+        this.handleUser();
         this.initSprint();
       })
       .on('/audiocall', () => {
+        this.handleUser();
         console.log('Render audiocall page');
         this.router.updatePageLinks();
       })
       .on('/user', () => {
         console.log('Render user page');
+        this.handleUser();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
       })
@@ -77,12 +82,23 @@ export class Controller {
 
   public async handleTextBook() {
     const stored = this.storage.getData('textBook');
-    if (stored.group) {
+    const logined = this.storage.getData('UserId');
+    if (stored && logined) {
+      console.log('Есть локал бук и залогинен', stored, logined);
+      const data = await this.api.getWords(stored);
+      this.textBook.updateTextbook(data, true, stored.group, stored.page);
+    } else if (stored && !logined) {
+      console.log('Есть локал бук и НЕ залогинен');
+      const data = await this.api.getWords(stored);
+      this.textBook.updateTextbook(data, false, stored.group, stored.page);
+    } else if (!stored && logined) {
+      console.log('Не ходит по учебнику и залогинен');
       const data = await this.api.getWords(stored);
       this.textBook.updateTextbook(data, true, stored.group, stored.page);
     } else {
+      console.log('Не ходит по учебнику и не залогинен');
       const data = await this.api.getWords({ group: '0', page: '0' });
-      this.textBook.renderTextBook(data);
+      this.textBook.updateTextbook(data, false, 0, 0);
     }
   }
 
@@ -104,14 +120,21 @@ export class Controller {
     const object: Pick<UserCreationData, 'email' | 'password'> = { email, password };
     const res = await this.api.authorize(object);
     if (typeof res === 'object') {
-      console.log(res);
       this.storage.setData('UserId', res);
       this.modal.overLay.remove();
       document.body.classList.remove('hidden-overflow');
-      this.userUI.changeHeaderOnAuthorise(res);
+      this.userUI.authorise(res);
+      await this.handleTextBook();
     } else {
       // ! Вывести текст ошибки в модалку
       console.log(res);
+    }
+  }
+
+  public handleUser() {
+    const stored = this.storage.getData('UserId');
+    if (stored.token) {
+      this.userUI.authorise(stored);
     }
   }
 

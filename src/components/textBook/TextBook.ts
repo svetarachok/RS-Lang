@@ -47,20 +47,17 @@ export class TextBook {
   public updateTextbook(data: Word[], flag: Boolean, group?: number, page?: number) {
     this.textBook.innerHTML = '';
     this.renderTextBook(data);
-    console.log(group);
     if (typeof group === 'number' && typeof page === 'number') {
       this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
-      console.log(this.level1Btns[group]);
       this.level1Btns[group].classList.add('btn-active');
       this.currentLevel = group;
       this.currentPage = page;
       this.pageInput.value = String(page + 1);
       this.handlePageButtons();
     }
-    console.log(!flag);
-    // if (!flag) {
-    //   this.level1Btns[6].style.display = 'flex';
-    // }
+    if (flag === true) {
+      this.level1Btns[6].style.display = 'flex';
+    }
   }
 
   public updateCards(data: Word[]) {

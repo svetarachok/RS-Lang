@@ -14,7 +14,7 @@ export class Storage {
       const parsedData = JSON.parse(data);
       console.log(data);
       return parsedData;
-    } return {};
+    } return false;
   }
 
   checkData(key: string): Boolean {
