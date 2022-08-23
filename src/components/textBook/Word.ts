@@ -91,6 +91,7 @@ export class WordUI {
     this.playBtn.addEventListener('click', () => {
       const soundUrl: string[] = this.makeSoundURL();
       this.play(soundUrl);
+      console.log(this.id);
     });
   }
 }

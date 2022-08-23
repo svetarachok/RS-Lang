@@ -43,6 +43,32 @@ export class TextBook {
     this.pageInput.value = String(this.currentPage + 1);
   }
 
+  // Update textBook and cards separately
+  public updateTextbook(data: Word[], flag: Boolean, group?: number, page?: number) {
+    this.textBook.innerHTML = '';
+    this.renderTextBook(data);
+    console.log(group);
+    if (typeof group === 'number' && typeof page === 'number') {
+      this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
+      console.log(this.level1Btns[group]);
+      this.level1Btns[group].classList.add('btn-active');
+      this.currentLevel = group;
+      this.currentPage = page;
+      this.pageInput.value = String(page + 1);
+      this.handlePageButtons();
+    }
+    console.log(!flag);
+    // if (!flag) {
+    //   this.level1Btns[6].style.display = 'flex';
+    // }
+  }
+
+  public updateCards(data: Word[]) {
+    this.cardsWrapper.innerHTML = '';
+    this.renderCards(data);
+  }
+
+  // Listen level buttons and pagination
   listenLevels(handler: (group: string, page: string) => void) {
     this.level1Btns.forEach((button) => {
       button.addEventListener('click', (e: Event) => {
@@ -87,7 +113,6 @@ export class TextBook {
 
   // Handle changes when switching pages (buttons and input) and levels
   private handlePageButtons() {
-    console.log(this.currentPage);
     if (this.currentPage > 0) {
       this.prevPageBtn.disabled = false;
     } else if (this.currentPage <= 0) {
@@ -123,36 +148,30 @@ export class TextBook {
   }
 
   // Render TextBook and components
-  public startTextBook(data: Word[]) {
+  public renderTextBook(data: Word[]): HTMLElement {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
-    const textBook = this.renderTextBook(data);
-    container.append(textBook);
+    const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
+    const pageHead: HTMLDivElement = this.renderTBHeader();
+    const sidebar = this.rendeSidebar();
+    this.renderCards(data);
+    const paginationWrapper: HTMLDivElement = this.renderPagination();
+    paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
+    page.append(pageHead, this.cardsWrapper, paginationWrapper);
+    this.textBook.append(sidebar, page);
+    container.append(this.textBook);
+    return container;
   }
 
-  public renderTextBook(data: Word[]): HTMLDivElement {
-    this.textBook.innerHTML = '';
-    const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
+  private renderTBHeader() {
     const pageHead: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page-head'] }) as HTMLDivElement;
     const pageHeadText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['page-head-wrapper'], inner: 'Играть с текущим набором слов:' }) as HTMLParagraphElement;
     pageHead.append(pageHeadText, this.auduoCallBtn, this.sprintBtn);
-    this.renderCards(data);
-    const paginationWrapper: HTMLDivElement = createNode({ tag: 'div', classes: ['pagination'] }) as HTMLDivElement;
-    this.prevPageBtn.disabled = true;
-    this.nextPageBtn.disabled = false;
-    paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
-    page.append(pageHead, this.cardsWrapper, paginationWrapper);
-    const sidebar = this.rendeSidebar();
-    this.textBook.append(sidebar, page);
-    return this.textBook;
-  }
-
-  public updateCards(data: Word[]) {
-    this.cardsWrapper.innerHTML = '';
-    this.renderCards(data);
+    return pageHead;
   }
 
   private renderCards(cardsData: Word[]) {
+    this.cardsWrapper.innerHTML = '';
     cardsData.forEach((card) => {
       const cardItem = new WordUI(card);
       this.cardsWrapper.append(cardItem.drawCard());
@@ -167,6 +186,8 @@ export class TextBook {
     sideBarContent.append(sidebarText);
     this.level1Btns.forEach((btn) => sideBarContent.append(btn));
     sideBar.append(sideBarContent);
+    this.level1Btns[6].classList.add('user-words-btn');
+    this.level1Btns[6].style.display = 'none';
     return sideBar;
   }
 
@@ -181,5 +202,13 @@ export class TextBook {
       levelsNumber -= 1;
     }
     return arr;
+  }
+
+  private renderPagination(): HTMLDivElement {
+    const paginationWrapper: HTMLDivElement = createNode({ tag: 'div', classes: ['pagination'] }) as HTMLDivElement;
+    this.prevPageBtn.disabled = true;
+    this.nextPageBtn.disabled = false;
+    paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
+    return paginationWrapper;
   }
 }

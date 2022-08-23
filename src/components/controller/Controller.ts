@@ -5,9 +5,10 @@ import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import { REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK } from '../utils/constants';
-import { UserCreationData } from '../types/interfaces';
 import { UserUI } from '../user/UserUI';
 import { Sprint } from '../sprint/Sprint';
+import { Storage } from '../Storage/Storage';
+import { UserCreationData } from '../types/interfaces';
 
 export class Controller {
   router: Navigo;
@@ -26,6 +27,8 @@ export class Controller {
 
   userUI: UserUI;
 
+  storage: Storage;
+
   constructor() {
     this.router = new Navigo('/', { hash: true });
     this.api = new Api();
@@ -35,16 +38,18 @@ export class Controller {
     this.loginForm = new LoginForm('login', 'Login');
     this.registerForm = new RegisterForm('register', 'Register');
     this.userUI = new UserUI();
-    this.initUserForms();
+    this.storage = new Storage();
+    // this.initUserForms();
   }
 
   public initRouter(): void {
     this.router
       .on(() => {
         console.log('Render home page');
+        this.router.updatePageLinks();
       })
       .on('/book', async () => {
-        await this.initTextBook();
+        await this.handleTextBook();
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
@@ -52,32 +57,40 @@ export class Controller {
       })
       .on('/audiocall', () => {
         console.log('Render audiocall page');
+        this.router.updatePageLinks();
       })
       .on('/user', () => {
         console.log('Render user page');
         this.userUI.renderUserPage();
+        this.router.updatePageLinks();
       })
       .resolve();
   }
 
-  public async initTextBook() {
-    const data = await this.api.getWords({ group: '0', page: '0' });
-    this.handleTextBoookPageUpdate = this.handleTextBoookPageUpdate.bind(this);
-    this.textBook.startTextBook(data);
-    this.textBook.listenLevels(this.handleTextBoookPageUpdate);
-    this.textBook.listenPagination(this.handleTextBoookPageUpdate);
+  public async initApp() {
+    this.textBook.listenLevels(this.handleTextBoookPageUpdate.bind(this));
+    this.textBook.listenPagination(this.handleTextBoookPageUpdate.bind(this));
+    this.startUserForms();
+    this.loginForm.listenForm(this.handleLoginBtn.bind(this));
+    this.registerForm.listenForm(this.handleRegistartion.bind(this));
+  }
+
+  public async handleTextBook() {
+    const stored = this.storage.getData('textBook');
+    if (stored.group) {
+      const data = await this.api.getWords(stored);
+      this.textBook.updateTextbook(data, true, stored.group, stored.page);
+    } else {
+      const data = await this.api.getWords({ group: '0', page: '0' });
+      this.textBook.renderTextBook(data);
+    }
   }
 
   public async handleTextBoookPageUpdate(groupStr: string, pageStr: string) {
     const data = await this.api.getWords({ group: groupStr, page: pageStr });
+    this.storage.setData('textBook', `{"group": ${groupStr}, "page": ${pageStr}}`);
     this.textBook.updateCards(data);
     return data;
-  }
-
-  public initUserForms() {
-    this.startUserForms();
-    this.loginForm.listenForm(this.handleLogin.bind(this));
-    this.registerForm.listenForm(this.handleRegistartion.bind(this));
   }
 
   private startUserForms() {
@@ -87,14 +100,15 @@ export class Controller {
     LOGIN_BTN.addEventListener('click', () => this.modal.renderModal(loginFormHTML));
   }
 
-  public async handleLogin(email: string, password: string) {
+  public async handleLoginBtn(email: string, password: string) {
     const object: Pick<UserCreationData, 'email' | 'password'> = { email, password };
     const res = await this.api.authorize(object);
     if (typeof res === 'object') {
+      console.log(res);
+      this.storage.setData('UserId', res);
       this.modal.overLay.remove();
       document.body.classList.remove('hidden-overflow');
       this.userUI.changeHeaderOnAuthorise(res);
-      this.router.updatePageLinks();
     } else {
       // ! Вывести текст ошибки в модалку
       console.log(res);

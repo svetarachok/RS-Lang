@@ -16,7 +16,7 @@ export class UserUI {
   statistic: HTMLElement;
 
   constructor() {
-    this.headerEnterBtn = createNode({ tag: 'button', classes: ['btn'], inner: '<a href="/user" class="enter-cabinet" data-navigo="true">Enter Cabinet</a>' }) as HTMLButtonElement;
+    this.headerEnterBtn = createNode({ tag: 'p', classes: ['enter-cabinet-link'], inner: '<a href="/user" class="enter-cabinet" data-navigo="true">Enter Cabinet</a>' }) as HTMLButtonElement;
     this.userPage = createNode({ tag: 'div', classes: ['user-page'] });
     this.name = createNode({ tag: 'h2', classes: ['user-name'] });
     this.email = createNode({ tag: 'p', classes: ['user-name'] });

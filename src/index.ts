@@ -6,3 +6,4 @@ console.log('Lets go');
 const controller = new Controller();
 
 controller.initRouter();
+controller.initApp();
