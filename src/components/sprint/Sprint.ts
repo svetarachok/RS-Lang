@@ -42,6 +42,8 @@ export class Sprint {
 
   timerInterval: ReturnType<typeof setInterval> | undefined;
 
+  keyListener: (e: KeyboardEvent) => Promise<void>;
+
   constructor(mode: 'menu' | 'book') {
     this.mode = mode;
     this.api = api;
@@ -57,6 +59,7 @@ export class Sprint {
     this.trueAnswerSound = this.createAnswerSoud(true);
     this.falseAnswerSound = this.createAnswerSoud(false);
     this.mute = false;
+    this.keyListener = this.selectAnswerByKey.bind(this);
   }
 
   public renderGame(): void {
@@ -110,6 +113,7 @@ export class Sprint {
     ready.append(timerTitle);
     const randomPair = this.getRandomPair();
     this.startTimer('timer--ready', 3, this.renderGameContol.bind(this, randomPair.word, randomPair.wordTranslate));
+    this.addKeyboardControl();
   }
 
   private renderTimer(container: HTMLElement, className: string) {
@@ -422,5 +426,39 @@ export class Sprint {
   public setBookPageAndLevel(level: number, page: number) {
     this.bookPage = page;
     this.bookLevel = level;
+  }
+
+  private async selectAnswerByKey(e: KeyboardEvent) {
+    let isTrue: boolean = false;
+    if (e.key === 'ArrowRight') {
+      isTrue = true;
+    } else if (e.key === 'ArrowLeft') {
+      isTrue = false;
+    }
+
+    if (isTrue === this.isPairTrue) {
+      this.completeTrueAnswer();
+    } else {
+      this.completeFalseAnswer();
+    }
+
+    if (this.wordsInGame.length === 0) {
+      await this.addWordsInGame();
+    }
+    this.updateWord();
+  }
+
+  private addKeyboardControl(): void {
+    document.addEventListener('keydown', this.keyListener);
+  }
+
+  private removeKeyboardControl(): void {
+    document.removeEventListener('keydown', this.keyListener);
+  }
+
+  public closeGame() {
+    clearInterval(this.timerInterval);
+    this.timerSound?.pause();
+    this.removeKeyboardControl();
   }
 }
