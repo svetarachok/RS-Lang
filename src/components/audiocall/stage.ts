@@ -33,6 +33,8 @@ export class Stage {
 
   playAnswerSound: (isCorrect: boolean) => void;
 
+  links: NodeListOf<HTMLAnchorElement>;
+
   constructor(
     container: HTMLElement,
     word: Word,
@@ -48,6 +50,7 @@ export class Stage {
     this.skipButton = createNode({ tag: 'button', classes: ['button', 'button-skip'], inner: 'не знаю' });
     this.nextStageButton = createNode({ tag: 'button', classes: ['button', 'button-next'], inner: '⟶' });
     this.soundButton = createNode({ tag: 'button', classes: ['speaker-button'], inner: SPEAKER });
+    this.links = document.querySelectorAll('a');
   }
 
   async start() {
@@ -55,6 +58,12 @@ export class Stage {
     this.sayWord();
     this.render();
     document.addEventListener('keydown', this.keyHandler);
+    this.links.forEach((link) => link.addEventListener('click', () => {
+      if (link.href !== `${BASE_LINK}/audiocall`) {
+        this.removeListeners();
+        this.container.remove();
+      }
+    }));
   }
 
   async setAnswers() {
@@ -161,5 +170,10 @@ export class Stage {
         this.answers.forEach((answer) => answer.addEndStageStyleByKeyboard(currentAnswer));
       }
     }
+  };
+
+  removeListeners = () => {
+    document.removeEventListener('keydown', this.keyHandler);
+    this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
   };
 }

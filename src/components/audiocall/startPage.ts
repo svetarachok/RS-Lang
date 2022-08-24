@@ -1,3 +1,4 @@
+import { BASE_LINK } from '../utils/constants';
 import createNode from '../utils/createNode';
 
 const AUDIO_CALL_DESCRIPTION = 'Тренировка улучшает восприятие речи на слух.';
@@ -10,10 +11,13 @@ export class StartPage {
 
   wrapper: HTMLElement;
 
+  links: NodeListOf<HTMLAnchorElement>;
+
   constructor(container: HTMLElement, callback: ()=> void) {
     this.container = container;
     this.callback = callback;
     this.wrapper = createNode({ tag: 'div', classes: ['level-select'] });
+    this.links = document.querySelectorAll('a');
   }
 
   render() {
@@ -22,6 +26,12 @@ export class StartPage {
     const button = createNode({ tag: 'button', atributesAdnValues: [['type', 'button']], inner: 'начать' });
     button.addEventListener('click', this.startGame);
     document.addEventListener('keydown', this.keyHandler);
+    this.links.forEach((link) => link.addEventListener('click', () => {
+      if (link.href !== `${BASE_LINK}/audiocall`) {
+        this.removeListeners();
+        this.container.remove();
+      }
+    }));
 
     this.wrapper.append(title, description, button);
     this.container.append(this.wrapper);
@@ -35,5 +45,10 @@ export class StartPage {
 
   keyHandler = (e: KeyboardEvent) => {
     if (e.key === 'Enter') this.startGame();
+  };
+
+  removeListeners = () => {
+    document.removeEventListener('keydown', this.keyHandler);
+    this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
   };
 }

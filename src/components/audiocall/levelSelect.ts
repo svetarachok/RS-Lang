@@ -1,3 +1,4 @@
+import { BASE_LINK } from '../utils/constants';
 import createNode from '../utils/createNode';
 
 const AUDIO_CALL_DESCRIPTION = 'Тренировка улучшает восприятие речи на слух.';
@@ -15,10 +16,13 @@ export class LevelSelect {
 
   levelButtons: HTMLElement[] = [];
 
+  links: NodeListOf<HTMLAnchorElement>;
+
   constructor(container: HTMLElement, callback: (selectedValue: string)=> void) {
     this.container = container;
     this.callback = callback;
     this.wrapper = createNode({ tag: 'div', classes: ['level-select'] });
+    this.links = document.querySelectorAll('a');
   }
 
   render() {
@@ -28,6 +32,12 @@ export class LevelSelect {
     const button = createNode({ tag: 'button', atributesAdnValues: [['type', 'button']], inner: 'начать' });
     button.addEventListener('click', this.returnLevel);
     document.addEventListener('keydown', this.keyHandler);
+    this.links.forEach((link) => link.addEventListener('click', () => {
+      if (link.href !== `${BASE_LINK}/audiocall`) {
+        this.removeListeners();
+        this.container.remove();
+      }
+    }));
 
     this.wrapper.append(title, description, selectBlock, button);
     this.container.append(this.wrapper);
@@ -78,5 +88,10 @@ export class LevelSelect {
         .find((button) => button.dataset.level === this.selectedValue);
       selectedButton?.classList.add('selected');
     }
+  };
+
+  removeListeners = () => {
+    document.removeEventListener('keydown', this.keyHandler);
+    this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
   };
 }
