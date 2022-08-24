@@ -9,6 +9,7 @@ import { UserUI } from '../user/UserUI';
 import { Sprint } from '../sprint/Sprint';
 import { Storage } from '../Storage/Storage';
 import { UserCreationData } from '../types/interfaces';
+import { MainPage } from '../MainPage/MainPage';
 
 export class Controller {
   router: Navigo;
@@ -29,6 +30,8 @@ export class Controller {
 
   storage: Storage;
 
+  mainPage: MainPage;
+
   constructor() {
     this.router = new Navigo('/', { hash: true });
     this.api = new Api();
@@ -39,6 +42,7 @@ export class Controller {
     this.registerForm = new RegisterForm('register', 'Register');
     this.userUI = new UserUI();
     this.storage = new Storage();
+    this.mainPage = new MainPage();
     // this.initUserForms();
   }
 
@@ -46,6 +50,7 @@ export class Controller {
     this.router
       .on(() => {
         console.log('Render home page');
+        this.mainPage.renderMain();
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
@@ -68,6 +73,7 @@ export class Controller {
   }
 
   public async initApp() {
+    // this.mainPage.renderMain();
     this.textBook.listenLevels(this.handleTextBoookPageUpdate.bind(this));
     this.textBook.listenPagination(this.handleTextBoookPageUpdate.bind(this));
     this.startUserForms();
@@ -137,11 +143,7 @@ export class Controller {
   }
 
   public async handleRegistartion(name: string, email: string, password: string) {
-    const object: UserCreationData = {
-      name,
-      email,
-      password,
-    };
+    const object: UserCreationData = { name, email, password };
     const res = await this.api.createUser(object);
     console.log(res);
   }
