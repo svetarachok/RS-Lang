@@ -43,6 +43,12 @@ export interface Route {
   cb: Function;
 }
 
+export interface GameResult {
+  userAuthData?: AuthorizationData,
+  correct: Word[],
+  incorrect: Word[],
+}
+
 export interface RandomPairInSprint {
   word: string,
   wordTranslate: string;
