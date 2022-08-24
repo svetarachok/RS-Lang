@@ -18,7 +18,7 @@ export class Controller {
 
   textBook: TextBook;
 
-  sprint: Sprint;
+  sprint: Sprint | undefined;
 
   modal: Modal;
 
@@ -36,7 +36,6 @@ export class Controller {
     this.router = new Navigo('/', { hash: true });
     this.api = new Api();
     this.textBook = new TextBook(LEVELS_OF_TEXTBOOK);
-    this.sprint = new Sprint();
     this.modal = new Modal();
     this.loginForm = new LoginForm('login', 'Login');
     this.registerForm = new RegisterForm('register', 'Register');
@@ -54,15 +53,21 @@ export class Controller {
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
+        this.closeSprint();
         await this.handleTextBook();
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
-        this.initSprint();
+        this.initSprintFromMenu();
+      })
+      .on('/book/sprint', () => {
+        this.initSprintFromBook();
       })
       .on('/audiocall', () => {
-        console.log('Render audiocall page');
-        this.router.updatePageLinks();
+        console.log('Render audiocall from menu');
+      })
+      .on('/book/audiocall', () => {
+        console.log('Render audiocall from book');
       })
       .on('/user', () => {
         console.log('Render user page');
@@ -154,7 +159,20 @@ export class Controller {
     this.router.updatePageLinks();
   }
 
-  public initSprint() {
+  private initSprintFromBook() {
+    this.sprint = new Sprint('book');
+    this.sprint.setBookPageAndLevel(this.textBook.currentLevel, this.textBook.currentPage);
     this.sprint.renderGame();
+    console.log('from book');
+  }
+
+  private initSprintFromMenu() {
+    this.sprint = new Sprint('menu');
+    this.sprint.renderGame();
+    console.log('from menu');
+  }
+
+  private closeSprint() {
+    this.sprint?.closeGame();
   }
 }

@@ -1,6 +1,9 @@
 .body {
   &--sprint {
-    color: #ffffff;
+    position: relative;
+    max-width: 100%;
+    min-height: 100vh;
+    padding: 0;
     background-color: #0d3848;
     background-image:
       url('./assets/sprint/sprint-bg-bottom.svg'),
@@ -9,19 +12,51 @@
     background-repeat: no-repeat, no-repeat, no-repeat;
     background-size: 100%, auto, auto;
     background-position: bottom, 0 0, 100% 0;
+
+    .header {
+      position: absolute;
+      top: 0;
+      background-color: transparent;
+      z-index: 10;
+      padding: 0 40px;
+      color: #ffffff;
+      border: none;
+    }
+
+    .menu-item {
+      &:hover {
+        border-bottom: 2px solid #ffffff;
+      }
+
+      a {
+      color: #ffffff;
+      }
+    }
+
+    .btn-secondary {
+      color: #ffffff;
+    }
+
+    .main {
+      padding: 75px 0;
+      display: flex;
+      min-height: 100vh;
+    }
+  
+    .footer {
+      display: none;
+    }
   }
 }
 
-.main {
+.sprint {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  &--sprint {
-    min-height: 100vh;
-    padding: 40px 0;
-  }
+  padding: 20px 0;
+  color: #ffffff;
+  width: 100%;
 }
 
 .sprint__select {
@@ -132,7 +167,7 @@
 .timer--control {
   position: absolute;
   top: 20px;
-  left: 0;
+  left: 20px;
 }
 
 .sprint__control {
@@ -150,6 +185,10 @@
   background-image: url('./assets/sprint/sound-default.svg');
   background-repeat: no-repeat;
   cursor: pointer;
+
+  &--off {
+    background-image: url('./assets/sprint/sound-mute.svg');
+  }
 }
 
 .control__container {
@@ -284,10 +323,11 @@
   border-radius: 8px;
   box-sizing: border-box;
   max-width: 500px;
-  min-height: 646px;
+  max-height: 500px;
   padding: 42px 16px;
   text-align: center;
   width: 100%;
+  overflow-y: auto;
 }
 
 .result__score {
