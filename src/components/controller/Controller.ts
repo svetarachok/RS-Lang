@@ -63,21 +63,26 @@ export class Controller {
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
+        this.closeSprint();
         this.initSprintFromMenu();
       })
       .on('/book/sprint', () => {
+        this.closeSprint();
         this.initSprintFromBook();
       })
       .on('/audiocall', () => {
+        this.closeSprint();
         this.initAudioCallfromMenu();
         console.log('Render audiocall from menu');
       })
       .on('/book/audiocall', () => {
+        this.closeSprint();
         this.initAudioCallfromBook();
         console.log('Render audiocall from book');
       })
       .on('/user', () => {
         console.log('Render user page');
+        this.closeSprint();
         this.handleUser();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();

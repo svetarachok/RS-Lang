@@ -161,9 +161,7 @@ export class TextBook {
 
   // Render TextBook and components
   public renderTextBook(data: Word[]): HTMLElement {
-    const body = document.querySelector('.body') as HTMLElement;
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
-    body.classList.remove('body--sprint');
     container.innerHTML = '';
     const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
     const pageHead: HTMLDivElement = this.renderTBHeader();
