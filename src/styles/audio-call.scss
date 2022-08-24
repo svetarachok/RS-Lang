@@ -1,12 +1,25 @@
 .audio-call {
-  position: relative;
+  position: absolute;
   width: 100%;
-  height: calc(100vh - 75px);
+  height: 100vh;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* height: calc(100vh - 75px); */
   background: linear-gradient(180deg, #7d5db0, #b06d9a 72%, #c584a4);
   color: hsla(0deg, 0%, 100%, 0.7);
   display: flex;
   align-items: center;
-  justify-content: center;
+  // justify-content: center;
+  /* max-width: 1440px; */
+  margin: 0 auto;
+  flex-direction: column;
+  padding: 80px 0 0;
+  .container {
+    margin: 0 auto;
+    min-width: 1250px;
+  }
+
   .level-select {
     display: flex;
     flex-direction: column;
@@ -190,9 +203,9 @@
     }
   }
   .close-button {
-    position: absolute;
-    top: 0;
-    right: 0;
+    // position: relative;
+    top: -35%;
+    left: 1130px;
     border-radius: 50%;
     width: 4rem;
     height: 4rem;
@@ -204,8 +217,8 @@
 
   .mute-button {
     margin: 4px;
-    position: absolute;
-    top: 0;
+    // position: absolute;
+    top: 75px;
     left: 0;
     font-size: 3rem;
   }
@@ -219,5 +232,12 @@
       background-color: #28c38a;
       border: 2px solid #28c38a;
     }
+  }
+
+  .buttons-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 }

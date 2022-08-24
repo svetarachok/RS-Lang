@@ -63,9 +63,13 @@ export class AudioCall {
     this.muteButton.addEventListener('click', this.muteButtonHandler);
     this.closeButton.addEventListener('click', this.closeButtonHandler);
     main.innerHTML = '';
-    this.container.append(this.muteButton, this.closeButton);
+    const buttonsWrapper = createNode({ tag: 'div', classes: ['buttons-wrapper'] });
+    const wrapper = createNode({ tag: 'div', classes: ['container'] });
+    buttonsWrapper.append(this.muteButton, this.closeButton);
+    wrapper.append(buttonsWrapper);
+    this.container.append(wrapper);
     main.append(this.container);
-    (document.querySelector('footer') as HTMLElement).style.display = 'none';
+    // (document.querySelector('footer') as HTMLElement).style.display = 'none';
   }
 
   async startGameFromMenu(wordsGroup: string) {
