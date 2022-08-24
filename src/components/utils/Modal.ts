@@ -14,6 +14,7 @@ export class Modal {
   }
 
   renderModal(htmlNode: HTMLElement) {
+    this.modalContent.innerHTML = '';
     this.closeBtn.innerHTML = '<span class="material-icons-outlined material-modal-close-icon">close</span>';
     this.modalContent.append(htmlNode);
     this.modalContent.prepend(this.closeBtn);
@@ -34,5 +35,17 @@ export class Modal {
       this.overLay.remove();
       document.body.classList.remove('hidden-overflow');
     }
+  }
+
+  exitModal() {
+    this.overLay.remove();
+    document.body.classList.remove('hidden-overflow');
+  }
+
+  showMessage(data: string) {
+    this.modalContent.innerHTML = '';
+    const p = createNode({ tag: 'p', classes: ['modal-message'], inner: `${data}` });
+    this.modalContent.append(p);
+    return this.modalContent;
   }
 }

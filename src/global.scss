@@ -1,8 +1,9 @@
-@import "./styles/fonts.scss";
-@import "./styles/variables.scss";
-@import "./styles/mixins.scss";
-@import "./styles/components.scss";
-@import "./styles/modal.scss";
+@import './styles/fonts.scss';
+@import './styles/variables.scss';
+@import './styles/mixins.scss';
+@import './styles/components.scss';
+@import './styles/modal.scss';
+@import './styles/form.scss';
 
 @import "./styles/body.scss";
 
@@ -23,3 +24,6 @@
 
 // TextBook
 @import "./styles/textBook.scss";
+
+//UserPage
+@import './styles/userPage.scss';

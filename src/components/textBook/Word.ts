@@ -30,9 +30,15 @@ export class WordUI {
     this.card = createNode({ tag: 'div', classes: ['card'] }) as HTMLDivElement;
     this.img = createNode({ tag: 'div', classes: ['card-img'] }) as HTMLImageElement;
     this.playBtn = createNode({ tag: 'button', classes: ['btn', 'btn-play'] }) as HTMLButtonElement;
-    this.word = createNode({ tag: 'p', classes: ['word'], inner: `${this.obj.word}` }) as HTMLParagraphElement;
-    this.addToUserWordsBtn = createNode({ tag: 'button', classes: ['btn', 'btn-add'] }) as HTMLButtonElement;
-    this.learnWordBtn = createNode({ tag: 'button', classes: ['btn', 'btn-learn'] }) as HTMLButtonElement;
+    this.word = createNode({
+      tag: 'p', classes: ['word'], inner: `${this.obj.word}`,
+    }) as HTMLParagraphElement;
+    this.addToUserWordsBtn = createNode({
+      tag: 'button', classes: ['btn', 'btn-add'], atributesAdnValues: [['style', 'display: none']], inner: 'Сложное',
+    }) as HTMLButtonElement;
+    this.learnWordBtn = createNode({
+      tag: 'button', classes: ['btn', 'btn-learn'], atributesAdnValues: [['style', 'display: none']], inner: 'Учить',
+    }) as HTMLButtonElement;
     this.transcription = createNode({ tag: 'p', classes: ['word-transcription'], inner: `${this.obj.transcription}` }) as HTMLParagraphElement;
     this.translate = createNode({ tag: 'p', classes: ['word-translate'], inner: `${this.obj.wordTranslate}` }) as HTMLParagraphElement;
     this.transcription = createNode({ tag: 'p', classes: ['word-transcription'], inner: `${this.obj.transcription}` }) as HTMLParagraphElement;
@@ -91,6 +97,7 @@ export class WordUI {
     this.playBtn.addEventListener('click', () => {
       const soundUrl: string[] = this.makeSoundURL();
       this.play(soundUrl);
+      console.log(this.id);
     });
   }
 }

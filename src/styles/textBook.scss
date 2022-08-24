@@ -2,10 +2,11 @@
   display: flex;
   position: relative;
   align-items: stretch;
+  width: 100%;
 }
 
 .aside {
-  padding-top: 2.5rem;
+  padding: 2.5rem 0;
   width: 15%;
   flex-shrink: 0;
   font-family: $headers-font;
@@ -43,7 +44,10 @@
 }
 
 .text-book-page {
+  @include display-flex-space-between;
+  flex-direction: column;
   padding: 1.5rem 2.5rem;
+  width: 85%;
 }
 
 .text-book-page-head {
@@ -51,6 +55,7 @@
   padding: 2.5rem;
   align-items: center;
   gap: 1.5rem;
+  margin-right: auto;
 }
 
 .cards-wrapper {
@@ -119,6 +124,7 @@
   margin-left: auto;
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
 }
 
 .word-mean-translate, .word-ex-translate {
