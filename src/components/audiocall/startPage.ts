@@ -5,13 +5,13 @@ const AUDIO_CALL_DESCRIPTION = 'Тренировка улучшает воспр
 const GAME_NAME = 'Аудиовызов';
 
 export class StartPage {
-  container: HTMLElement;
+  private container: HTMLElement;
 
-  callback: () => void;
+  private callback: () => void;
 
-  wrapper: HTMLElement;
+  private wrapper: HTMLElement;
 
-  links: NodeListOf<HTMLAnchorElement>;
+  private links: NodeListOf<HTMLAnchorElement>;
 
   constructor(container: HTMLElement, callback: ()=> void) {
     this.container = container;
@@ -20,7 +20,7 @@ export class StartPage {
     this.links = document.querySelectorAll('a');
   }
 
-  render() {
+  public render() {
     const title = createNode({ tag: 'h2', classes: ['game__title'], inner: GAME_NAME });
     const description = createNode({ tag: 'p', classes: ['game__descpiption'], inner: AUDIO_CALL_DESCRIPTION });
     const button = createNode({ tag: 'button', atributesAdnValues: [['type', 'button']], inner: 'начать' });
@@ -37,17 +37,17 @@ export class StartPage {
     this.container.append(this.wrapper);
   }
 
-  startGame = () => {
+  private startGame = () => {
     this.wrapper.remove();
     document.removeEventListener('keydown', this.keyHandler);
     this.callback();
   };
 
-  keyHandler = (e: KeyboardEvent) => {
+  private keyHandler = (e: KeyboardEvent) => {
     if (e.key === 'Enter') this.startGame();
   };
 
-  removeListeners = () => {
+  private removeListeners = () => {
     document.removeEventListener('keydown', this.keyHandler);
     this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
   };

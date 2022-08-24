@@ -2,19 +2,19 @@ import { Word } from '../types/interfaces';
 import createNode from '../utils/createNode';
 
 export class Answer {
-  word: Word;
+  private word: Word;
 
-  number: number;
+  public number: number;
 
-  isCorrect: boolean;
+  public isCorrect: boolean;
 
-  callback: (answer: Answer) => void;
+  private callback: (answer: Answer) => void;
 
-  div: HTMLElement;
+  public div: HTMLElement;
 
-  answerNumberSpan: HTMLElement;
+  private answerNumberSpan: HTMLElement;
 
-  answerTextSpan: HTMLElement;
+  private answerTextSpan: HTMLElement;
 
   constructor(word: Word, number: number, isCorrect: boolean, callback: (answer: Answer) => void) {
     this.word = word;
@@ -28,18 +28,18 @@ export class Answer {
     this.div.addEventListener('click', this.eventHandler);
   }
 
-  eventHandler = () => {
+  private eventHandler = () => {
     console.log('eventHandler');
     this.addEndStageStyleByClick();
     this.callback(this);
   };
 
-  addTextOpacity() {
+  private addTextOpacity() {
     if (this.isCorrect) return;
     this.answerTextSpan.style.opacity = '0.5';
   }
 
-  addEndStageStyleByClick() {
+  private addEndStageStyleByClick() {
     if (this.isCorrect) {
       this.answerNumberSpan.innerText = '✔';
       this.answerNumberSpan.classList.add('checked');
@@ -48,12 +48,12 @@ export class Answer {
     }
   }
 
-  addEndStageStyleByKeyboard(answer: Answer) {
+  public addEndStageStyleByKeyboard(answer: Answer) {
     console.log(answer === this);
     if (answer === this) this.addEndStageStyleByClick();
   }
 
-  removeListener() {
+  public removeListener() {
     this.div.removeEventListener('click', this.eventHandler);
     this.addTextOpacity();
   }

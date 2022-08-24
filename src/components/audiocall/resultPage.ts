@@ -5,13 +5,13 @@ import createNode from '../utils/createNode';
 import { AudioCall } from './audioCall';
 
 export class ResultPage {
-  container: HTMLElement;
+  private container: HTMLElement;
 
-  result: GameResult;
+  private result: GameResult;
 
-  wrapper: HTMLElement;
+  private wrapper: HTMLElement;
 
-  button: HTMLElement;
+  private button: HTMLElement;
 
   constructor(container: HTMLElement, result: GameResult) {
     this.container = container;
@@ -20,11 +20,11 @@ export class ResultPage {
     this.button = createNode({ tag: 'button', classes: ['result__button'], inner: 'сыграть еще раз' });
   }
 
-  start() {
+  public start() {
     this.render();
   }
 
-  render() {
+  private render() {
     const title = createNode({ tag: 'h2', classes: ['result__score'], inner: this.getTitleText() });
     const listsContainer = createNode({ tag: 'div', classes: ['game__lists'] });
     const trueList = createNode({ tag: 'ul', classes: ['result__true'], inner: `Знаю: ${this.result.correct.length}` });
@@ -40,7 +40,7 @@ export class ResultPage {
     this.container.append(this.wrapper);
   }
 
-  createResultLi(word: Word) {
+  private createResultLi(word: Word) {
     const wordEn = createNode({ tag: 'span', classes: ['result__word-en'], inner: `${word.word}: ` });
     const wordRu = createNode({ tag: 'span', classes: ['result__word-ru'], inner: `${word.wordTranslate}` });
     const wordEnRu = createNode({ tag: 'li', classes: ['result__word'] });
@@ -50,7 +50,7 @@ export class ResultPage {
     return wordEnRu;
   }
 
-  getTitleText() {
+  private getTitleText() {
     if (this.result.correct.length === 10) return 'Блестяще!';
     if (this.result.correct.length > 8) return 'Отличный результат!';
     if (this.result.correct.length > 6) return 'Хороший результат!';
@@ -58,14 +58,14 @@ export class ResultPage {
     return 'В другой раз получится лучше!';
   }
 
-  voiceHandler(element: HTMLElement, word: Word) {
+  private voiceHandler(element: HTMLElement, word: Word) {
     element.addEventListener('click', () => {
       const audio = new Audio(`${BASE_LINK}/${word.audio}`);
       audio.play();
     });
   }
 
-  startNewGame = () => {
+  private startNewGame = () => {
     this.container.remove();
     const game = new AudioCall();
     game.start();

@@ -12,24 +12,24 @@ import { StartPage } from './startPage';
 const COUNT_WORDS_PER_GAME = 10;
 
 export class AudioCall {
-  container: HTMLElement;
+  private container: HTMLElement;
 
-  words: Word[] = [];
+  private words: Word[] = [];
 
-  result: GameResult = {
+  private result: GameResult = {
     correct: [],
     incorrect: [],
   };
 
-  currentStage: number = 0;
+  private currentStage: number = 0;
 
-  closeButton: HTMLElement;
+  private closeButton: HTMLElement;
 
-  muteButton: HTMLElement;
+  private muteButton: HTMLElement;
 
-  isMute: boolean = false;
+  private isMute: boolean = false;
 
-  settings: { group: string; page: string; } | undefined;
+  private settings: { group: string; page: string; } | undefined;
 
   constructor() {
     this.container = createNode({ tag: 'div', classes: ['audio-call'] });
@@ -42,9 +42,8 @@ export class AudioCall {
     this.muteButton = createNode({ tag: 'span', classes: ['material-icons-outlined', 'mute-button'], inner: 'volume_up' });
   }
 
-  start(settings?: { group: number, page: number }) {
+  public start(settings?: { group: number, page: number }) {
     this.render();
-    console.log('start');
     if (!settings) {
       const levelSelect = new LevelSelect(this.container, this.startGameFromMenu.bind(this));
       levelSelect.render();
@@ -58,7 +57,7 @@ export class AudioCall {
     }
   }
 
-  render() {
+  private render() {
     const main = document.querySelector('main') as HTMLElement;
     this.muteButton.addEventListener('click', this.muteButtonHandler);
     this.closeButton.addEventListener('click', this.closeButtonHandler);
@@ -72,24 +71,22 @@ export class AudioCall {
     // (document.querySelector('footer') as HTMLElement).style.display = 'none';
   }
 
-  async startGameFromMenu(wordsGroup: string) {
+  private async startGameFromMenu(wordsGroup: string) {
     this.words = await getRandomWordsByGroup(wordsGroup, COUNT_WORDS_PER_GAME);
-    console.log(this.words);
     this.startGameStage();
   }
 
-  async startGameFromBook() {
+  private async startGameFromBook() {
     if (this.settings) this.words = await this.getWordsForGame(this.settings);
-    console.log(this.words);
     this.startGameStage();
   }
 
-  async getWordsForGame(settings: { group: string, page: string }) {
+  private async getWordsForGame(settings: { group: string, page: string }) {
     const wordsOnPage = await api.getWords(settings);
     return shuffleArray(wordsOnPage).slice(0, COUNT_WORDS_PER_GAME);
   }
 
-  startGameStage() {
+  private startGameStage() {
     const stage = new Stage(
       this.container,
       this.words[this.currentStage],
@@ -99,7 +96,7 @@ export class AudioCall {
     stage.start();
   }
 
-  stageHandler(word: Word, stageResult: boolean) {
+  private stageHandler(word: Word, stageResult: boolean) {
     if (stageResult) this.result.correct.push(word);
     else this.result.incorrect.push(word);
 
@@ -109,26 +106,23 @@ export class AudioCall {
     } else { this.endGameHandler(); }
   }
 
-  endGameHandler() {
-    console.log(this.result);
-    console.log('game over');
+  private endGameHandler() {
     const resultPage = new ResultPage(this.container, this.result);
     resultPage.start();
-    console.log(resultPage);
   }
 
-  muteButtonHandler = () => {
+  private muteButtonHandler = () => {
     this.muteButton.innerHTML = this.isMute ? 'volume_up' : 'volume_off';
     this.isMute = !this.isMute;
   };
 
-  playAnswerSound(isCorrect: boolean) {
+  private playAnswerSound(isCorrect: boolean) {
     if (this.isMute) return;
     const audio = new Audio(`./assets/audiocall/sounds/${isCorrect}.mp3`);
     audio.addEventListener('canplaythrough', audio.play);
   }
 
-  closeButtonHandler = () => {
+  private closeButtonHandler = () => {
     this.container.remove();
   };
 }

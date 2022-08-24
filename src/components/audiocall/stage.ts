@@ -9,31 +9,31 @@ import { SPEAKER } from './speakerSVG';
 const ANSWERS_COUNT = 5;
 
 export class Stage {
-  container: HTMLElement;
+  private container: HTMLElement;
 
-  word: Word;
+  private word: Word;
 
-  callback: (word: Word, result: boolean) => void;
+  private callback: (word: Word, result: boolean) => void;
 
-  wrapper: HTMLElement;
+  private wrapper: HTMLElement;
 
-  wordText: HTMLElement;
+  private wordText: HTMLElement;
 
-  answers: Answer[] = [];
+  private answers: Answer[] = [];
 
-  skipButton: HTMLElement;
+  private skipButton: HTMLElement;
 
-  nextStageButton: HTMLElement;
+  private nextStageButton: HTMLElement;
 
-  result: boolean = false;
+  private result: boolean = false;
 
-  soundButton: HTMLElement;
+  private soundButton: HTMLElement;
 
-  hasAnswer: boolean = false;
+  private hasAnswer: boolean = false;
 
-  playAnswerSound: (isCorrect: boolean) => void;
+  private playAnswerSound: (isCorrect: boolean) => void;
 
-  links: NodeListOf<HTMLAnchorElement>;
+  private links: NodeListOf<HTMLAnchorElement>;
 
   constructor(
     container: HTMLElement,
@@ -53,7 +53,7 @@ export class Stage {
     this.links = document.querySelectorAll('a');
   }
 
-  async start() {
+  public async start() {
     await this.setAnswers();
     this.sayWord();
     this.render();
@@ -66,7 +66,7 @@ export class Stage {
     }));
   }
 
-  async setAnswers() {
+  private async setAnswers() {
     const wrongAnswers: Promise<Word>[] = [];
     for (let i = 0; wrongAnswers.length < ANSWERS_COUNT - 1; i += 1) {
       wrongAnswers.push(getRandomWordByGroup(String(this.word.group)));
@@ -81,14 +81,14 @@ export class Stage {
     });
   }
 
-  answerHandler(answer?: Answer) {
+  private answerHandler(answer?: Answer) {
     this.hasAnswer = true;
     if (answer?.isCorrect) this.result = true;
     this.showCorrectAnswer();
     console.log('result of stage', this.result);
   }
 
-  render() {
+  private render() {
     const wordBlock = this.createWordBlock();
     const answersWrapper = createNode({ tag: 'div', classes: ['answers'] });
     const answerButtons = this.answers.map((answer) => answer.div);
@@ -99,44 +99,44 @@ export class Stage {
     this.container.append(this.wrapper);
   }
 
-  createWordBlock() {
+  private createWordBlock() {
     const wrapper = createNode({ tag: 'div', classes: ['word'] });
     this.bindSoundButtonEvent(this.soundButton);
     wrapper.append(this.soundButton, this.wordText);
     return wrapper;
   }
 
-  bindSoundButtonEvent(button: HTMLElement) {
+  private bindSoundButtonEvent(button: HTMLElement) {
     button.addEventListener('click', this.sayWord);
   }
 
-  bindSkipButtonEvent(button: HTMLElement) {
+  private bindSkipButtonEvent(button: HTMLElement) {
     button.addEventListener('click', () => {
       console.log('skip pressed');
       this.skipQuestion();
     });
   }
 
-  bindNextStageButtonEvent(button: HTMLElement) {
+  private bindNextStageButtonEvent(button: HTMLElement) {
     button.addEventListener('click', this.loadNextStage);
   }
 
-  loadNextStage = () => {
+  private loadNextStage = () => {
     document.removeEventListener('keydown', this.keyHandler);
     this.wrapper.remove();
     this.callback(this.word, this.result);
   };
 
-  sayWord = () => {
+  private sayWord = () => {
     const audio = new Audio(`${BASE_LINK}/${this.word.audio}`);
     audio.addEventListener('canplaythrough', audio.play);
   };
 
-  skipQuestion() {
+  private skipQuestion() {
     this.showCorrectAnswer();
   }
 
-  showCorrectAnswer() {
+  private showCorrectAnswer() {
     const wordImage = createNode({
       tag: 'img',
       classes: ['stage__img'],
@@ -151,7 +151,7 @@ export class Stage {
     this.playAnswerSound(this.result);
   }
 
-  keyHandler = (e: KeyboardEvent) => {
+  private keyHandler = (e: KeyboardEvent) => {
     if (e.code === 'Space') {
       this.sayWord();
       return;
@@ -172,7 +172,7 @@ export class Stage {
     }
   };
 
-  removeListeners = () => {
+  private removeListeners = () => {
     document.removeEventListener('keydown', this.keyHandler);
     this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
   };

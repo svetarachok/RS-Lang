@@ -6,17 +6,17 @@ const GAME_NAME = 'Аудиовызов';
 const LEVEL_COUNT = 6;
 
 export class LevelSelect {
-  container: HTMLElement;
+  private container: HTMLElement;
 
-  selectedValue: string = '0';
+  private selectedValue: string = '0';
 
-  callback: (selectedValue: string) => void;
+  private callback: (selectedValue: string) => void;
 
-  wrapper: HTMLElement;
+  private wrapper: HTMLElement;
 
-  levelButtons: HTMLElement[] = [];
+  private levelButtons: HTMLElement[] = [];
 
-  links: NodeListOf<HTMLAnchorElement>;
+  private links: NodeListOf<HTMLAnchorElement>;
 
   constructor(container: HTMLElement, callback: (selectedValue: string)=> void) {
     this.container = container;
@@ -25,7 +25,7 @@ export class LevelSelect {
     this.links = document.querySelectorAll('a');
   }
 
-  render() {
+  public render() {
     const title = createNode({ tag: 'h2', classes: ['game__title'], inner: GAME_NAME });
     const description = createNode({ tag: 'p', classes: ['game__descpiption'], inner: AUDIO_CALL_DESCRIPTION });
     const selectBlock = this.createSelectBlock('Выбери уровень сложности');
@@ -43,7 +43,7 @@ export class LevelSelect {
     this.container.append(this.wrapper);
   }
 
-  createSelectBlock(title: string) {
+  private createSelectBlock(title: string) {
     const wrapper = createNode({ tag: 'div', classes: ['select-block'] });
     const titleNode = createNode({ tag: 'div', classes: ['select-block__title'], inner: title });
     const select = createNode({ tag: 'div', classes: ['select-block__select'] });
@@ -58,7 +58,7 @@ export class LevelSelect {
     return wrapper;
   }
 
-  addSelectButtonHandler(button: HTMLElement) {
+  private addSelectButtonHandler(button: HTMLElement) {
     button.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       this.selectedValue = target.dataset.level || this.selectedValue;
@@ -67,21 +67,19 @@ export class LevelSelect {
     });
   }
 
-  returnLevel = () => {
+  private returnLevel = () => {
     this.wrapper.remove();
     document.removeEventListener('keydown', this.keyHandler);
-    console.log(this.selectedValue);
     this.callback(this.selectedValue);
   };
 
-  keyHandler = (e: KeyboardEvent) => {
+  private keyHandler = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       this.returnLevel();
       return;
     }
     const level = Number(e.key) - 1;
     if (level >= 0 && level < LEVEL_COUNT) {
-      console.log(level);
       this.selectedValue = String(level);
       this.levelButtons.forEach((levelButton) => levelButton.classList.remove('selected'));
       const selectedButton = this.levelButtons
@@ -90,7 +88,7 @@ export class LevelSelect {
     }
   };
 
-  removeListeners = () => {
+  private removeListeners = () => {
     document.removeEventListener('keydown', this.keyHandler);
     this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
   };
