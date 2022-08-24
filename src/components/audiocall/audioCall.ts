@@ -10,6 +10,7 @@ import { Stage } from './stage';
 import { StartPage } from './startPage';
 
 const COUNT_WORDS_PER_GAME = 10;
+const INCORRECT_SERIES = 5;
 
 export class AudioCall {
   private container: HTMLElement;
@@ -100,7 +101,8 @@ export class AudioCall {
     if (stageResult) this.result.correct.push(word);
     else this.result.incorrect.push(word);
 
-    if (this.currentStage < COUNT_WORDS_PER_GAME - 1) {
+    if (this.currentStage < COUNT_WORDS_PER_GAME - 1
+      && this.result.incorrect.length < INCORRECT_SERIES) {
       this.currentStage += 1;
       this.startGameStage();
     } else { this.endGameHandler(); }
