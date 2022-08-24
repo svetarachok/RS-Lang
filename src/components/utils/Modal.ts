@@ -36,4 +36,16 @@ export class Modal {
       document.body.classList.remove('hidden-overflow');
     }
   }
+
+  exitModal() {
+    this.overLay.remove();
+    document.body.classList.remove('hidden-overflow');
+  }
+
+  showMessage(data: string) {
+    this.modalContent.innerHTML = '';
+    const p = createNode({ tag: 'p', classes: ['modal-message'], inner: `${data}` });
+    this.modalContent.append(p);
+    return this.modalContent;
+  }
 }

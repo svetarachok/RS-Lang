@@ -51,8 +51,9 @@ export class Controller {
     this.router
       .on(() => {
         console.log('Render home page');
-        this.mainPage.renderMain();
         this.handleUser();
+        this.closeSprint();
+        this.mainPage.renderMain();
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
@@ -131,11 +132,10 @@ export class Controller {
     const object: Pick<UserCreationData, 'email' | 'password'> = { email, password };
     const res = await this.api.authorize(object);
     if (typeof res === 'object') {
+      this.modal.exitModal();
       this.storage.setData('UserId', res);
-      this.modal.overLay.remove();
-      document.body.classList.remove('hidden-overflow');
       this.userUI.authorise(res);
-      if (window.location.href === `${APP_LINK}/?#/book`) {
+      if (window.location.href === `${APP_LINK}/#/book`) {
         await this.handleTextBook();
       }
     } else {
@@ -154,8 +154,18 @@ export class Controller {
 
   public async handleRegistartion(name: string, email: string, password: string) {
     const object: UserCreationData = { name, email, password };
-    const res = await this.api.createUser(object);
-    console.log(res);
+    await this.api.createUser(object);
+    const obj: Pick<UserCreationData, 'email' | 'password'> = { email, password };
+    const res = await this.api.authorize(obj);
+    // this.modal.showMessage('Успешная регистрация! <Войдите в аккаунт')
+    if (typeof res === 'object') {
+      this.modal.exitModal();
+      this.storage.setData('UserId', res);
+      this.userUI.authorise(res);
+      if (window.location.href === `${APP_LINK}/#/book`) {
+        await this.handleTextBook();
+      }
+    }
   }
 
   private handleUnLogin() {
