@@ -32,10 +32,10 @@ export class TextBook {
     this.cardsWrapper = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
     this.level1Btns = this.createLevelButtons(numberOfLevels);
     this.auduoCallBtn = createNode({
-      tag: 'a', classes: ['btn'], inner: 'Аудиовызов', atributesAdnValues: [['href', '/audiocall'], ['data-navigo', 'true']],
+      tag: 'a', classes: ['btn'], inner: 'Аудиовызов', atributesAdnValues: [['href', '/book/audiocall'], ['data-navigo', 'true']],
     }) as HTMLAnchorElement;
     this.sprintBtn = createNode({
-      tag: 'a', classes: ['btn'], inner: 'Спринт', atributesAdnValues: [['href', '/sprint'], ['data-navigo', 'true']],
+      tag: 'a', classes: ['btn'], inner: 'Спринт', atributesAdnValues: [['href', '/book/sprint'], ['data-navigo', 'true']],
     }) as HTMLAnchorElement;
     this.prevPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Предыдущая' }) as HTMLButtonElement;
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
@@ -52,6 +52,7 @@ export class TextBook {
         this.pageInput.value = String(this.currentPage + 1);
         const target: number = Number((e.target as HTMLButtonElement).innerHTML);
         const level = target - 1;
+        this.currentLevel = level;
         this.handlePageButtons();
         handler(String(level), '0');
       });
@@ -124,8 +125,10 @@ export class TextBook {
 
   // Render TextBook and components
   public startTextBook(data: Word[]) {
+    const body = document.querySelector('.body') as HTMLElement;
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     console.log(container);
+    body.classList.remove('body--sprint');
     container.innerHTML = '';
     const textBook = this.renderTextBook(data);
     container.append(textBook);
