@@ -4,7 +4,9 @@ import { Api } from '../Model/api';
 import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
-import { REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK } from '../utils/constants';
+import {
+  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK,
+} from '../utils/constants';
 import { UserUI } from '../user/UserUI';
 import { Sprint } from '../sprint/Sprint';
 import { Storage } from '../Storage/Storage';
@@ -50,6 +52,7 @@ export class Controller {
       .on(() => {
         console.log('Render home page');
         this.mainPage.renderMain();
+        this.handleUser();
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
@@ -71,6 +74,7 @@ export class Controller {
       })
       .on('/user', () => {
         console.log('Render user page');
+        this.handleUser();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
       })
@@ -78,7 +82,6 @@ export class Controller {
   }
 
   public async initApp() {
-    // this.mainPage.renderMain();
     this.textBook.listenLevels(this.handleTextBoookPageUpdate.bind(this));
     this.textBook.listenPagination(this.handleTextBoookPageUpdate.bind(this));
     this.startUserForms();
@@ -132,8 +135,9 @@ export class Controller {
       this.modal.overLay.remove();
       document.body.classList.remove('hidden-overflow');
       this.userUI.authorise(res);
-      this.router.updatePageLinks();
-      await this.handleTextBook();
+      if (window.location.href === `${APP_LINK}/?#/book`) {
+        await this.handleTextBook();
+      }
     } else {
       // ! Вывести текст ошибки в модалку
       console.log(res);
@@ -145,6 +149,7 @@ export class Controller {
     if (stored.token) {
       this.userUI.authorise(stored);
     }
+    // if ()
   }
 
   public async handleRegistartion(name: string, email: string, password: string) {

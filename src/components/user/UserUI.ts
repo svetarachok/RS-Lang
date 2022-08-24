@@ -31,6 +31,8 @@ export class UserUI {
     REGISTER_BTN.style.display = 'none';
     LOGIN_BTN.style.display = 'none';
     USER_AUTH_WRAPPER.append(this.headerEnterBtn);
+    this.headerEnterBtn.style.display = 'flex';
+    return USER_AUTH_WRAPPER;
   }
 
   public unAuthorize(hanlder: () => void) {
