@@ -12,8 +12,6 @@ export class Sprint {
 
   wordsInGame: Word[];
 
-  wordsOnPage: Word[];
-
   currentWord: Word | undefined;
 
   trueWords: Word[];
@@ -21,10 +19,6 @@ export class Sprint {
   falseWords: Word[];
 
   isPairTrue: boolean | undefined;
-
-  countTrue: number;
-
-  countFalse: number;
 
   score: number;
 
@@ -34,23 +28,38 @@ export class Sprint {
 
   seriesOfCorrect: number;
 
-  bookPage: number | undefined;
+  bookPage: number;
 
-  bookLevel: number | undefined;
+  bookLevel: number;
+
+  timerSound: HTMLAudioElement | undefined;
+
+  trueAnswerSound: HTMLAudioElement;
+
+  falseAnswerSound: HTMLAudioElement;
+
+  mute: boolean;
+
+  timerInterval: ReturnType<typeof setInterval> | undefined;
+
+  keyListener: (e: KeyboardEvent) => Promise<void>;
 
   constructor(mode: 'menu' | 'book') {
     this.mode = mode;
     this.api = api;
     this.wordsInGame = [];
-    this.wordsOnPage = [];
-    this.countTrue = 0;
-    this.countFalse = 0;
     this.score = 0;
     this.POINTS_FOR_WORD = 10;
     this.multiplier = 1;
     this.seriesOfCorrect = 0;
     this.trueWords = [];
     this.falseWords = [];
+    this.bookPage = 0;
+    this.bookLevel = 0;
+    this.trueAnswerSound = this.createAnswerSoud(true);
+    this.falseAnswerSound = this.createAnswerSoud(false);
+    this.mute = false;
+    this.keyListener = this.selectAnswerByKey.bind(this);
   }
 
   public renderGame(): void {
@@ -103,7 +112,8 @@ export class Sprint {
     this.renderTimer(ready, 'timer--ready');
     ready.append(timerTitle);
     const randomPair = this.getRandomPair();
-    this.startTimer('timer--ready', 3, this.renderGameContol.bind(this, randomPair.word, randomPair.wordTranslate), this.createFinishSound());
+    this.startTimer('timer--ready', 3, this.renderGameContol.bind(this, randomPair.word, randomPair.wordTranslate));
+    this.addKeyboardControl();
   }
 
   private renderTimer(container: HTMLElement, className: string) {
@@ -117,7 +127,7 @@ export class Sprint {
     container.append(timer);
   }
 
-  public startTimer(className: string, time: number, cb: Function, sound: HTMLAudioElement): void {
+  public startTimer(className: string, time: number, cb: Function): void {
     let i = 0;
     const finalOffset = 440;
     const step = finalOffset / time;
@@ -128,15 +138,16 @@ export class Sprint {
 
     circleStyle.strokeDashoffset = String(0);
     timeCaption.innerText = String(time);
+    this.timerSound = this.createFinishSound();
 
-    const interval = setInterval(() => {
+    this.timerInterval = setInterval(() => {
       timeCaption.innerText = String(time - i);
       if (time - i <= 10) {
-        sound.play();
+        this.timerSound?.play();
       }
       if (i === time) {
-        clearInterval(interval);
-        sound.pause();
+        clearInterval(this.timerInterval);
+        this.timerSound?.pause();
         cb();
       } else {
         i += 1;
@@ -150,10 +161,11 @@ export class Sprint {
     const ready = <HTMLElement>document.querySelector('.sprint__ready');
     ready.remove();
     this.renderTimer(sprint, 'timer--control');
-    this.startTimer('timer--control', 60, this.renderResult.bind(this), this.createFinishSound());
+    this.startTimer('timer--control', 12, this.renderResult.bind(this));
     const sprintControl = createHTMLElement('div', ['sprint__control']);
     const score = createHTMLElement('h2', ['control__score'], undefined, '0');
     const sound = createHTMLElement('div', ['control__sound']);
+    sound.addEventListener('click', (e) => this.toggleMute(e));
     const controlContainer = createHTMLElement('div', ['control__container']);
     const voice = createHTMLElement('div', ['control__voice']);
     voice.addEventListener('click', this.voiceWord.bind(this));
@@ -192,7 +204,6 @@ export class Sprint {
 
   private async getWordsOnPage(level: string, page: string): Promise<void> {
     this.wordsInGame = await api.getWords({ group: level, page });
-    console.log(this.wordsInGame);
   }
 
   private getRandomWord(): Word {
@@ -204,28 +215,37 @@ export class Sprint {
 
   private getRandomPair(): RandomPairInSprint {
     this.currentWord = this.getRandomWord();
-    const randomPair: RandomPairInSprint = { word: this.currentWord.word, wordTranslate: '' };
-    const isTrue = Math.random() < 0.5;
-    if (isTrue) {
-      this.isPairTrue = true;
-      randomPair.wordTranslate = this.currentWord.wordTranslate;
-    } else {
-      this.isPairTrue = false;
-      randomPair.wordTranslate = this.getRandomWord().wordTranslate;
-    }
     const currentId = this.wordsInGame.indexOf(this.currentWord);
     this.wordsInGame.splice(currentId, 1);
-    console.log(this.wordsInGame);
+    const randomPair: RandomPairInSprint = { word: this.currentWord.word, wordTranslate: '' };
+    const isTrue = Math.random() < 0.5;
+    if (this.wordsInGame.length > 0) {
+      if (isTrue) {
+        this.isPairTrue = true;
+        randomPair.wordTranslate = this.currentWord.wordTranslate;
+      } else {
+        this.isPairTrue = false;
+        randomPair.wordTranslate = this.getRandomWord().wordTranslate;
+      }
+    } else if (this.wordsInGame.length === 0) {
+      this.isPairTrue = true;
+      randomPair.wordTranslate = this.currentWord.wordTranslate;
+    }
     return randomPair;
   }
 
-  private checkCounWordsInGame(): void {
-    if (this.wordsInGame.length === 0) {
-      console.log('no words');
+  private async addWordsInGame(): Promise<void> {
+    if (this.bookPage > 0) {
+      const newWords = await api
+        .getWords({ group: String(this.bookLevel), page: String(this.bookPage - 1) });
+      this.wordsInGame.push(...newWords);
+      this.bookPage -= 1;
+    } else if (this.bookPage === 0) {
+      this.finishGame();
     }
   }
 
-  private selectAnswer(e: Event): void {
+  private async selectAnswer(e: Event): Promise<void> {
     const button = <HTMLElement>e.target;
     const { answer } = button.dataset;
     let isTrue: boolean;
@@ -236,33 +256,45 @@ export class Sprint {
     }
 
     if (isTrue === this.isPairTrue) {
-      this.palayAnswerSoud(true);
-      this.countTrue += 1;
-      this.seriesOfCorrect += 1;
-      this.checkSeriesOfCorrect();
-      this.updateScore();
-      this.changeStyleSeries(this.seriesOfCorrect);
-      this.trueWords.push(this.currentWord!);
+      this.completeTrueAnswer();
     } else {
-      this.palayAnswerSoud(false);
-      this.countFalse += 1;
-      this.seriesOfCorrect = 0;
-      this.multiplier = 1;
-      this.changeMultiplyDescr(1);
-      this.clearStyleSeries();
-      this.clearParrots();
-      this.falseWords.push(this.currentWord!);
+      this.completeFalseAnswer();
     }
-
+    if (this.wordsInGame.length === 0) {
+      await this.addWordsInGame();
+    }
     this.updateWord();
+  }
+
+  private completeTrueAnswer(): void {
+    this.trueAnswerSound.load();
+    this.trueAnswerSound.play();
+    this.seriesOfCorrect += 1;
+    this.checkSeriesOfCorrect();
+    this.updateScore();
+    this.changeStyleSeries(this.seriesOfCorrect);
+    this.trueWords.push(this.currentWord!);
+  }
+
+  private completeFalseAnswer(): void {
+    this.falseAnswerSound.load();
+    this.falseAnswerSound.play();
+    this.seriesOfCorrect = 0;
+    this.multiplier = 1;
+    this.changeMultiplyDescr(1);
+    this.clearStyleSeries();
+    this.clearParrots();
+    this.falseWords.push(this.currentWord!);
   }
 
   private updateWord(): void {
     const word = <HTMLElement>document.querySelector('.control__word-en');
     const translate = <HTMLElement>document.querySelector('.control__word-ru');
-    const randomPair = this.getRandomPair();
-    word.innerHTML = randomPair.word;
-    translate.innerHTML = randomPair.wordTranslate;
+    if (this.wordsInGame.length !== 0) {
+      const randomPair = this.getRandomPair();
+      word.innerHTML = randomPair.word;
+      translate.innerHTML = randomPair.wordTranslate;
+    }
   }
 
   private updateScore(): void {
@@ -327,10 +359,9 @@ export class Sprint {
     audio.play();
   }
 
-  private palayAnswerSoud(value: boolean): void {
+  private createAnswerSoud(value: boolean): HTMLAudioElement {
     const url = `./assets/sprint/sounds/${String(value)}.mp3`;
-    const audio = new Audio(url);
-    audio.play();
+    return new Audio(url);
   }
 
   private createFinishSound(): HTMLAudioElement {
@@ -372,8 +403,62 @@ export class Sprint {
     audio.play();
   }
 
+  private toggleMute(e: Event) {
+    const btn = <HTMLElement>e.target;
+    btn.classList.toggle('control__sound--off');
+    if (this.mute === false) {
+      this.mute = true;
+      this.trueAnswerSound.volume = 0;
+      this.falseAnswerSound.volume = 0;
+    } else if (this.mute === true) {
+      this.mute = false;
+      this.trueAnswerSound.volume = 1;
+      this.falseAnswerSound.volume = 1;
+    }
+  }
+
+  private finishGame() {
+    clearInterval(this.timerInterval);
+    this.timerSound?.pause();
+    this.renderResult();
+  }
+
   public setBookPageAndLevel(level: number, page: number) {
     this.bookPage = page;
     this.bookLevel = level;
+  }
+
+  private async selectAnswerByKey(e: KeyboardEvent) {
+    let isTrue: boolean = false;
+    if (e.key === 'ArrowRight') {
+      isTrue = true;
+    } else if (e.key === 'ArrowLeft') {
+      isTrue = false;
+    }
+
+    if (isTrue === this.isPairTrue) {
+      this.completeTrueAnswer();
+    } else {
+      this.completeFalseAnswer();
+    }
+
+    if (this.wordsInGame.length === 0) {
+      await this.addWordsInGame();
+    }
+    this.updateWord();
+  }
+
+  private addKeyboardControl(): void {
+    document.addEventListener('keydown', this.keyListener);
+  }
+
+  private removeKeyboardControl(): void {
+    document.removeEventListener('keydown', this.keyListener);
+  }
+
+  public closeGame() {
+    clearInterval(this.timerInterval);
+    this.timerSound?.pause();
+    this.removeKeyboardControl();
   }
 }

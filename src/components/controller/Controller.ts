@@ -11,6 +11,8 @@ export class Controller {
 
   textBook: TextBook;
 
+  sprint: Sprint | undefined;
+
   constructor() {
     this.router = new Navigo('/', { hash: true });
     this.api = new Api();
@@ -23,6 +25,7 @@ export class Controller {
         console.log('Render home page');
       })
       .on('/book', async () => {
+        this.closeSprint();
         await this.initTextBook();
         this.router.updatePageLinks();
       })
@@ -61,17 +64,20 @@ export class Controller {
   }
 
   private initSprintFromBook() {
-    const sprint = new Sprint('book');
-    sprint.setBookPageAndLevel(this.textBook.currentLevel, this.textBook.currentPage);
-    sprint.renderGame();
+    this.sprint = new Sprint('book');
+    this.sprint.setBookPageAndLevel(this.textBook.currentLevel, this.textBook.currentPage);
+    this.sprint.renderGame();
     console.log('from book');
-    console.log(sprint.bookLevel, sprint.bookPage);
   }
 
   private initSprintFromMenu() {
-    const sprint = new Sprint('menu');
-    sprint.renderGame();
+    this.sprint = new Sprint('menu');
+    this.sprint.renderGame();
     console.log('from menu');
+  }
+
+  private closeSprint() {
+    this.sprint?.closeGame();
   }
 
   public initAudioCallfromMenu() {
