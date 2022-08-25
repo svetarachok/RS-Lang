@@ -158,7 +158,7 @@ export class Api {
     filterParam: { difficalty: 'easy' | 'hard', learned: boolean },
     queryParam?: { group: string, page: string, wordsPerPage: string },
   ):
-    Promise<UserAggregatedWordsResult | string> {
+    Promise<UserAggregatedWord[] | string> {
     const filterObj = { 'userWord.difficulty': filterParam.difficalty, 'userWord.optional.learned': filterParam.learned };
     const stringify = JSON.stringify(filterObj);
     const filterStr = `{"$and":[${stringify}]}`;
@@ -171,8 +171,9 @@ export class Api {
     });
     if (!response.ok) return response.text();
     const data: UserAggregatedWordsResult[] = await response.json();
+    console.log(data);
 
-    return data[0];
+    return data[0].paginatedResults;
   }
 
   public async getAggregatedUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
