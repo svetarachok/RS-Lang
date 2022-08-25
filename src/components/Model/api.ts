@@ -1,9 +1,10 @@
 import { Endpoint, HTTPMethod, ContentType } from '../types/enums';
 import {
   Word, User, UserCreationData, AuthorizationData,
+  UserWord, UserAggregatedWordsResult, UserAggregatedWord,
 } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
-import { makeUrl } from '../utils/functions';
+import { generateQueryString, makeUrl } from '../utils/functions';
 
 export class Api {
   public async getWords(queryParam?: { group: string, page: string }): Promise<Word[]> {
@@ -70,6 +71,126 @@ export class Api {
 
     if (response.status === 403 || response.status === 401) return 'Access token is missing, expired or invalid';
     return response.json();
+  }
+
+  public async setUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string, userWord: UserWord):
+  Promise<UserWord | string> {
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
+      method: HTTPMethod.POST,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+        'Content-Type': ContentType.json,
+      },
+      body: JSON.stringify(userWord),
+    });
+
+    if (response.status === 400) {
+      const errorMessage = (await response.json()).error.errors[0].message as string;
+      return errorMessage;
+    }
+    if (!response.ok) return response.text();
+
+    return response.json();
+  }
+
+  public async getUserWords(authData: Pick<AuthorizationData, 'token' | 'userId'>):
+  Promise<UserWord[] | string> {
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}`, {
+      method: HTTPMethod.GET,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+      },
+    });
+
+    if (!response.ok) return response.text();
+    return response.json();
+  }
+
+  public async getUserWordById(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
+  Promise<UserWord | string> {
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
+      method: HTTPMethod.GET,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+      },
+    });
+    if (response.status === 400) {
+      const errorMessage = (await response.json()).error.errors[0].message as string;
+      return errorMessage;
+    }
+    if (!response.ok) return response.text();
+    return response.json();
+  }
+
+  public async changeUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string, userWord: UserWord):
+  Promise<UserWord | string> {
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
+      method: HTTPMethod.PUT,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+        'Content-Type': ContentType.json,
+      },
+      body: JSON.stringify(userWord),
+    });
+
+    if (response.status === 400) {
+      const errorMessage = (await response.json()).error.errors[0].message as string;
+      return errorMessage;
+    }
+    if (!response.ok) return response.text();
+
+    return response.json();
+  }
+
+  public async deleteUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
+  Promise<boolean> {
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
+      method: HTTPMethod.DELETE,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+      },
+    });
+    return response.ok;
+  }
+
+  public async getAggregatedUserWords(
+    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    filterParam: { difficalty: 'easy' | 'hard', learned: boolean },
+    queryParam?: { group: string, page: string, wordsPerPage: string },
+  ):
+    Promise<UserAggregatedWordsResult | string> {
+    const filterObj = { 'userWord.difficulty': filterParam.difficalty, 'userWord.optional.learned': filterParam.learned };
+    const stringify = JSON.stringify(filterObj);
+    const filterStr = `{"$and":[${stringify}]}`;
+    const paramString = generateQueryString({ ...queryParam, ...{ filter: filterStr } });
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}${paramString}`, {
+      method: HTTPMethod.GET,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+      },
+    });
+    if (!response.ok) return response.text();
+    const data: UserAggregatedWordsResult[] = await response.json();
+
+    return data[0];
+  }
+
+  public async getAggregatedUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
+  Promise<UserAggregatedWord | string> {
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}/${wordId}`, {
+      method: HTTPMethod.GET,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+      },
+    });
+    if (response.status === 400) {
+      const errorMessage = (await response.json()).error.errors[0].message as string;
+      return errorMessage;
+    }
+    if (!response.ok) return response.text();
+    const data: UserAggregatedWord[] = await response.json();
+
+    return data[0];
   }
 }
 
