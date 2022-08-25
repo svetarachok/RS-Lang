@@ -2,7 +2,7 @@
   @include display-flex-center;
   flex-direction: column;
   padding: 10rem;
-  @media (max-width: $breakpoint-laptop) {
+  @media (max-width: $breakpoint-tablet) {
     padding: 3.5rem 2rem;
   }
   @media (max-width: $breakpoint-mobile) {
@@ -15,7 +15,7 @@
   text-align: center;
   line-height: 1;
   padding-bottom: 2rem;
-  @media (max-width: $breakpoint-laptop) {
+  @media (max-width: $breakpoint-tablet) {
     width: 100%;
   }
   @media (max-width: $breakpoint-mobile) {
