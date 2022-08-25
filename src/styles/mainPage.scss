@@ -1,0 +1,141 @@
+.hero-section {
+  @include display-flex-center;
+  flex-direction: column;
+  padding: 10rem;
+  @media (max-width: $breakpoint-laptop) {
+    padding: 3.5rem 2rem;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    padding: 1.5rem;
+  }
+}
+
+.hero-section-header {
+  width: 70%;
+  text-align: center;
+  line-height: 1;
+  padding-bottom: 2rem;
+  @media (max-width: $breakpoint-laptop) {
+    width: 100%;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+  }
+}
+
+.hero-section-text {
+  text-align: center;
+  width: 80%;
+}
+
+.advantages-section {
+  display: flex;
+  padding: $section-padding;
+  padding-top: 2.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.advantage_wrapper {
+  @include card-style;
+  text-align: center;
+  width: 20rem;
+}
+
+.advantage-header {
+  position: relative;
+  font-size: 2rem;
+  padding-bottom: 1rem;
+  &::after {
+    position: absolute;
+    content: '';
+    height: 2px;
+    background-color: $dark-color;
+    width: 30%;
+    bottom: 0;
+    left: 34.5%;
+  }
+}
+
+.advantage-text {
+  padding-top: 2rem;
+}
+
+.info-section {
+  padding: $section-padding;
+  background-color: $light-grey;
+}
+
+.info-text-wrapper {
+  width: 40%;
+  padding: 0 4.5rem;
+}
+
+.info-header {
+  font-size: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.info-text {
+  list-style: none;
+  padding-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+}
+
+.info-text-icon {
+  padding-right: 0.5rem; 
+}
+
+.team-section {
+  padding: $section-padding;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.team-section-header {
+  text-align: center;
+}
+
+.team-members {
+  display: flex;
+  gap: 1.5rem;
+  padding-top: 2.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.team-member {
+  @include card-style;
+  width: 20rem;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
+}
+
+.team-member-name {
+  font-size: 1.3rem;
+}
+
+.member-duty {
+  font-size: 0.9rem;
+  line-height: 2;
+  padding-bottom: 1rem;
+  color: $mid-grey;
+}
+
+.member-actions {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  & ul {
+    text-align: left;
+  }
+  & li {
+    list-style: none;
+    padding-bottom: 0.3rem;
+  }
+}
+

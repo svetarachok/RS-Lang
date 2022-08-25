@@ -15,6 +15,13 @@
   font-size: 1.5rem;
   line-height: 1.4;
   font-weight: 800;
+  @media (max-width: $breakpoint-laptop) {
+    line-height: 1.1;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    font-size: 1.2rem;
+    line-height: 1.1;
+  }
 }
 
 .menu-items {
