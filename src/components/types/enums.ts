@@ -3,6 +3,7 @@ export enum Endpoint {
   users = '/users',
   signin = '/signin',
   tokens = '/tokens',
+  aggregatedWords = '/aggregatedWords',
 }
 export enum ContentType {
   json = 'application/json',
@@ -10,4 +11,6 @@ export enum ContentType {
 export enum HTTPMethod {
   GET = 'GET',
   POST = 'POST',
+  PUT = 'PUT',
+  DELETE = 'DELETE',
 }
