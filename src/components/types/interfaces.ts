@@ -32,3 +32,24 @@ export interface AuthorizationData {
 export interface User extends Pick<UserCreationData, 'name' | 'email'> {
   id: string,
 }
+
+export interface RouterOptions {
+  mode: 'history' | 'hash',
+  root: string,
+}
+
+export interface Route {
+  path: string,
+  cb: Function;
+}
+
+export interface GameResult {
+  userAuthData?: AuthorizationData,
+  correct: Word[],
+  incorrect: Word[],
+}
+
+export interface RandomPairInSprint {
+  word: string,
+  wordTranslate: string;
+}

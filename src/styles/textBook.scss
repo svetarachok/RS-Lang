@@ -1,0 +1,168 @@
+.textbook {
+  display: flex;
+  position: relative;
+  align-items: stretch;
+  width: 100%;
+}
+
+.aside {
+  padding: 2.5rem 0;
+  width: 15%;
+  flex-shrink: 0;
+  font-family: $headers-font;
+}
+
+.sidebar-content {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-right: 1.5rem;
+  border-right: 1px solid $light-grey;
+  gap: 1rem;
+}
+
+.sidebar-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn-level {
+  @include display-flex-center;
+  height: 5.6rem;
+  width: 5.6rem;
+  border-radius: 50%;
+  padding: 2.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.text-book-page {
+  @include display-flex-space-between;
+  flex-direction: column;
+  padding: 1.5rem 2.5rem;
+  width: 85%;
+}
+
+.text-book-page-head {
+  display: flex;
+  padding: 2.5rem;
+  align-items: center;
+  gap: 1.5rem;
+  margin-right: auto;
+}
+
+.cards-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  row-gap: 1rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 32rem;
+    height: 25rem;
+    padding: 1.2rem;
+    background: #FFFFFF;
+    box-shadow: 0px 1px 4px 1px rgba(50, 50, 71, 0.15);
+    border-radius: 16px;
+}
+
+.card-main-info-wrapper {
+  display: flex;
+  align-items: center;
+  font-family: $headers-font;
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+}
+
+.btn-play {
+  margin-left: -1.5rem;
+}
+
+.btn-play svg {
+  width: 25px;
+  height: 25px;
+  margin-top: 5px;
+}
+
+.card-img {
+  width: 10rem;
+  height: 8rem;
+  border-radius: 0.5rem;
+}
+
+.card-word-info {
+  padding-left: 2rem;
+}
+
+.word {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.word-transcription {
+  font-size: 1rem;
+  color: $mid-grey;
+  padding-bottom: 0.8rem;
+}
+
+.word-translate {
+  font-size: 1.3rem;
+}
+
+.user-btns {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.word-mean-translate, .word-ex-translate {
+  color: $mid-grey;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.word-mean-translate {
+  padding-bottom: 1rem;
+}
+
+.pagination {
+  @include display-flex-center;
+  padding: 2.5rem 1rem 0.5rem;
+}
+
+.page-input {
+  margin: 0 3rem;
+  width: 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: $headers-font;
+  border-bottom: 1px solid;
+  text-align: center;
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+/* Chrome, Safari, Edge, Opera */
+.page-input::-webkit-outer-spin-button,
+.page-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.page-input {
+  -moz-appearance: textfield;
+}
