@@ -197,8 +197,6 @@ export class Api {
     });
     if (!response.ok) return response.text();
     const data: UserAggregatedWordsResult[] = await response.json();
-    console.log(data);
-
     return data[0].paginatedResults;
   }
 

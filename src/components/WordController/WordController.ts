@@ -81,4 +81,30 @@ export class WordController {
     const userWords = await this.api.getUserWords(userData);
     console.log(userWords);
   }
+
+  private makeNewUserWord() {
+    const newWord: UserWord = {
+      difficulty: 'easy',
+      optional: {
+        learned: false,
+        correctAnswers: 0,
+        incorrectAnswers: 0,
+        correctSeries: 0,
+      },
+    };
+    return newWord;
+  }
+
+  public async updateHardWord(difficulty: 'easy' | 'hard', wordId: string) {
+    const { userId, token } = this.storage.getData('UserId');
+    const word: UserWord = await api.getUserWordById({ token, userId }, wordId) as UserWord;
+    if (typeof word === 'object') {
+      word.difficulty = difficulty;
+      await api.changeUserWord(userId, wordId, word);
+    } else {
+      const newWord: UserWord = this.makeNewUserWord();
+      newWord.difficulty = difficulty;
+      await api.setUserWord({ token, userId }, wordId, newWord);
+    }
+  }
 }

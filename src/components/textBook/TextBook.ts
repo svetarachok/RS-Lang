@@ -41,7 +41,6 @@ export class TextBook {
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
     this.pageInput = createNode({ tag: 'input', classes: ['page-input'], atributesAdnValues: [['type', 'number']] }) as HTMLInputElement;
     this.pageInput.value = String(this.currentPage + 1);
-    this.learnWord();
   }
 
   // Update textBook and cards separately
@@ -77,14 +76,8 @@ export class TextBook {
     this.renderCards(data);
   }
 
-  // Listen Learn Button in each word
-  learnWord() {
-    this.cardsWrapper.addEventListener('click', (e: Event) => {
-      console.log((e.target as HTMLElement).innerHTML);
-    });
-  }
-
   // Listen level buttons and pagination
+
   listenLevels(handler: (group: string, page: string) => void) {
     this.level1Btns.forEach((button) => {
       button.addEventListener('click', (e: Event) => {
@@ -188,7 +181,7 @@ export class TextBook {
     return pageHead;
   }
 
-  private renderCards(cardsData: Word[]) {
+  private renderCards(cardsData: Word[] | UserAggregatedWord[]) {
     this.cardsWrapper.innerHTML = '';
     cardsData.forEach((card) => {
       const cardItem = new WordUI(card);

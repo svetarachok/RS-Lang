@@ -98,7 +98,8 @@ export interface Statistic {
   }
 }
 
-export interface UserAggregatedWord extends Word {
+export interface UserAggregatedWord extends Omit<Word, 'id'> {
+  _id: string;
   userWord: UserWord,
 }
 

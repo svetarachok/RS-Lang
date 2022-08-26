@@ -11,7 +11,7 @@ import { UserUI } from '../user/UserUI';
 import { Sprint } from '../sprint/Sprint';
 import { AudioCall } from '../audiocall/audioCall';
 import { Storage } from '../Storage/Storage';
-import { UserCreationData } from '../types/interfaces';
+import { UserAggregatedWord, UserCreationData } from '../types/interfaces';
 import { MainPage } from '../MainPage/MainPage';
 import { BurgerMenu } from '../utils/BurgerMenu';
 
@@ -109,23 +109,23 @@ export class Controller {
     const stored = this.storage.getData('textBook');
     const logined = this.storage.getData('UserId');
     if (stored && logined) {
-      console.log(logined.token);
       const newData = await this.api.getAggrWords(
         { token: logined.token, userId: logined.userId },
         { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
-      );
-      console.log(newData);
+      ) as UserAggregatedWord[];
       console.log('Есть локал бук и залогинен');
-      const data = await this.api.getWords(stored);
-      this.textBook.updateTextbook(data, true, stored.group, stored.page);
+      this.textBook.updateTextbook(newData, true, stored.group, stored.page);
     } else if (stored && !logined) {
       console.log('Есть локал бук и НЕ залогинен');
       const data = await this.api.getWords(stored);
       this.textBook.updateTextbook(data, false, stored.group, stored.page);
     } else if (!stored && logined) {
+      const newData = await this.api.getAggrWords(
+        { token: logined.token, userId: logined.userId },
+        { group: '0', page: '0', wordsPerPage: String(WORDS_PER_PAGE) },
+      ) as UserAggregatedWord[];
       console.log('Не ходит по учебнику и залогинен');
-      const data = await this.api.getWords(stored);
-      this.textBook.updateTextbook(data, true, stored.group, stored.page);
+      this.textBook.updateTextbook(newData, true, stored.group, stored.page);
     } else {
       console.log('Не ходит по учебнику и не залогинен');
       const data = await this.api.getWords({ group: '0', page: '0' });
@@ -136,7 +136,7 @@ export class Controller {
   public async handleTextBoookPageUpdate(groupStr: string, pageStr: string) {
     const data = await this.api.getWords({ group: groupStr, page: pageStr });
     this.storage.setData('textBook', `{"group": ${groupStr}, "page": ${pageStr}}`);
-    this.textBook.updateCards(data);
+    this.handleTextBook();
     return data;
   }
 
