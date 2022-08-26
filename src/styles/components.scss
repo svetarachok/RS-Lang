@@ -41,6 +41,12 @@ a {
   color: $mid-grey;
 }
 
+.btn-add, .btn-learn {
+  padding: 0.5rem;
+  width: 3rem;
+  height: 3rem;
+}
+
 h1, h2, h3, h4 {
   font-family: $headers-font;
 }

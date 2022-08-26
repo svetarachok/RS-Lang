@@ -24,6 +24,10 @@ export class WordUI {
 
   learnWordBtn: HTMLButtonElement;
 
+  correct: HTMLSpanElement;
+
+  incorrect: HTMLSpanElement;
+
   constructor(obj: Word | UserAggregatedWord) {
     this.obj = obj;
     this.id = obj.id;
@@ -34,11 +38,13 @@ export class WordUI {
       tag: 'p', classes: ['word'], inner: `${this.obj.word}`,
     }) as HTMLParagraphElement;
     this.addToUserWordsBtn = createNode({
-      tag: 'button', classes: ['btn', 'btn-add'], atributesAdnValues: [['style', 'display: none']], inner: 'Сложное',
+      tag: 'button', classes: ['btn-secondary', 'btn-add'], atributesAdnValues: [['style', 'display: none']], inner: '<span class="material-icons-outlined btn-icon">menu_book</span>',
     }) as HTMLButtonElement;
     this.learnWordBtn = createNode({
-      tag: 'button', classes: ['btn', 'btn-learn'], atributesAdnValues: [['style', 'display: none']], inner: 'Учить',
+      tag: 'button', classes: ['btn-secondary', 'btn-learn'], atributesAdnValues: [['style', 'display: none']], inner: '<span class="material-icons-outlined btn-icon">spellcheck</span>',
     }) as HTMLButtonElement;
+    this.correct = createNode({ tag: 'span', classes: ['correct-answers'] }) as HTMLSpanElement;
+    this.incorrect = createNode({ tag: 'span', classes: ['incorrect-answers'] }) as HTMLSpanElement;
     this.transcription = createNode({ tag: 'p', classes: ['word-transcription'], inner: `${this.obj.transcription}` }) as HTMLParagraphElement;
     this.translate = createNode({ tag: 'p', classes: ['word-translate'], inner: `${this.obj.wordTranslate}` }) as HTMLParagraphElement;
     this.transcription = createNode({ tag: 'p', classes: ['word-transcription'], inner: `${this.obj.transcription}` }) as HTMLParagraphElement;
@@ -64,8 +70,11 @@ export class WordUI {
     );
     cardWordInfo.append(this.word, this.transcription, this.translate);
     cardMainInfoWrapper.append(this.img, this.playBtn, cardWordInfo);
-    if (this.obj as UserAggregatedWord) {
-      userBtns.append(this.addToUserWordsBtn, this.learnWordBtn);
+    if (this.obj) {
+      // console.log(this.obj.userWord);
+      const answers = createNode({ tag: 'div', classes: ['answers'] });
+      answers.append(this.correct, '/', this.incorrect);
+      userBtns.append(this.addToUserWordsBtn, this.learnWordBtn, answers);
       cardMainInfoWrapper.append(userBtns);
     }
     this.card.append(cardMainInfoWrapper, wordExamplesWrapper);
