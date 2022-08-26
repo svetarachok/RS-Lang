@@ -1,6 +1,6 @@
 import { Endpoint } from '../types/enums';
 
-const generateQueryString = (queryParam: Record<string, string>): string => `?${Object.keys(queryParam)
+export const generateQueryString = (queryParam: Record<string, string>): string => `?${Object.keys(queryParam)
   .map((key: string) => `${key}=${queryParam[key]}`)
   .join('&')}`;
 

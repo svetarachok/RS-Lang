@@ -457,6 +457,8 @@ export class Sprint {
   }
 
   public closeGame() {
+    const body = document.querySelector('.body') as HTMLElement;
+    body?.classList.remove('body--sprint');
     clearInterval(this.timerInterval);
     this.timerSound?.pause();
     this.removeKeyboardControl();
