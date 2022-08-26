@@ -50,6 +50,7 @@ export class WordController {
         changedWord.optional.learned = true;
       } else if (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries >= 5) {
         changedWord.optional.learned = true;
+        changedWord.difficulty = 'easy';
       }
     } else {
       changedWord.optional.correctSeries = 0;

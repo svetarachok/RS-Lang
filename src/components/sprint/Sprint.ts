@@ -1,8 +1,9 @@
 import { api } from '../Model/api';
 import { createHTMLElement, getRandomIntInclusive } from '../utils/functions';
-import { Word, RandomPairInSprint } from '../types/interfaces';
+import { Word, RandomPairInSprint, UserAggregatedWord } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
 import { WordController } from '../WordController/WordController';
+import { Storage } from '../Storage/Storage';
 
 export class Sprint {
   mode: 'menu' | 'book';
@@ -10,6 +11,8 @@ export class Sprint {
   api: typeof api;
 
   wordController: WordController;
+
+  storage: Storage;
 
   currentLevel: string | undefined;
 
@@ -45,12 +48,13 @@ export class Sprint {
 
   timerInterval: ReturnType<typeof setInterval> | undefined;
 
-  keyListener: (e: KeyboardEvent) => Promise<void>;
+  keyListener: (e: KeyboardEvent) => void;
 
   constructor(mode: 'menu' | 'book') {
     this.mode = mode;
     this.api = api;
     this.wordController = new WordController();
+    this.storage = new Storage();
     this.wordsInGame = [];
     this.score = 0;
     this.POINTS_FOR_WORD = 10;
@@ -206,8 +210,30 @@ export class Sprint {
       .then((data) => data.forEach(((page) => this.wordsInGame.push(...page))));
   }
 
+  private async getFilteredWords() {
+    const userData = this.storage.getUserIdData();
+    const userWords = await this.api.getAggregatedUserWords(
+      userData,
+      { group: String(this.bookLevel), page: String(this.bookPage) },
+    );
+    const wordsInGamePromises: Promise<Word>[] = [];
+    if (Array.isArray(userWords)) {
+      userWords.forEach((userWord: UserAggregatedWord) => {
+        // eslint-disable-next-line no-underscore-dangle
+        wordsInGamePromises.push(this.api.getWordById(userWord._id));
+      });
+      await Promise.all(wordsInGamePromises)
+        .then((data) => data.forEach(((word) => this.wordsInGame.push(word))));
+    }
+  }
+
   private async getWordsOnPage(level: string, page: string): Promise<void> {
-    this.wordsInGame = await api.getWords({ group: level, page });
+    const wordsOnPage = await api.getWords({ group: level, page });
+    if (!this.wordController.isAuthorized) {
+      this.wordsInGame = wordsOnPage;
+    } else {
+      await this.getFilteredWords();
+    }
   }
 
   private getRandomWord(): Word {
@@ -428,6 +454,7 @@ export class Sprint {
     clearInterval(this.timerInterval);
     this.timerSound?.pause();
     this.renderResult();
+    this.removeKeyboardControl();
   }
 
   public setBookPageAndLevel(level: number, page: number) {
@@ -435,15 +462,8 @@ export class Sprint {
     this.bookLevel = level;
   }
 
-  private async selectAnswerByKey(e: KeyboardEvent) {
-    let isTrue: boolean = false;
-    if (e.key === 'ArrowRight') {
-      isTrue = true;
-    } else if (e.key === 'ArrowLeft') {
-      isTrue = false;
-    }
-
-    if (isTrue === this.isPairTrue) {
+  private async selectAnswerByCorrect(correct: boolean) {
+    if (correct === this.isPairTrue) {
       this.completeTrueAnswer();
     } else {
       this.completeFalseAnswer();
@@ -453,6 +473,17 @@ export class Sprint {
       await this.addWordsInGame();
     }
     this.updateWord();
+  }
+
+  private selectAnswerByKey(e: KeyboardEvent) {
+    let isTrue: boolean = false;
+    if (e.key === 'ArrowRight') {
+      isTrue = true;
+      this.selectAnswerByCorrect(isTrue);
+    } else if (e.key === 'ArrowLeft') {
+      isTrue = false;
+      this.selectAnswerByCorrect(isTrue);
+    }
   }
 
   private addKeyboardControl(): void {
