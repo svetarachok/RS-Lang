@@ -2,11 +2,14 @@ import { api } from '../Model/api';
 import { createHTMLElement, getRandomIntInclusive } from '../utils/functions';
 import { Word, RandomPairInSprint } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
+import { WordController } from '../WordController/WordController';
 
 export class Sprint {
   mode: 'menu' | 'book';
 
   api: typeof api;
+
+  wordController: WordController;
 
   currentLevel: string | undefined;
 
@@ -47,6 +50,7 @@ export class Sprint {
   constructor(mode: 'menu' | 'book') {
     this.mode = mode;
     this.api = api;
+    this.wordController = new WordController();
     this.wordsInGame = [];
     this.score = 0;
     this.POINTS_FOR_WORD = 10;
@@ -161,7 +165,7 @@ export class Sprint {
     const ready = <HTMLElement>document.querySelector('.sprint__ready');
     ready.remove();
     this.renderTimer(sprint, 'timer--control');
-    this.startTimer('timer--control', 12, this.renderResult.bind(this));
+    this.startTimer('timer--control', 10, this.renderResult.bind(this));
     const sprintControl = createHTMLElement('div', ['sprint__control']);
     const score = createHTMLElement('h2', ['control__score'], undefined, '0');
     const sound = createHTMLElement('div', ['control__sound']);
@@ -266,7 +270,8 @@ export class Sprint {
     this.updateWord();
   }
 
-  private completeTrueAnswer(): void {
+  private async completeTrueAnswer(): Promise<void> {
+    await this.wordController.sendWordOnServer(this.currentWord?.id!, true);
     this.trueAnswerSound.load();
     this.trueAnswerSound.play();
     this.seriesOfCorrect += 1;
@@ -276,7 +281,8 @@ export class Sprint {
     this.trueWords.push(this.currentWord!);
   }
 
-  private completeFalseAnswer(): void {
+  private async completeFalseAnswer(): Promise<void> {
+    await this.wordController.sendWordOnServer(this.currentWord?.id!, false);
     this.falseAnswerSound.load();
     this.falseAnswerSound.play();
     this.seriesOfCorrect = 0;
@@ -386,6 +392,7 @@ export class Sprint {
     listsContainer.append(falseList, trueList);
     resultContainer.append(score, listsContainer);
     sprint.append(resultContainer);
+    this.wordController.getUserWords();
   }
 
   private addWordInResult(list: HTMLElement, word: Word): void {
