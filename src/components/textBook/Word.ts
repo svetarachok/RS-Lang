@@ -1,4 +1,4 @@
-import { Word } from '../types/interfaces';
+import { UserAggregatedWord, Word } from '../types/interfaces';
 import createNode from '../utils/createNode';
 import { BASE_LINK } from '../utils/constants';
 import { soundIcon } from './soundSVG';
@@ -10,7 +10,7 @@ export class WordUI {
 
   playBtn: HTMLButtonElement;
 
-  obj: Word;
+  obj: Word | UserAggregatedWord;
 
   img: HTMLImageElement;
 
@@ -24,7 +24,7 @@ export class WordUI {
 
   learnWordBtn: HTMLButtonElement;
 
-  constructor(obj: Word) {
+  constructor(obj: Word | UserAggregatedWord) {
     this.obj = obj;
     this.id = obj.id;
     this.card = createNode({ tag: 'div', classes: ['card'] }) as HTMLDivElement;
@@ -63,8 +63,11 @@ export class WordUI {
       wordExampleTranslate,
     );
     cardWordInfo.append(this.word, this.transcription, this.translate);
-    userBtns.append(this.addToUserWordsBtn, this.learnWordBtn);
-    cardMainInfoWrapper.append(this.img, this.playBtn, cardWordInfo, userBtns);
+    cardMainInfoWrapper.append(this.img, this.playBtn, cardWordInfo);
+    if (this.obj as UserAggregatedWord) {
+      userBtns.append(this.addToUserWordsBtn, this.learnWordBtn);
+      cardMainInfoWrapper.append(userBtns);
+    }
     this.card.append(cardMainInfoWrapper, wordExamplesWrapper);
     return this.card;
   }

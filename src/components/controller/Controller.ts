@@ -149,6 +149,7 @@ export class Controller {
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
       if (window.location.href === `${APP_LINK}/#/book`) {
+        console.log('boook');
         await this.handleTextBook();
       }
     } else {
@@ -172,10 +173,11 @@ export class Controller {
     const res = await this.api.authorize(obj);
     // this.modal.showMessage('Успешная регистрация! <Войдите в аккаунт')
     if (typeof res === 'object') {
+      console.log('123');
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
-      if (window.location.href === `${APP_LINK}/#/book`) {
+      if (window.location.href === `${APP_LINK}/book`) {
         await this.handleTextBook();
       }
     }

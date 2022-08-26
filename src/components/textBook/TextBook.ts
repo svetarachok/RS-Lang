@@ -1,6 +1,6 @@
 import { WordUI } from './Word';
 import createNode from '../utils/createNode';
-import { Word } from '../types/interfaces';
+import { UserAggregatedWord, Word } from '../types/interfaces';
 import { Api } from '../Model/api';
 import { MAX_PAGE_NUMBER } from '../utils/constants';
 
@@ -45,7 +45,12 @@ export class TextBook {
   }
 
   // Update textBook and cards separately
-  public updateTextbook(data: Word[], flag: Boolean, group?: number, page?: number) {
+  public updateTextbook(
+    data: Word[] | UserAggregatedWord[],
+    flag: Boolean,
+    group?: number,
+    page?: number,
+  ) {
     this.textBook.innerHTML = '';
     this.renderTextBook(data);
     if (typeof group === 'number' && typeof page === 'number') {
@@ -67,7 +72,7 @@ export class TextBook {
     }
   }
 
-  public updateCards(data: Word[]) {
+  public updateCards(data: Word[] | UserAggregatedWord[]) {
     this.cardsWrapper.innerHTML = '';
     this.renderCards(data);
   }
@@ -160,7 +165,7 @@ export class TextBook {
   }
 
   // Render TextBook and components
-  public renderTextBook(data: Word[]): HTMLElement {
+  public renderTextBook(data: Word[] | UserAggregatedWord[]): HTMLElement {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
     const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
