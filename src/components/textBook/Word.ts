@@ -57,7 +57,8 @@ export class WordUI {
     this.translate = createNode({ tag: 'p', classes: ['word-translate'], inner: `${this.obj.wordTranslate}` }) as HTMLParagraphElement;
     this.transcription = createNode({ tag: 'p', classes: ['word-transcription'], inner: `${this.obj.transcription}` }) as HTMLParagraphElement;
     this.playWord();
-    this.listenUserWordBtn();
+    this.listenHardWordBtn();
+    this.listenLearnBtn();
   }
 
   public drawCard(): HTMLDivElement {
@@ -102,7 +103,7 @@ export class WordUI {
     return this.card;
   }
 
-  public listenUserWordBtn() {
+  public listenHardWordBtn() {
     this.addToUserWordsBtn.addEventListener('click', () => {
       let difficulty: 'easy' | 'hard';
       if (this.addToUserWordsBtn.classList.contains('hard-word-btn')) {
@@ -113,6 +114,20 @@ export class WordUI {
         difficulty = 'hard';
       }
       this.wordController.updateHardWord(difficulty, this.id);
+    });
+  }
+
+  public listenLearnBtn() {
+    this.learnWordBtn.addEventListener('click', () => {
+      let isLearned: boolean;
+      if (this.learnWordBtn.classList.contains('learn-word-btn')) {
+        this.learnWordBtn.classList.remove('learn-word-btn');
+        isLearned = false;
+      } else {
+        this.learnWordBtn.classList.add('learn-word-btn');
+        isLearned = true;
+      }
+      this.wordController.updateLearnedWord(isLearned, this.id);
     });
   }
 
