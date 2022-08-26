@@ -13,6 +13,7 @@ import { AudioCall } from '../audiocall/audioCall';
 import { Storage } from '../Storage/Storage';
 import { UserCreationData } from '../types/interfaces';
 import { MainPage } from '../MainPage/MainPage';
+import { BurgerMenu } from '../utils/BurgerMenu';
 
 export class Controller {
   router: Navigo;
@@ -35,6 +36,8 @@ export class Controller {
 
   mainPage: MainPage;
 
+  menu: BurgerMenu;
+
   constructor() {
     this.router = new Navigo('/', { hash: true });
     this.api = new Api();
@@ -45,6 +48,7 @@ export class Controller {
     this.userUI = new UserUI();
     this.storage = new Storage();
     this.mainPage = new MainPage();
+    this.menu = new BurgerMenu();
     // this.initUserForms();
   }
 
@@ -91,6 +95,7 @@ export class Controller {
   }
 
   public async initApp() {
+    this.menu.initBurgerMenu();
     this.textBook.listenLevels(this.handleTextBoookPageUpdate.bind(this));
     this.textBook.listenPagination(this.handleTextBoookPageUpdate.bind(this));
     this.startUserForms();
@@ -186,13 +191,11 @@ export class Controller {
     this.sprint = new Sprint('book');
     this.sprint.setBookPageAndLevel(this.textBook.currentLevel, this.textBook.currentPage);
     this.sprint.renderGame();
-    console.log('from book');
   }
 
   private initSprintFromMenu() {
     this.sprint = new Sprint('menu');
     this.sprint.renderGame();
-    console.log('from menu');
   }
 
   private closeSprint() {

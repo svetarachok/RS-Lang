@@ -9,3 +9,10 @@
   justify-content: center;
   align-items: center;
 }
+
+@mixin card-style {
+  padding: 1.2rem;
+  background: $white-color;
+  box-shadow: 0px 1px 4px 1px rgba(50, 50, 71, 0.15);
+  border-radius: 16px;
+}
