@@ -193,13 +193,11 @@ export class Controller {
     this.sprint = new Sprint('book');
     this.sprint.setBookPageAndLevel(this.textBook.currentLevel, this.textBook.currentPage);
     this.sprint.renderGame();
-    console.log('from book');
   }
 
   private initSprintFromMenu() {
     this.sprint = new Sprint('menu');
     this.sprint.renderGame();
-    console.log('from menu');
   }
 
   private closeSprint() {
