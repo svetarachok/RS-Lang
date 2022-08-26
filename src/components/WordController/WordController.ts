@@ -81,4 +81,44 @@ export class WordController {
     const userWords = await this.api.getUserWords(userData);
     console.log(userWords);
   }
+
+  private makeNewUserWord() {
+    const newWord: UserWord = {
+      difficulty: 'easy',
+      optional: {
+        learned: false,
+        correctAnswers: 0,
+        incorrectAnswers: 0,
+        correctSeries: 0,
+      },
+    };
+    return newWord;
+  }
+
+  public async updateHardWord(difficulty: 'easy' | 'hard', wordId: string) {
+    const { userId, token } = this.storage.getUserIdData();
+    const word: UserWord = await api.getUserWordById({ userId, token }, wordId) as UserWord;
+    if (typeof word === 'object') {
+      word.difficulty = difficulty;
+      await api.changeUserWord({ userId, token }, wordId, word);
+    } else {
+      const newWord: UserWord = this.makeNewUserWord();
+      newWord.difficulty = difficulty;
+      await api.setUserWord({ userId, token }, wordId, newWord);
+    }
+  }
+
+  public async updateLearnedWord(learned: boolean, wordId: string) {
+    const data = this.storage.getData('UserId');
+    const word: UserWord = await api.getUserWordById(data, wordId) as UserWord;
+    console.log(data.userId);
+    if (typeof word === 'object') {
+      word.optional.learned = learned;
+      await api.changeUserWord(data, wordId, word);
+    } else {
+      const newWord: UserWord = this.makeNewUserWord();
+      newWord.optional.learned = learned;
+      await api.setUserWord(data, wordId, newWord);
+    }
+  }
 }

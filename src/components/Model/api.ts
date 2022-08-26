@@ -163,14 +163,13 @@ export class Api {
 
   public async getAggregatedUserWords(
     authData: Pick<AuthorizationData, 'token' | 'userId'>,
-    filterParam: { difficalty: 'easy' | 'hard', learned: boolean },
-    queryParam?: { group: string, page: string, wordsPerPage: string },
+    queryParam: { group: string, page: string, wordsPerPage?: string },
+    filterStr?: string,
   ):
     Promise<UserAggregatedWord[] | string> {
-    const filterObj = { 'userWord.difficulty': filterParam.difficalty, 'userWord.optional.learned': filterParam.learned };
-    const stringify = JSON.stringify(filterObj);
-    const filterStr = `{"$and":[${stringify}]}`;
-    const paramString = generateQueryString({ ...queryParam, ...{ filter: filterStr } });
+    const paramString = filterStr
+      ? generateQueryString({ ...queryParam, ...{ filter: filterStr } })
+      : generateQueryString(queryParam);
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}${paramString}`, {
       method: HTTPMethod.GET,
       headers: {
@@ -181,6 +180,22 @@ export class Api {
     const data: UserAggregatedWordsResult[] = await response.json();
     console.log(data);
 
+    return data[0].paginatedResults;
+  }
+
+  public async getAggrWords(
+    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    queryParam: { group: string, page: string, wordsPerPage: string },
+  ): Promise<UserAggregatedWord[] | string> {
+    const paramString = generateQueryString({ ...queryParam });
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}${paramString}`, {
+      method: HTTPMethod.GET,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+      },
+    });
+    if (!response.ok) return response.text();
+    const data: UserAggregatedWordsResult[] = await response.json();
     return data[0].paginatedResults;
   }
 
