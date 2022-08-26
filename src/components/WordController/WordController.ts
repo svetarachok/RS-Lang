@@ -100,7 +100,11 @@ export class WordController {
     const word: UserWord = await api.getUserWordById({ userId, token }, wordId) as UserWord;
     if (typeof word === 'object') {
       word.difficulty = difficulty;
-      await api.changeUserWord({ userId, token }, wordId, word);
+      await api.changeUserWord(
+        { userId, token },
+        wordId,
+        { difficulty: word.difficulty, optional: word.optional },
+      );
     } else {
       const newWord: UserWord = this.makeNewUserWord();
       newWord.difficulty = difficulty;
@@ -110,11 +114,15 @@ export class WordController {
 
   public async updateLearnedWord(learned: boolean, wordId: string) {
     const data = this.storage.getData('UserId');
-    const word: UserWord = await api.getUserWordById(data, wordId) as UserWord;
+    const word = await api.getUserWordById(data, wordId);
     console.log(data.userId);
     if (typeof word === 'object') {
       word.optional.learned = learned;
-      await api.changeUserWord(data, wordId, word);
+      await api.changeUserWord(
+        data,
+        wordId,
+        { difficulty: word.difficulty, optional: word.optional },
+      );
     } else {
       const newWord: UserWord = this.makeNewUserWord();
       newWord.optional.learned = learned;
