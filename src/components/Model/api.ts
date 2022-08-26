@@ -94,7 +94,7 @@ export class Api {
   }
 
   public async getUserWords(authData: Pick<AuthorizationData, 'token' | 'userId'>):
-  Promise<UserWord[] | string> {
+  Promise<Required<UserWord>[] | string> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}`, {
       method: HTTPMethod.GET,
       headers: {
@@ -107,7 +107,7 @@ export class Api {
   }
 
   public async getUserWordById(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
-  Promise<UserWord | string> {
+  Promise<Required<UserWord> | string> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.GET,
       headers: {
@@ -122,8 +122,12 @@ export class Api {
     return response.json();
   }
 
-  public async changeUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string, userWord: UserWord):
-  Promise<UserWord | string> {
+  public async changeUserWord(
+    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    wordId:string,
+    userWord: Omit<UserWord, 'id' | 'wordId'>,
+  ):
+    Promise<UserWord | string> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.PUT,
       headers: {
