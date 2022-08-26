@@ -22,7 +22,7 @@ export class WordController {
     return false;
   }
 
-  private createUserWordByAnswer(correct: boolean): UserWord {
+  private createUserWordByAnswer(correct: boolean): Omit<UserWord, 'id' | 'wordId'> {
     const newWord: UserWord = {
       difficulty: 'easy',
       optional: {
@@ -60,39 +60,19 @@ export class WordController {
   }
 
   public async sendWordOnServer(wordId: string, correct: boolean) {
-    if (this.isAuthorized) {
-      const userData = this.storage.getUserIdData();
-      const userWords = await this.api.getUserWords(userData);
-      console.log(userWords);
-      let isWordInUserWords = false;
-      if (typeof userWords === 'string') {
-        console.log(userWords);
-        return;
-      }
-      userWords.forEach((word: UserWord) => {
-        if (word.wordId === wordId) {
-          isWordInUserWords = true;
-        }
-      });
-      if (isWordInUserWords) {
-        const userWord = await this.api.getUserWordById(userData, wordId);
-        if (typeof userWord === 'string') {
-          console.log(userWord);
-          return;
-        }
-        const changedWord = this.changeUserWordByAnswer(userWord, correct);
-        console.log(userData);
-        console.log(wordId);
-        console.log(changedWord);
-        this.api.changeUserWord(
-          { token: userData.token, userId: userData.userId },
-          wordId,
-          { difficulty: changedWord.difficulty, optional: changedWord.optional },
-        );
-      } else {
-        const newUserWord = this.createUserWordByAnswer(correct);
-        this.api.setUserWord(userData, wordId, newUserWord);
-      }
+    if (!this.isAuthorized) return;
+    const userData = this.storage.getUserIdData();
+    const userWord = await this.api.getUserWordById(userData, wordId);
+    if (typeof userWord === 'object') {
+      const changedWord = this.changeUserWordByAnswer(userWord, correct);
+      this.api.changeUserWord(
+        userData,
+        wordId,
+        { difficulty: changedWord.difficulty, optional: changedWord.optional },
+      );
+    } else {
+      const newUserWord = this.createUserWordByAnswer(correct);
+      this.api.setUserWord(userData, wordId, newUserWord);
     }
   }
 

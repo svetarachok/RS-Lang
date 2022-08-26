@@ -73,8 +73,12 @@ export class Api {
     return response.json();
   }
 
-  public async setUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string, userWord: UserWord):
-  Promise<UserWord | string> {
+  public async setUserWord(
+    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    wordId:string,
+    userWord: Omit<UserWord, 'id' | 'wordId'>,
+  ):
+    Promise<UserWord | string> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.POST,
       headers: {
