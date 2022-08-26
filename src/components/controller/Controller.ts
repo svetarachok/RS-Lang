@@ -5,7 +5,7 @@ import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import {
-  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK,
+  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK, WORDS_PER_PAGE,
 } from '../utils/constants';
 import { UserUI } from '../user/UserUI';
 import { Sprint } from '../sprint/Sprint';
@@ -109,6 +109,12 @@ export class Controller {
     const stored = this.storage.getData('textBook');
     const logined = this.storage.getData('UserId');
     if (stored && logined) {
+      console.log(logined.token);
+      const newData = await this.api.getAggrWords(
+        { token: logined.token, userId: logined.userId },
+        { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
+      );
+      console.log(newData);
       console.log('Есть локал бук и залогинен');
       const data = await this.api.getWords(stored);
       this.textBook.updateTextbook(data, true, stored.group, stored.page);
@@ -149,6 +155,7 @@ export class Controller {
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
       if (window.location.href === `${APP_LINK}/#/book`) {
+        console.log('boook');
         await this.handleTextBook();
       }
     } else {
@@ -172,10 +179,11 @@ export class Controller {
     const res = await this.api.authorize(obj);
     // this.modal.showMessage('Успешная регистрация! <Войдите в аккаунт')
     if (typeof res === 'object') {
+      console.log('123');
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
-      if (window.location.href === `${APP_LINK}/#/book`) {
+      if (window.location.href === `${APP_LINK}/book`) {
         await this.handleTextBook();
       }
     }

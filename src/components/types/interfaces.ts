@@ -99,7 +99,7 @@ export interface Statistic {
 }
 
 export interface UserAggregatedWord extends Word {
-  userWord?: UserWord,
+  userWord: UserWord,
 }
 
 export interface UserAggregatedWordsResult {
