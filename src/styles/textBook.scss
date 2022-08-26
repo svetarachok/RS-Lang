@@ -83,7 +83,7 @@
 }
 
 .btn-play {
-  margin-left: -1.5rem;
+  margin-left: -2rem;
 }
 
 .btn-play svg {
@@ -99,7 +99,7 @@
 }
 
 .card-word-info {
-  padding-left: 2rem;
+  padding-left: 0.8rem;
 }
 
 .word {
@@ -132,6 +132,20 @@
 .btn-icon {
   padding-top: 3px;
   padding-left: 3px;
+}
+
+.hard-word-btn {
+  border-color: $hard-word-btn-color;
+  .btn-icon {
+    color: $hard-word-btn-color;
+  }
+}
+
+.learn-word-btn {
+  border-color: $learned-word-btn-color;
+  .btn-icon {
+    color: $learned-word-btn-color;
+  }
 }
 
 .word-mean-translate, .word-ex-translate {
