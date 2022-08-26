@@ -94,7 +94,7 @@ export class Api {
   }
 
   public async getUserWords(authData: Pick<AuthorizationData, 'token' | 'userId'>):
-  Promise<UserWord[]> {
+  Promise<UserWord[] | string> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}`, {
       method: HTTPMethod.GET,
       headers: {
@@ -102,23 +102,23 @@ export class Api {
       },
     });
 
-    // if (!response.ok) return response.text();
+    if (!response.ok) return response.text();
     return response.json();
   }
 
   public async getUserWordById(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
-  Promise<UserWord> {
+  Promise<UserWord | string> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.GET,
       headers: {
         Authorization: `Bearer ${authData.token}`,
       },
     });
-    // if (response.status === 400) {
-    //   const errorMessage = (await response.json()).error.errors[0].message as string;
-    //   return errorMessage;
-    // }
-    // if (!response.ok) return response.text();
+    if (response.status === 400) {
+      const errorMessage = (await response.json()).error.errors[0].message as string;
+      return errorMessage;
+    }
+    if (!response.ok) return response.text();
     return response.json();
   }
 
