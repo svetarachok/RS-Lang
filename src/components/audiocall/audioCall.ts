@@ -76,7 +76,6 @@ export class AudioCall {
     wrapper.append(buttonsWrapper);
     this.container.append(wrapper);
     main.append(this.container);
-    // (document.querySelector('footer') as HTMLElement).style.display = 'none';
   }
 
   private async startGameFromMenu(wordsGroup: string) {
@@ -86,6 +85,7 @@ export class AudioCall {
 
   private async startGameFromBook() {
     if (this.settings) this.words = await this.getWordsForGame(this.settings);
+    if (this.words.length === 0) return;
     this.startGameStage();
   }
 
@@ -103,7 +103,8 @@ export class AudioCall {
         await this.getAggregatedWords({ group: settings.group, page: String(page) }),
       );
     }
-    return userAggregatedWords.map((word) => convertAggregatedWordToWord(word));
+    const words = userAggregatedWords.map((word) => convertAggregatedWordToWord(word));
+    return shuffleArray(words).slice(0, MAX_COUNT_WORDS_PER_GAME);
   }
 
   private async getAggregatedWords(settings: { group: string, page: string }) {
@@ -111,7 +112,7 @@ export class AudioCall {
       this.userData as AuthorizationData,
       { page: settings.page, group: settings.group, wordsPerPage: '20' },
     ) as UserAggregatedWord[];
-    userAggregatedWords = userAggregatedWords.filter((word) => word?.userWord?.optional?.learned);
+    userAggregatedWords = userAggregatedWords.filter((word) => !word?.userWord?.optional?.learned);
     return userAggregatedWords;
   }
 
@@ -129,7 +130,7 @@ export class AudioCall {
     if (stageResult) this.result.correct.push(word);
     else this.result.incorrect.push(word);
 
-    if (this.currentStage < MAX_COUNT_WORDS_PER_GAME - 1
+    if (this.currentStage < this.words.length - 1
       && this.result.incorrect.length < INCORRECT_SERIES) {
       this.currentStage += 1;
       this.startGameStage();
