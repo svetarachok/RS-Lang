@@ -241,16 +241,17 @@ export class Api {
   }
 
   public async getStatistic(authData: Pick<AuthorizationData, 'token' | 'userId'>):
-  Promise<StatisticResponse | string> {
+  Promise<StatisticResponse | string | null> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.statistics}`, {
       method: HTTPMethod.GET,
       headers: {
         Authorization: `Bearer ${authData.token}`,
       },
     });
-    const data = await response.json();
-    if (!response.ok) return response.text();
 
+    if (response.status === 404) return null;
+    if (!response.ok) return response.text();
+    const data = await response.json();
     return data;
   }
 }
@@ -259,3 +260,4 @@ export const api: Api = new Api();
 
 // 401 Unauthorized не тот токен
 // 403 Forbidden не тот юзерайди
+// 404 у юзера нет статистики Couldn't find a(an) statistic with: "userId: 630a8bf986a1e800749e9556"
