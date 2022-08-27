@@ -1,6 +1,6 @@
 import { WordUI } from './Word';
 import createNode from '../utils/createNode';
-import { Word } from '../types/interfaces';
+import { UserAggregatedWord, Word } from '../types/interfaces';
 import { Api } from '../Model/api';
 import { MAX_PAGE_NUMBER } from '../utils/constants';
 
@@ -41,11 +41,15 @@ export class TextBook {
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
     this.pageInput = createNode({ tag: 'input', classes: ['page-input'], atributesAdnValues: [['type', 'number']] }) as HTMLInputElement;
     this.pageInput.value = String(this.currentPage + 1);
-    this.learnWord();
   }
 
   // Update textBook and cards separately
-  public updateTextbook(data: Word[], flag: Boolean, group?: number, page?: number) {
+  public updateTextbook(
+    data: Word[] | UserAggregatedWord[],
+    flag: Boolean,
+    group?: number,
+    page?: number,
+  ) {
     this.textBook.innerHTML = '';
     this.renderTextBook(data);
     if (typeof group === 'number' && typeof page === 'number') {
@@ -67,19 +71,13 @@ export class TextBook {
     }
   }
 
-  public updateCards(data: Word[]) {
+  public updateCards(data: Word[] | UserAggregatedWord[]) {
     this.cardsWrapper.innerHTML = '';
     this.renderCards(data);
   }
 
-  // Listen Learn Button in each word
-  learnWord() {
-    this.cardsWrapper.addEventListener('click', (e: Event) => {
-      console.log((e.target as HTMLElement).innerHTML);
-    });
-  }
-
   // Listen level buttons and pagination
+
   listenLevels(handler: (group: string, page: string) => void) {
     this.level1Btns.forEach((button) => {
       button.addEventListener('click', (e: Event) => {
@@ -160,7 +158,7 @@ export class TextBook {
   }
 
   // Render TextBook and components
-  public renderTextBook(data: Word[]): HTMLElement {
+  public renderTextBook(data: Word[] | UserAggregatedWord[]): HTMLElement {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
     const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
@@ -183,7 +181,7 @@ export class TextBook {
     return pageHead;
   }
 
-  private renderCards(cardsData: Word[]) {
+  private renderCards(cardsData: Word[] | UserAggregatedWord[]) {
     this.cardsWrapper.innerHTML = '';
     cardsData.forEach((card) => {
       const cardItem = new WordUI(card);
