@@ -1,15 +1,20 @@
 import { api } from '../Model/api';
-import { GameResult, Word } from '../types/interfaces';
+import { storage } from '../Storage/Storage';
+import {
+  AuthorizationData, GameResult, Word, UserAggregatedWord,
+} from '../types/interfaces';
+import { convertAggregatedWordToWord } from '../utils/convertAggregatedWordToWord';
 import createNode from '../utils/createNode';
 import { getRandomWordsByGroup } from '../utils/getRandomWords';
 import { shuffleArray } from '../utils/shuffleArray';
+import { wordController } from '../WordController/WordController';
 import { LevelSelect } from './levelSelect';
 // eslint-disable-next-line import/no-cycle
 import { ResultPage } from './resultPage';
 import { Stage } from './stage';
 import { StartPage } from './startPage';
 
-const COUNT_WORDS_PER_GAME = 10;
+const MAX_COUNT_WORDS_PER_GAME = 10;
 const INCORRECT_SERIES = 5;
 
 export class AudioCall {
@@ -32,6 +37,8 @@ export class AudioCall {
 
   private settings: { group: string; page: string; } | undefined;
 
+  private userData: AuthorizationData | null;
+
   constructor() {
     this.container = createNode({ tag: 'div', classes: ['audio-call'] });
     this.closeButton = createNode({
@@ -41,6 +48,7 @@ export class AudioCall {
       inner: 'X',
     });
     this.muteButton = createNode({ tag: 'span', classes: ['material-icons-outlined', 'mute-button'], inner: 'volume_up' });
+    this.userData = storage.getUserIdData();
   }
 
   public start(settings?: { group: number, page: number }) {
@@ -69,22 +77,44 @@ export class AudioCall {
     wrapper.append(buttonsWrapper);
     this.container.append(wrapper);
     main.append(this.container);
-    // (document.querySelector('footer') as HTMLElement).style.display = 'none';
   }
 
   private async startGameFromMenu(wordsGroup: string) {
-    this.words = await getRandomWordsByGroup(wordsGroup, COUNT_WORDS_PER_GAME);
+    this.words = await getRandomWordsByGroup(wordsGroup, MAX_COUNT_WORDS_PER_GAME);
     this.startGameStage();
   }
 
   private async startGameFromBook() {
     if (this.settings) this.words = await this.getWordsForGame(this.settings);
+    if (this.words.length === 0) return;
     this.startGameStage();
   }
 
   private async getWordsForGame(settings: { group: string, page: string }) {
-    const wordsOnPage = await api.getWords(settings);
-    return shuffleArray(wordsOnPage).slice(0, COUNT_WORDS_PER_GAME);
+    if (!this.userData) {
+      const wordsOnPage = await api.getWords(settings);
+      return shuffleArray(wordsOnPage).slice(0, MAX_COUNT_WORDS_PER_GAME);
+    }
+    let userAggregatedWords = await this.getAggregatedWords(settings);
+    let page = Number(settings.page);
+    while (userAggregatedWords.length < MAX_COUNT_WORDS_PER_GAME && Number(page) > 0) {
+      page -= 1;
+      userAggregatedWords = userAggregatedWords.concat(
+        // eslint-disable-next-line no-await-in-loop
+        await this.getAggregatedWords({ group: settings.group, page: String(page) }),
+      );
+    }
+    const words = userAggregatedWords.map((word) => convertAggregatedWordToWord(word));
+    return shuffleArray(words).slice(0, MAX_COUNT_WORDS_PER_GAME);
+  }
+
+  private async getAggregatedWords(settings: { group: string, page: string }) {
+    let userAggregatedWords = await api.getAggregatedUserWords(
+      this.userData as AuthorizationData,
+      { page: settings.page, group: settings.group, wordsPerPage: '20' },
+    ) as UserAggregatedWord[];
+    userAggregatedWords = userAggregatedWords.filter((word) => !word?.userWord?.optional?.learned);
+    return userAggregatedWords;
   }
 
   private startGameStage() {
@@ -98,10 +128,11 @@ export class AudioCall {
   }
 
   private stageHandler(word: Word, stageResult: boolean) {
+    wordController.sendWordOnServer(word.id, stageResult);
     if (stageResult) this.result.correct.push(word);
     else this.result.incorrect.push(word);
 
-    if (this.currentStage < COUNT_WORDS_PER_GAME - 1
+    if (this.currentStage < this.words.length - 1
       && this.result.incorrect.length < INCORRECT_SERIES) {
       this.currentStage += 1;
       this.startGameStage();
