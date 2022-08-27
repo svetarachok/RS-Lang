@@ -1,8 +1,10 @@
 import { api } from '../Model/api';
 import { createHTMLElement, getRandomIntInclusive } from '../utils/functions';
-import { Word, RandomPairInSprint } from '../types/interfaces';
+import { Word, RandomPairInSprint, UserAggregatedWord } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
 import { WordController } from '../WordController/WordController';
+import { Storage } from '../Storage/Storage';
+import { convertAggregatedWordToWord } from '../utils/convertAggregatedWordToWord';
 
 export class Sprint {
   mode: 'menu' | 'book';
@@ -10,6 +12,8 @@ export class Sprint {
   api: typeof api;
 
   wordController: WordController;
+
+  storage: Storage;
 
   currentLevel: string | undefined;
 
@@ -45,12 +49,13 @@ export class Sprint {
 
   timerInterval: ReturnType<typeof setInterval> | undefined;
 
-  keyListener: (e: KeyboardEvent) => Promise<void>;
+  keyListener: (e: KeyboardEvent) => void;
 
   constructor(mode: 'menu' | 'book') {
     this.mode = mode;
     this.api = api;
     this.wordController = new WordController();
+    this.storage = new Storage();
     this.wordsInGame = [];
     this.score = 0;
     this.POINTS_FOR_WORD = 10;
@@ -165,7 +170,7 @@ export class Sprint {
     const ready = <HTMLElement>document.querySelector('.sprint__ready');
     ready.remove();
     this.renderTimer(sprint, 'timer--control');
-    this.startTimer('timer--control', 10, this.renderResult.bind(this));
+    this.startTimer('timer--control', 60, this.renderResult.bind(this));
     const sprintControl = createHTMLElement('div', ['sprint__control']);
     const score = createHTMLElement('h2', ['control__score'], undefined, '0');
     const sound = createHTMLElement('div', ['control__sound']);
@@ -206,8 +211,24 @@ export class Sprint {
       .then((data) => data.forEach(((page) => this.wordsInGame.push(...page))));
   }
 
+  private async getFilteredWords(level: string, page: string): Promise<Word[]> {
+    const userData = this.storage.getUserIdData();
+    const userWordsAggr = await this.api.getAggregatedUserWords(
+      userData,
+      { group: level, page, wordsPerPage: '20' },
+    ) as UserAggregatedWord[];
+    const userFilteredWords = userWordsAggr.filter((word) => !word?.userWord?.optional?.learned);
+    const userWords = userFilteredWords.map((word) => convertAggregatedWordToWord(word));
+    return userWords;
+  }
+
   private async getWordsOnPage(level: string, page: string): Promise<void> {
-    this.wordsInGame = await api.getWords({ group: level, page });
+    const wordsOnPage = await api.getWords({ group: level, page });
+    if (!this.wordController.isAuthorized) {
+      this.wordsInGame = wordsOnPage;
+    } else {
+      this.wordsInGame = await this.getFilteredWords(level, page);
+    }
   }
 
   private getRandomWord(): Word {
@@ -239,14 +260,29 @@ export class Sprint {
   }
 
   private async addWordsInGame(): Promise<void> {
-    if (this.bookPage > 0) {
-      const newWords = await api
-        .getWords({ group: String(this.bookLevel), page: String(this.bookPage - 1) });
-      this.wordsInGame.push(...newWords);
-      this.bookPage -= 1;
-    } else if (this.bookPage === 0) {
-      this.finishGame();
+    const prevWords = [];
+    if (!this.wordController.isAuthorized) {
+      for (let i = this.bookPage; i > 0; i -= 1) {
+        prevWords.push(this.api.getWords({ group: String(this.bookLevel), page: String(i - 1) }));
+      }
+      await Promise.all(prevWords)
+        .then((data) => data.forEach(((words) => { this.wordsInGame.push(...words); })));
+
+      if (this.wordsInGame.length === 0) {
+        this.finishGame();
+      }
+    } else if (this.wordController.isAuthorized) {
+      for (let i = this.bookPage; i > 0; i -= 1) {
+        prevWords.push(this.getFilteredWords(String(this.bookLevel), String(i - 1)));
+      }
+      await Promise.all(prevWords)
+        .then((data) => data.forEach(((words) => { this.wordsInGame.push(...words); })));
+
+      if (this.wordsInGame.length === 0) {
+        this.finishGame();
+      }
     }
+    this.bookPage = 0;
   }
 
   private async selectAnswer(e: Event): Promise<void> {
@@ -264,25 +300,25 @@ export class Sprint {
     } else {
       this.completeFalseAnswer();
     }
-    if (this.wordsInGame.length === 0) {
+    if (this.wordsInGame.length === 0 && this.mode === 'book') {
       await this.addWordsInGame();
     }
     this.updateWord();
   }
 
-  private async completeTrueAnswer(): Promise<void> {
-    await this.wordController.sendWordOnServer(this.currentWord?.id!, true);
+  private completeTrueAnswer(): void {
+    this.trueWords.push(this.currentWord!);
+    this.updateScore();
     this.trueAnswerSound.load();
     this.trueAnswerSound.play();
     this.seriesOfCorrect += 1;
     this.checkSeriesOfCorrect();
-    this.updateScore();
     this.changeStyleSeries(this.seriesOfCorrect);
-    this.trueWords.push(this.currentWord!);
+    this.wordController.sendWordOnServer(this.currentWord?.id!, true);
   }
 
-  private async completeFalseAnswer(): Promise<void> {
-    await this.wordController.sendWordOnServer(this.currentWord?.id!, false);
+  private completeFalseAnswer(): void {
+    this.falseWords.push(this.currentWord!);
     this.falseAnswerSound.load();
     this.falseAnswerSound.play();
     this.seriesOfCorrect = 0;
@@ -290,7 +326,7 @@ export class Sprint {
     this.changeMultiplyDescr(1);
     this.clearStyleSeries();
     this.clearParrots();
-    this.falseWords.push(this.currentWord!);
+    this.wordController.sendWordOnServer(this.currentWord?.id!, false);
   }
 
   private updateWord(): void {
@@ -380,17 +416,18 @@ export class Sprint {
     const sprint = <HTMLElement>document.querySelector('.sprint');
     const control = <HTMLElement>document.querySelector('.sprint__control');
     const timer = <HTMLElement>document.querySelector('.timer--control');
-    control.remove();
+    control.style.display = 'none';
     timer.remove();
     const resultContainer = createHTMLElement('div', ['sprint__result']);
     const score = createHTMLElement('h2', ['result__score'], undefined, `Твой результат: ${this.score} очков`);
     const listsContainer = createHTMLElement('div', ['sprint__lists']);
     const trueList = createHTMLElement('ul', ['result__true'], undefined, `Знаю: ${this.trueWords.length}`);
     const falseList = createHTMLElement('ul', ['result__false'], undefined, `Ошибок: ${this.falseWords.length}`);
+    const btnRepeat = createHTMLElement('button', ['result__repeat-btn'], undefined, 'Продолжить тренировку');
     this.trueWords.forEach((word) => this.addWordInResult(trueList, word));
     this.falseWords.forEach((word) => this.addWordInResult(falseList, word));
     listsContainer.append(falseList, trueList);
-    resultContainer.append(score, listsContainer);
+    resultContainer.append(score, listsContainer, btnRepeat);
     sprint.append(resultContainer);
     this.wordController.getUserWords();
   }
@@ -428,6 +465,7 @@ export class Sprint {
     clearInterval(this.timerInterval);
     this.timerSound?.pause();
     this.renderResult();
+    this.removeKeyboardControl();
   }
 
   public setBookPageAndLevel(level: number, page: number) {
@@ -435,24 +473,28 @@ export class Sprint {
     this.bookLevel = level;
   }
 
-  private async selectAnswerByKey(e: KeyboardEvent) {
-    let isTrue: boolean = false;
-    if (e.key === 'ArrowRight') {
-      isTrue = true;
-    } else if (e.key === 'ArrowLeft') {
-      isTrue = false;
-    }
-
-    if (isTrue === this.isPairTrue) {
+  private async selectAnswerByCorrect(correct: boolean) {
+    if (correct === this.isPairTrue) {
       this.completeTrueAnswer();
     } else {
       this.completeFalseAnswer();
     }
 
-    if (this.wordsInGame.length === 0) {
+    if (this.wordsInGame.length === 0 && this.mode === 'book') {
       await this.addWordsInGame();
     }
     this.updateWord();
+  }
+
+  private selectAnswerByKey(e: KeyboardEvent) {
+    let isTrue: boolean = false;
+    if (e.key === 'ArrowRight') {
+      isTrue = true;
+      this.selectAnswerByCorrect(isTrue);
+    } else if (e.key === 'ArrowLeft') {
+      isTrue = false;
+      this.selectAnswerByCorrect(isTrue);
+    }
   }
 
   private addKeyboardControl(): void {

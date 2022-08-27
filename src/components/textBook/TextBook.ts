@@ -47,19 +47,19 @@ export class TextBook {
   public updateTextbook(
     data: Word[] | UserAggregatedWord[],
     flag: Boolean,
-    group?: number,
-    page?: number,
+    group: number,
+    page: number,
   ) {
     this.textBook.innerHTML = '';
     this.renderTextBook(data);
-    if (typeof group === 'number' && typeof page === 'number') {
-      this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
-      this.level1Btns[group].classList.add('btn-active');
-      this.currentLevel = group;
-      this.currentPage = page;
-      this.pageInput.value = String(page + 1);
-      this.handlePageButtons();
-    }
+    // if (typeof group === 'number' && typeof page === 'number') {
+    this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
+    this.level1Btns[group].classList.add('btn-active');
+    this.currentLevel = group;
+    this.currentPage = page ? this.currentPage = page : this.currentPage = 0;
+    this.pageInput.value = String(page + 1);
+    this.handlePageButtons();
+    // }
     if (flag === true) {
       this.level1Btns[6].style.display = 'flex';
       const learnBtns = document.querySelectorAll('.btn-learn') as NodeListOf<HTMLElement>;
@@ -170,7 +170,6 @@ export class TextBook {
     page.append(pageHead, this.cardsWrapper, paginationWrapper);
     this.textBook.append(sidebar, page);
     container.append(this.textBook);
-    this.level1Btns[0].classList.add('btn-active');
     return container;
   }
 

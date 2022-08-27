@@ -1,6 +1,6 @@
 import { api } from '../Model/api';
 import { storage } from '../Storage/Storage';
-import { UserWord } from '../types/interfaces';
+import { UserAggregatedWord, UserWord } from '../types/interfaces';
 
 export class WordController {
   api: typeof api;
@@ -22,8 +22,8 @@ export class WordController {
     return false;
   }
 
-  private createUserWordByAnswer(correct: boolean): Omit<UserWord, 'id' | 'wordId'> {
-    const newWord: UserWord = {
+  private createNewUserWord(): UserWord {
+    return {
       difficulty: 'easy',
       optional: {
         learned: false,
@@ -32,6 +32,10 @@ export class WordController {
         correctSeries: 0,
       },
     };
+  }
+
+  private createUserWordByAnswer(correct: boolean): Omit<UserWord, 'id' | 'wordId'> {
+    const newWord: UserWord = this.createNewUserWord();
     if (correct) {
       newWord.optional.correctAnswers = 1;
       newWord.optional.correctSeries = 1;
@@ -50,6 +54,7 @@ export class WordController {
         changedWord.optional.learned = true;
       } else if (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries >= 5) {
         changedWord.optional.learned = true;
+        changedWord.difficulty = 'easy';
       }
     } else {
       changedWord.optional.correctSeries = 0;
@@ -82,19 +87,6 @@ export class WordController {
     console.log(userWords);
   }
 
-  private makeNewUserWord() {
-    const newWord: UserWord = {
-      difficulty: 'easy',
-      optional: {
-        learned: false,
-        correctAnswers: 0,
-        incorrectAnswers: 0,
-        correctSeries: 0,
-      },
-    };
-    return newWord;
-  }
-
   public async updateHardWord(difficulty: 'easy' | 'hard', wordId: string) {
     const { userId, token } = this.storage.getData('UserId');
     const word: UserWord = await api.getUserWordById({ userId, token }, wordId) as UserWord;
@@ -106,7 +98,7 @@ export class WordController {
         { difficulty: word.difficulty, optional: word.optional },
       );
     } else {
-      const newWord: UserWord = this.makeNewUserWord();
+      const newWord: UserWord = this.createNewUserWord();
       newWord.difficulty = difficulty;
       await api.setUserWord({ userId, token }, wordId, newWord);
     }
@@ -117,6 +109,7 @@ export class WordController {
     const word = await api.getUserWordById(data, wordId);
     if (typeof word === 'object') {
       word.optional.learned = learned;
+      if (!learned) word.optional.correctSeries = 0;
       word.difficulty = 'easy';
       await api.changeUserWord(
         data,
@@ -124,7 +117,7 @@ export class WordController {
         { difficulty: word.difficulty, optional: word.optional },
       );
     } else {
-      const newWord: UserWord = this.makeNewUserWord();
+      const newWord: UserWord = this.createNewUserWord();
       newWord.optional.learned = learned;
       await api.setUserWord(data, wordId, newWord);
     }
@@ -135,6 +128,20 @@ export class WordController {
     const word: UserWord = await api.getUserWordById(data, wordId) as UserWord;
     const resp = { difficulty: word.difficulty, learned: word.optional.learned };
     return resp;
+  }
+
+  public async getUserBookWords() {
+    const logined = this.storage.getData('UserId');
+    const totalWords = await this.api.getTotalUserWords(
+      { token: logined.token, userId: logined.userId },
+      '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
+    );
+    const newData = await this.api.getAggregatedUserWords(
+      { token: logined.token, userId: logined.userId },
+      { wordsPerPage: String(totalWords) },
+      '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
+    ) as UserAggregatedWord[];
+    return newData;
   }
 }
 

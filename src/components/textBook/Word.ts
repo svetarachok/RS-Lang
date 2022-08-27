@@ -3,6 +3,7 @@ import createNode from '../utils/createNode';
 import { BASE_LINK } from '../utils/constants';
 import { soundIcon } from './soundSVG';
 import { WordController } from '../WordController/WordController';
+import { storage } from '../Storage/Storage';
 
 export class WordUI {
   id: string;
@@ -30,6 +31,8 @@ export class WordUI {
   incorrect: HTMLSpanElement;
 
   wordController = new WordController();
+
+  storage: typeof storage;
 
   constructor(obj: Word | UserAggregatedWord) {
     this.obj = obj;
@@ -59,6 +62,7 @@ export class WordUI {
     this.playWord();
     this.listenHardWordBtn();
     this.listenLearnBtn();
+    this.storage = storage;
   }
 
   public drawCard(): HTMLDivElement {
@@ -103,6 +107,7 @@ export class WordUI {
 
   public listenHardWordBtn() {
     this.addToUserWordsBtn.addEventListener('click', () => {
+      const { group } = this.storage.getData('textBook');
       let difficulty: 'easy' | 'hard';
       if (this.addToUserWordsBtn.classList.contains('hard-word-btn')) {
         this.addToUserWordsBtn.classList.remove('hard-word-btn');
@@ -113,11 +118,15 @@ export class WordUI {
         difficulty = 'hard';
         this.wordController.updateHardWord(difficulty, this.id);
       }
+      if (group === 6) {
+        this.card.style.display = 'none';
+      }
     });
   }
 
   public listenLearnBtn() {
     this.learnWordBtn.addEventListener('click', () => {
+      const { group } = this.storage.getData('textBook');
       let isLearned: boolean;
       if (this.learnWordBtn.classList.contains('learn-word-btn')) {
         this.learnWordBtn.classList.remove('learn-word-btn');
@@ -130,6 +139,9 @@ export class WordUI {
         this.addToUserWordsBtn.disabled = true;
         isLearned = true;
         this.wordController.updateLearnedWord(isLearned, this.id);
+      }
+      if (group === 6) {
+        this.card.style.display = 'none';
       }
     });
   }
