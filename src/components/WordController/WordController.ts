@@ -137,3 +137,5 @@ export class WordController {
     return resp;
   }
 }
+
+export const wordController = new WordController();
