@@ -151,3 +151,5 @@ export class WordController {
     return newData;
   }
 }
+
+export const wordController = new WordController();
