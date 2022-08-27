@@ -22,8 +22,8 @@ export class WordController {
     return false;
   }
 
-  private createUserWordByAnswer(correct: boolean): Omit<UserWord, 'id' | 'wordId'> {
-    const newWord: UserWord = {
+  private createNewUserWord(): UserWord {
+    return {
       difficulty: 'easy',
       optional: {
         learned: false,
@@ -32,6 +32,10 @@ export class WordController {
         correctSeries: 0,
       },
     };
+  }
+
+  private createUserWordByAnswer(correct: boolean): Omit<UserWord, 'id' | 'wordId'> {
+    const newWord: UserWord = this.createNewUserWord();
     if (correct) {
       newWord.optional.correctAnswers = 1;
       newWord.optional.correctSeries = 1;
@@ -73,6 +77,22 @@ export class WordController {
       );
     } else {
       const newUserWord = this.createUserWordByAnswer(correct);
+      this.api.setUserWord(userData, wordId, newUserWord);
+    }
+  }
+
+  public async changeLearnedAndDifficulty(wordId: string, learned: boolean, difficulty: 'easy' | 'hard') {
+    if (!this.isAuthorized) return;
+    const userData = this.storage.getUserIdData();
+    const userWord = await this.api.getUserWordById(userData, wordId);
+    if (typeof userWord === 'object') {
+      userWord.optional.learned = learned;
+      userWord.difficulty = difficulty;
+      this.api.changeUserWord(userData, wordId, userWord);
+    } else {
+      const newUserWord = this.createNewUserWord();
+      newUserWord.optional.learned = learned;
+      newUserWord.difficulty = difficulty;
       this.api.setUserWord(userData, wordId, newUserWord);
     }
   }
