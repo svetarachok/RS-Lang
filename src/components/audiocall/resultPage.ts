@@ -51,10 +51,13 @@ export class ResultPage {
   }
 
   private getTitleText() {
-    if (this.result.correct.length === 10) return 'Блестяще!';
-    if (this.result.correct.length > 8) return 'Отличный результат!';
-    if (this.result.correct.length > 6) return 'Хороший результат!';
-    if (this.result.correct.length > 5) return 'Неплохо!';
+    const wordsCount = this.result.correct.length + this.result.incorrect.length;
+    const percentOfCorrectAnswers = (this.result.correct.length / wordsCount) * 100;
+    console.log(percentOfCorrectAnswers);
+    if (percentOfCorrectAnswers === 100) return 'Блестяще!';
+    if (percentOfCorrectAnswers > 85) return 'Отличный результат!';
+    if (percentOfCorrectAnswers > 65) return 'Хороший результат!';
+    if (percentOfCorrectAnswers > 55) return 'Неплохо!';
     return 'В другой раз получится лучше!';
   }
 
