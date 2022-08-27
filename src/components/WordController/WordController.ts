@@ -1,6 +1,6 @@
 import { api } from '../Model/api';
 import { storage } from '../Storage/Storage';
-import { UserWord } from '../types/interfaces';
+import { UserAggregatedWord, UserWord } from '../types/interfaces';
 
 export class WordController {
   api: typeof api;
@@ -135,6 +135,20 @@ export class WordController {
     const word: UserWord = await api.getUserWordById(data, wordId) as UserWord;
     const resp = { difficulty: word.difficulty, learned: word.optional.learned };
     return resp;
+  }
+
+  public async getUserBookWords() {
+    const logined = this.storage.getData('UserId');
+    const totalWords = await this.api.getTotalUserWords(
+      { token: logined.token, userId: logined.userId },
+      '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
+    );
+    const newData = await this.api.getAggregatedUserWords(
+      { token: logined.token, userId: logined.userId },
+      { wordsPerPage: String(totalWords) },
+      '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
+    ) as UserAggregatedWord[];
+    return newData;
   }
 }
 
