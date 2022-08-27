@@ -85,12 +85,10 @@ export class WordUI {
       const answers = createNode({ tag: 'div', classes: ['answers'] });
       answers.append(this.correct, '/', this.incorrect);
       userBtns.append(this.addToUserWordsBtn, this.learnWordBtn, answers);
-      if ((this.obj as UserAggregatedWord).userWord.difficulty === 'hard') {
-        this.addToUserWordsBtn.classList.add('hard-word-btn');
-      }
-      if ((this.obj as UserAggregatedWord).userWord.optional.learned === true) {
-        this.learnWordBtn.classList.add('learn-word-btn');
-      }
+      this.checkUserWordUpdate(
+        (this.obj as UserAggregatedWord).userWord.difficulty,
+        (this.obj as UserAggregatedWord).userWord.optional.learned,
+      );
       this.correct.innerHTML = String(
         (this.obj as UserAggregatedWord).userWord.optional.correctAnswers,
       );
@@ -109,11 +107,12 @@ export class WordUI {
       if (this.addToUserWordsBtn.classList.contains('hard-word-btn')) {
         this.addToUserWordsBtn.classList.remove('hard-word-btn');
         difficulty = 'easy';
+        this.wordController.updateHardWord(difficulty, this.id);
       } else {
         this.addToUserWordsBtn.classList.add('hard-word-btn');
         difficulty = 'hard';
+        this.wordController.updateHardWord(difficulty, this.id);
       }
-      this.wordController.updateHardWord(difficulty, this.id);
     });
   }
 
@@ -122,13 +121,28 @@ export class WordUI {
       let isLearned: boolean;
       if (this.learnWordBtn.classList.contains('learn-word-btn')) {
         this.learnWordBtn.classList.remove('learn-word-btn');
+        this.addToUserWordsBtn.disabled = false;
         isLearned = false;
+        this.wordController.updateLearnedWord(isLearned, this.id);
       } else {
         this.learnWordBtn.classList.add('learn-word-btn');
+        this.addToUserWordsBtn.classList.remove('hard-word-btn');
+        this.addToUserWordsBtn.disabled = true;
         isLearned = true;
+        this.wordController.updateLearnedWord(isLearned, this.id);
       }
-      this.wordController.updateLearnedWord(isLearned, this.id);
     });
+  }
+
+  private async checkUserWordUpdate(difficulty: 'easy' | 'hard', learned: boolean) {
+    if (learned === true && !this.learnWordBtn.classList.contains('learn-word-btn')) {
+      this.learnWordBtn.classList.add('learn-word-btn');
+      this.addToUserWordsBtn.disabled = true;
+    }
+    if (difficulty === 'hard' && !this.addToUserWordsBtn.classList.contains('hard-word-btn')) {
+      this.addToUserWordsBtn.classList.add('hard-word-btn');
+      this.addToUserWordsBtn.disabled = false;
+    }
   }
 
   private makeSoundURL(): string[] {
