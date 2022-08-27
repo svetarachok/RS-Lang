@@ -81,39 +81,10 @@ export class WordController {
     }
   }
 
-  public async changeLearnedAndDifficulty(wordId: string, learned: boolean, difficulty: 'easy' | 'hard') {
-    if (!this.isAuthorized) return;
-    const userData = this.storage.getUserIdData();
-    const userWord = await this.api.getUserWordById(userData, wordId);
-    if (typeof userWord === 'object') {
-      userWord.optional.learned = learned;
-      userWord.difficulty = difficulty;
-      this.api.changeUserWord(userData, wordId, userWord);
-    } else {
-      const newUserWord = this.createNewUserWord();
-      newUserWord.optional.learned = learned;
-      newUserWord.difficulty = difficulty;
-      this.api.setUserWord(userData, wordId, newUserWord);
-    }
-  }
-
   public async getUserWords() {
     const userData = this.storage.getUserIdData();
     const userWords = await this.api.getUserWords(userData);
     console.log(userWords);
-  }
-
-  private makeNewUserWord() {
-    const newWord: UserWord = {
-      difficulty: 'easy',
-      optional: {
-        learned: false,
-        correctAnswers: 0,
-        incorrectAnswers: 0,
-        correctSeries: 0,
-      },
-    };
-    return newWord;
   }
 
   public async updateHardWord(difficulty: 'easy' | 'hard', wordId: string) {
@@ -127,7 +98,7 @@ export class WordController {
         { difficulty: word.difficulty, optional: word.optional },
       );
     } else {
-      const newWord: UserWord = this.makeNewUserWord();
+      const newWord: UserWord = this.createNewUserWord();
       newWord.difficulty = difficulty;
       await api.setUserWord({ userId, token }, wordId, newWord);
     }
@@ -138,6 +109,7 @@ export class WordController {
     const word = await api.getUserWordById(data, wordId);
     if (typeof word === 'object') {
       word.optional.learned = learned;
+      if (!learned) word.optional.correctSeries = 0;
       word.difficulty = 'easy';
       await api.changeUserWord(
         data,
@@ -145,7 +117,7 @@ export class WordController {
         { difficulty: word.difficulty, optional: word.optional },
       );
     } else {
-      const newWord: UserWord = this.makeNewUserWord();
+      const newWord: UserWord = this.createNewUserWord();
       newWord.optional.learned = learned;
       await api.setUserWord(data, wordId, newWord);
     }
