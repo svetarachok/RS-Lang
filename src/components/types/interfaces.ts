@@ -81,9 +81,19 @@ export interface GameStatistic {
   incorrectAnswers: number,
 }
 
+export interface UserAggregatedWord extends Omit<Word, 'id'> {
+  _id: string;
+  userWord: UserWord,
+}
+
+export interface UserAggregatedWordsResult {
+  paginatedResults: UserAggregatedWord[],
+  totalCount: { count: number }[]
+}
+
 export interface Statistic {
-  learnedWords: 1,
-  optional: {
+  learnedWords: number,
+  optional?: {
     words:
     // string - строка в виде даты, например '24.08.2022'
     Record<string, WordsStatistic>
@@ -97,13 +107,6 @@ export interface Statistic {
     }
   }
 }
-
-export interface UserAggregatedWord extends Omit<Word, 'id'> {
-  _id: string;
-  userWord: UserWord,
-}
-
-export interface UserAggregatedWordsResult {
-  paginatedResults: UserAggregatedWord[],
-  totalCount: { count: number }[]
+export interface StatisticResponse extends Statistic {
+  id: string;
 }

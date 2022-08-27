@@ -4,6 +4,7 @@ export enum Endpoint {
   signin = '/signin',
   tokens = '/tokens',
   aggregatedWords = '/aggregatedWords',
+  statistics = '/statistics',
 }
 export enum ContentType {
   json = 'application/json',
