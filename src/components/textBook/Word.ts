@@ -154,6 +154,7 @@ export class WordUI {
     if (difficulty === 'hard' && !this.addToUserWordsBtn.classList.contains('hard-word-btn')) {
       this.addToUserWordsBtn.classList.add('hard-word-btn');
       this.addToUserWordsBtn.disabled = false;
+      this.learnWordBtn.classList.remove('learn-word-btn');
     }
   }
 

@@ -59,6 +59,7 @@ export class TextBook {
     this.currentPage = page ? this.currentPage = page : this.currentPage = 0;
     this.pageInput.value = String(page + 1);
     this.handlePageButtons();
+    this.handlePageAllDone(data);
     // }
     if (flag === true) {
       this.level1Btns[6].style.display = 'flex';
@@ -155,6 +156,15 @@ export class TextBook {
       currInput.value = String(this.currentPage + 1);
     }
     return currInput;
+  }
+
+  private handlePageAllDone(cardsData: Word[] | UserAggregatedWord[]) {
+    const d: UserAggregatedWord[] = (cardsData as UserAggregatedWord[]).filter(
+      (card: UserAggregatedWord) => (card.userWord && (card.userWord.difficulty === 'hard' || card.userWord.optional.learned === true)),
+    );
+    if (d.length === 20 && this.currentLevel !== 6) {
+      this.cardsWrapper.style.backgroundColor = 'lightblue';
+    }
   }
 
   // Render TextBook and components
