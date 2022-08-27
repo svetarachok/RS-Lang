@@ -109,7 +109,13 @@ export class Controller {
     const stored = this.storage.getData('textBook');
     const logined = this.storage.getData('UserId');
     if (stored && logined) {
-      const newData = await this.api.getAggrWords(
+      // if (stored.group === '6') {
+      //   const totalWords = await this.api.getAggregatedUserWords(
+      //     { token: logined.token, userId: logined.userId },
+      //     { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
+      //   ) as UserAggregatedWord[];
+      // }
+      const newData = await this.api.getAggregatedUserWords(
         { token: logined.token, userId: logined.userId },
         { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
       ) as UserAggregatedWord[];
@@ -120,7 +126,7 @@ export class Controller {
       const data = await this.api.getWords(stored);
       this.textBook.updateTextbook(data, false, stored.group, stored.page);
     } else if (!stored && logined) {
-      const newData = await this.api.getAggrWords(
+      const newData = await this.api.getAggregatedUserWords(
         { token: logined.token, userId: logined.userId },
         { group: '0', page: '0', wordsPerPage: String(WORDS_PER_PAGE) },
       ) as UserAggregatedWord[];
@@ -134,10 +140,10 @@ export class Controller {
   }
 
   public async handleTextBoookPageUpdate(groupStr: string, pageStr: string) {
-    const data = await this.api.getWords({ group: groupStr, page: pageStr });
+    // const data = await this.api.getWords({ group: groupStr, page: pageStr });
     this.storage.setData('textBook', `{"group": ${groupStr}, "page": ${pageStr}}`);
     this.handleTextBook();
-    return data;
+    // return data;
   }
 
   private startUserForms() {
