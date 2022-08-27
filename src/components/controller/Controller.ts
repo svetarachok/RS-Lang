@@ -5,13 +5,13 @@ import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import {
-  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK,
+  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK, WORDS_PER_PAGE,
 } from '../utils/constants';
 import { UserUI } from '../user/UserUI';
 import { Sprint } from '../sprint/Sprint';
 import { AudioCall } from '../audiocall/audioCall';
 import { Storage } from '../Storage/Storage';
-import { UserCreationData } from '../types/interfaces';
+import { UserAggregatedWord, UserCreationData } from '../types/interfaces';
 import { MainPage } from '../MainPage/MainPage';
 import { BurgerMenu } from '../utils/BurgerMenu';
 
@@ -109,17 +109,23 @@ export class Controller {
     const stored = this.storage.getData('textBook');
     const logined = this.storage.getData('UserId');
     if (stored && logined) {
+      const newData = await this.api.getAggrWords(
+        { token: logined.token, userId: logined.userId },
+        { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
+      ) as UserAggregatedWord[];
       console.log('Есть локал бук и залогинен');
-      const data = await this.api.getWords(stored);
-      this.textBook.updateTextbook(data, true, stored.group, stored.page);
+      this.textBook.updateTextbook(newData, true, stored.group, stored.page);
     } else if (stored && !logined) {
       console.log('Есть локал бук и НЕ залогинен');
       const data = await this.api.getWords(stored);
       this.textBook.updateTextbook(data, false, stored.group, stored.page);
     } else if (!stored && logined) {
+      const newData = await this.api.getAggrWords(
+        { token: logined.token, userId: logined.userId },
+        { group: '0', page: '0', wordsPerPage: String(WORDS_PER_PAGE) },
+      ) as UserAggregatedWord[];
       console.log('Не ходит по учебнику и залогинен');
-      const data = await this.api.getWords(stored);
-      this.textBook.updateTextbook(data, true, stored.group, stored.page);
+      this.textBook.updateTextbook(newData, true, stored.group, stored.page);
     } else {
       console.log('Не ходит по учебнику и не залогинен');
       const data = await this.api.getWords({ group: '0', page: '0' });
@@ -130,7 +136,7 @@ export class Controller {
   public async handleTextBoookPageUpdate(groupStr: string, pageStr: string) {
     const data = await this.api.getWords({ group: groupStr, page: pageStr });
     this.storage.setData('textBook', `{"group": ${groupStr}, "page": ${pageStr}}`);
-    this.textBook.updateCards(data);
+    this.handleTextBook();
     return data;
   }
 
@@ -149,6 +155,7 @@ export class Controller {
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
       if (window.location.href === `${APP_LINK}/#/book`) {
+        console.log('boook');
         await this.handleTextBook();
       }
     } else {
@@ -172,10 +179,11 @@ export class Controller {
     const res = await this.api.authorize(obj);
     // this.modal.showMessage('Успешная регистрация! <Войдите в аккаунт')
     if (typeof res === 'object') {
+      console.log('123');
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
-      if (window.location.href === `${APP_LINK}/#/book`) {
+      if (window.location.href === `${APP_LINK}/book`) {
         await this.handleTextBook();
       }
     }

@@ -1,7 +1,8 @@
-import { Word } from '../types/interfaces';
+import { UserAggregatedWord, Word } from '../types/interfaces';
 import createNode from '../utils/createNode';
 import { BASE_LINK } from '../utils/constants';
 import { soundIcon } from './soundSVG';
+import { WordController } from '../WordController/WordController';
 
 export class WordUI {
   id: string;
@@ -10,7 +11,7 @@ export class WordUI {
 
   playBtn: HTMLButtonElement;
 
-  obj: Word;
+  obj: Word | UserAggregatedWord;
 
   img: HTMLImageElement;
 
@@ -24,9 +25,20 @@ export class WordUI {
 
   learnWordBtn: HTMLButtonElement;
 
-  constructor(obj: Word) {
+  correct: HTMLSpanElement;
+
+  incorrect: HTMLSpanElement;
+
+  wordController = new WordController();
+
+  constructor(obj: Word | UserAggregatedWord) {
     this.obj = obj;
-    this.id = obj.id;
+    if ((obj as Word)?.id) {
+      this.id = (obj as Word).id;
+    } else {
+      // eslint-disable-next-line no-underscore-dangle
+      this.id = (obj as UserAggregatedWord)._id;
+    }
     this.card = createNode({ tag: 'div', classes: ['card'] }) as HTMLDivElement;
     this.img = createNode({ tag: 'div', classes: ['card-img'] }) as HTMLImageElement;
     this.playBtn = createNode({ tag: 'button', classes: ['btn', 'btn-play'] }) as HTMLButtonElement;
@@ -34,15 +46,19 @@ export class WordUI {
       tag: 'p', classes: ['word'], inner: `${this.obj.word}`,
     }) as HTMLParagraphElement;
     this.addToUserWordsBtn = createNode({
-      tag: 'button', classes: ['btn', 'btn-add'], atributesAdnValues: [['style', 'display: none']], inner: 'Сложное',
+      tag: 'button', classes: ['btn-add', 'btn-secondary'], atributesAdnValues: [['style', 'display: none']], inner: '<span class="material-icons-outlined btn-icon">menu_book</span>',
     }) as HTMLButtonElement;
     this.learnWordBtn = createNode({
-      tag: 'button', classes: ['btn', 'btn-learn'], atributesAdnValues: [['style', 'display: none']], inner: 'Учить',
+      tag: 'button', classes: ['btn-learn', 'btn-secondary'], atributesAdnValues: [['style', 'display: none']], inner: '<span class="material-icons-outlined btn-icon">spellcheck</span>',
     }) as HTMLButtonElement;
+    this.correct = createNode({ tag: 'span', classes: ['correct-answers'], inner: '0' }) as HTMLSpanElement;
+    this.incorrect = createNode({ tag: 'span', classes: ['incorrect-answers'], inner: '0' }) as HTMLSpanElement;
     this.transcription = createNode({ tag: 'p', classes: ['word-transcription'], inner: `${this.obj.transcription}` }) as HTMLParagraphElement;
     this.translate = createNode({ tag: 'p', classes: ['word-translate'], inner: `${this.obj.wordTranslate}` }) as HTMLParagraphElement;
     this.transcription = createNode({ tag: 'p', classes: ['word-transcription'], inner: `${this.obj.transcription}` }) as HTMLParagraphElement;
     this.playWord();
+    this.listenHardWordBtn();
+    this.listenLearnBtn();
   }
 
   public drawCard(): HTMLDivElement {
@@ -63,10 +79,70 @@ export class WordUI {
       wordExampleTranslate,
     );
     cardWordInfo.append(this.word, this.transcription, this.translate);
+    cardMainInfoWrapper.append(this.img, this.playBtn, cardWordInfo);
     userBtns.append(this.addToUserWordsBtn, this.learnWordBtn);
-    cardMainInfoWrapper.append(this.img, this.playBtn, cardWordInfo, userBtns);
+    if ((this.obj as UserAggregatedWord).userWord) {
+      const answers = createNode({ tag: 'div', classes: ['answers'] });
+      answers.append(this.correct, '/', this.incorrect);
+      userBtns.append(this.addToUserWordsBtn, this.learnWordBtn, answers);
+      this.checkUserWordUpdate(
+        (this.obj as UserAggregatedWord).userWord.difficulty,
+        (this.obj as UserAggregatedWord).userWord.optional.learned,
+      );
+      this.correct.innerHTML = String(
+        (this.obj as UserAggregatedWord).userWord.optional.correctAnswers,
+      );
+      this.incorrect.innerHTML = String(
+        (this.obj as UserAggregatedWord).userWord.optional.incorrectAnswers,
+      );
+    }
+    cardMainInfoWrapper.append(userBtns);
     this.card.append(cardMainInfoWrapper, wordExamplesWrapper);
     return this.card;
+  }
+
+  public listenHardWordBtn() {
+    this.addToUserWordsBtn.addEventListener('click', () => {
+      let difficulty: 'easy' | 'hard';
+      if (this.addToUserWordsBtn.classList.contains('hard-word-btn')) {
+        this.addToUserWordsBtn.classList.remove('hard-word-btn');
+        difficulty = 'easy';
+        this.wordController.updateHardWord(difficulty, this.id);
+      } else {
+        this.addToUserWordsBtn.classList.add('hard-word-btn');
+        difficulty = 'hard';
+        this.wordController.updateHardWord(difficulty, this.id);
+      }
+    });
+  }
+
+  public listenLearnBtn() {
+    this.learnWordBtn.addEventListener('click', () => {
+      let isLearned: boolean;
+      if (this.learnWordBtn.classList.contains('learn-word-btn')) {
+        this.learnWordBtn.classList.remove('learn-word-btn');
+        this.addToUserWordsBtn.disabled = false;
+        isLearned = false;
+        this.wordController.updateLearnedWord(isLearned, this.id);
+      } else {
+        this.learnWordBtn.classList.add('learn-word-btn');
+        this.addToUserWordsBtn.classList.remove('hard-word-btn');
+        this.addToUserWordsBtn.disabled = true;
+        isLearned = true;
+        this.wordController.updateLearnedWord(isLearned, this.id);
+      }
+    });
+  }
+
+  private async checkUserWordUpdate(difficulty: 'easy' | 'hard', learned: boolean) {
+    if (learned === true && !this.learnWordBtn.classList.contains('learn-word-btn')) {
+      this.learnWordBtn.classList.add('learn-word-btn');
+      this.addToUserWordsBtn.disabled = true;
+    }
+    if (difficulty === 'hard' && !this.addToUserWordsBtn.classList.contains('hard-word-btn')) {
+      this.addToUserWordsBtn.classList.add('hard-word-btn');
+      this.addToUserWordsBtn.disabled = false;
+    }
   }
 
   private makeSoundURL(): string[] {
