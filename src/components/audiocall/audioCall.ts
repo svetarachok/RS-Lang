@@ -7,6 +7,7 @@ import { convertAggregatedWordToWord } from '../utils/convertAggregatedWordToWor
 import createNode from '../utils/createNode';
 import { getRandomWordsByGroup } from '../utils/getRandomWords';
 import { shuffleArray } from '../utils/shuffleArray';
+import { wordController } from '../WordController/WordController';
 import { LevelSelect } from './levelSelect';
 // eslint-disable-next-line import/no-cycle
 import { ResultPage } from './resultPage';
@@ -127,6 +128,7 @@ export class AudioCall {
   }
 
   private stageHandler(word: Word, stageResult: boolean) {
+    wordController.sendWordOnServer(word.id, stageResult);
     if (stageResult) this.result.correct.push(word);
     else this.result.incorrect.push(word);
 
