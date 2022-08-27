@@ -76,6 +76,9 @@
   .answers {
     margin: 3rem 0;
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 2rem;
   }
 
@@ -207,9 +210,6 @@
     }
   }
   .close-button {
-    // position: relative;
-    top: -35%;
-    left: 1130px;
     border-radius: 50%;
     width: 4rem;
     height: 4rem;
@@ -221,9 +221,6 @@
 
   .mute-button {
     margin: 4px;
-    // position: absolute;
-    top: 75px;
-    left: 0;
     font-size: 3rem;
   }
 
