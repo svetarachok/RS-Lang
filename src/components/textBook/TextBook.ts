@@ -47,7 +47,7 @@ export class TextBook {
   public updateTextbook(
     data: Word[] | UserAggregatedWord[],
     flag: Boolean,
-    group?: number,
+    group: number,
     page?: number,
   ) {
     this.textBook.innerHTML = '';
@@ -170,7 +170,6 @@ export class TextBook {
     page.append(pageHead, this.cardsWrapper, paginationWrapper);
     this.textBook.append(sidebar, page);
     container.append(this.textBook);
-    this.level1Btns[0].classList.add('btn-active');
     return container;
   }
 

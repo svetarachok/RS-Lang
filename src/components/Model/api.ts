@@ -199,8 +199,7 @@ export class Api {
     });
     if (!response.ok) return response.text();
     const data: UserAggregatedWordsResult[] = await response.json();
-
-    return data[1].totalCount[0].count;
+    return data[0].totalCount[0].count;
   }
 
   public async getAggregatedUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
