@@ -163,7 +163,7 @@ export class Api {
 
   public async getAggregatedUserWords(
     authData: Pick<AuthorizationData, 'token' | 'userId'>,
-    queryParam: { group: string, page: string, wordsPerPage?: string },
+    queryParam: { group?: string, page?: string, wordsPerPage?: string },
     filterStr?: string,
   ):
     Promise<UserAggregatedWord[] | string> {
@@ -182,11 +182,15 @@ export class Api {
     return data[0].paginatedResults;
   }
 
-  public async getAggrWords(
+  public async getTotalUserWords(
     authData: Pick<AuthorizationData, 'token' | 'userId'>,
-    queryParam: { group: string, page: string, wordsPerPage: string },
-  ): Promise<UserAggregatedWord[] | string> {
-    const paramString = generateQueryString({ ...queryParam });
+    filterStr: string,
+    queryParam?: { group: string, page?: string, wordsPerPage?: string },
+  ):
+    Promise<number | string> {
+    const paramString = queryParam
+      ? generateQueryString({ ...queryParam, ...{ filter: filterStr } })
+      : generateQueryString({ filter: filterStr });
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}${paramString}`, {
       method: HTTPMethod.GET,
       headers: {
@@ -195,7 +199,8 @@ export class Api {
     });
     if (!response.ok) return response.text();
     const data: UserAggregatedWordsResult[] = await response.json();
-    return data[0].paginatedResults;
+
+    return data[1].totalCount[0].count;
   }
 
   public async getAggregatedUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
