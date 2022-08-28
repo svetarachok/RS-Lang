@@ -93,12 +93,12 @@ export interface UserAggregatedWordsResult {
 
 export interface Statistic {
   learnedWords: number,
-  optional?: {
+  optional: {
     words:
     // string - строка в виде даты, например '24.08.2022'
     Record<string, WordsStatistic>
     games: {
-      auiocall:
+      audiocall:
       // string - строка в виде даты, например '24.08.2022'
       Record<string, GameStatistic>
       sprint:

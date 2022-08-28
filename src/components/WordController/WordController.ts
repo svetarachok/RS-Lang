@@ -1,6 +1,7 @@
 import { api } from '../Model/api';
 import { storage } from '../Storage/Storage';
 import { UserAggregatedWord, UserWord } from '../types/interfaces';
+import { UserStatistic } from '../UserStatistic/UserStatistic';
 
 export class WordController {
   api: typeof api;
@@ -68,6 +69,7 @@ export class WordController {
     if (!this.isAuthorized) return;
     const userData = this.storage.getUserIdData();
     const userWord = await this.api.getUserWordById(userData, wordId);
+    new UserStatistic(userData, 'audiocall', correct, userWord).update();
     if (typeof userWord === 'object') {
       const changedWord = this.changeUserWordByAnswer(userWord, correct);
       this.api.changeUserWord(
