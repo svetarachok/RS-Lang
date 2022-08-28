@@ -1,5 +1,6 @@
 import { api } from '../Model/api';
 import { storage } from '../Storage/Storage';
+import { GAME } from '../types/enums';
 import {
   AuthorizationData, GameResult, Word, UserAggregatedWord,
 } from '../types/interfaces';
@@ -128,7 +129,7 @@ export class AudioCall {
   }
 
   private stageHandler(word: Word, stageResult: boolean) {
-    wordController.sendWordOnServer(word.id, stageResult);
+    wordController.sendWordOnServer(word.id, stageResult, GAME.AUDIOCALL);
     if (stageResult) this.result.correct.push(word);
     else this.result.incorrect.push(word);
 

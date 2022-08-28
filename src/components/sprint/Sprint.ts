@@ -5,6 +5,7 @@ import { BASE_LINK } from '../utils/constants';
 import { WordController } from '../WordController/WordController';
 import { Storage } from '../Storage/Storage';
 import { convertAggregatedWordToWord } from '../utils/convertAggregatedWordToWord';
+import { GAME } from '../types/enums';
 
 export class Sprint {
   mode: 'menu' | 'book';
@@ -314,7 +315,7 @@ export class Sprint {
     this.seriesOfCorrect += 1;
     this.checkSeriesOfCorrect();
     this.changeStyleSeries(this.seriesOfCorrect);
-    this.wordController.sendWordOnServer(this.currentWord?.id!, true);
+    this.wordController.sendWordOnServer(this.currentWord?.id!, true, GAME.SPRINT);
   }
 
   private completeFalseAnswer(): void {
@@ -326,7 +327,7 @@ export class Sprint {
     this.changeMultiplyDescr(1);
     this.clearStyleSeries();
     this.clearParrots();
-    this.wordController.sendWordOnServer(this.currentWord?.id!, false);
+    this.wordController.sendWordOnServer(this.currentWord?.id!, false, GAME.SPRINT);
   }
 
   private updateWord(): void {

@@ -76,7 +76,8 @@ export interface WordsStatistic {
 
 export interface GameStatistic {
   newWords: number,
-  series: number,
+  currentSeries: number,
+  bestSeries: number,
   correctAnswers: number,
   incorrectAnswers: number,
 }

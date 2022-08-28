@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import { api } from '../Model/api';
+import { GAME } from '../types/enums';
 import {
   AuthorizationData, GameStatistic, UserWord, WordsStatistic,
 } from '../types/interfaces';
@@ -14,11 +15,11 @@ export class UserStatistic {
 
   private isWordNew: boolean;
 
-  private gameNames: ('audiocall' | 'sprint')[] = ['audiocall', 'sprint'];
+  private gameNames: GAME[] = [GAME.AUDIOCALL, GAME.SPRINT];
 
   constructor(
     private userData: AuthorizationData,
-    private currentGame: 'audiocall' | 'sprint',
+    private currentGame: GAME,
     private isCorrect: boolean,
     userWord: string | Required<UserWord>,
   ) {
@@ -40,7 +41,7 @@ export class UserStatistic {
 
   updateStatistic() {
     const date = (new Date()).toLocaleDateString();
-    console.log(date);
+
     // words
     if (!this.words[date]) this.initDateInWordStatistic(date);
     if (this.isWordNew) this.words[date].newWords += 1;
@@ -52,14 +53,17 @@ export class UserStatistic {
     for (const game of this.gameNames) {
       if (!this.games[game][date]) this.initDateInGameStatistic(date, game);
     }
-    console.log(this.games);
-    if (this.isWordNew) this.games[this.currentGame][date].newWords += 1;
+    const gameStatistic = this.games[this.currentGame][date];
+    if (this.isWordNew) gameStatistic.newWords += 1;
     if (this.isCorrect) {
-      this.games[this.currentGame][date].correctAnswers += 1;
-      this.games[this.currentGame][date].series += 1;
+      gameStatistic.correctAnswers += 1;
+      gameStatistic.currentSeries += 1;
+      if (gameStatistic.currentSeries > gameStatistic.bestSeries) {
+        gameStatistic.bestSeries = gameStatistic.currentSeries;
+      }
     } else {
-      this.games[this.currentGame][date].incorrectAnswers += 1;
-      this.games[this.currentGame][date].series = 0;
+      gameStatistic.incorrectAnswers += 1;
+      gameStatistic.currentSeries = 0;
     }
 
     this.sendStatistic();
@@ -88,10 +92,11 @@ export class UserStatistic {
     };
   }
 
-  initDateInGameStatistic(date: string, game: 'audiocall' | 'sprint') {
+  initDateInGameStatistic(date: string, game: GAME) {
     this.games[game][date] = {
       newWords: 0,
-      series: 0,
+      currentSeries: 0,
+      bestSeries: 0,
       correctAnswers: 0,
       incorrectAnswers: 0,
     };
