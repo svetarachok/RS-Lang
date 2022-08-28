@@ -143,12 +143,14 @@ export class WordController {
       { token: logined.token, userId: logined.userId },
       '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
     );
-    const newData = await this.api.getAggregatedUserWords(
-      { token: logined.token, userId: logined.userId },
-      { wordsPerPage: String(totalWords) },
-      '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
-    ) as UserAggregatedWord[];
-    return newData;
+    if (typeof totalWords === 'object') {
+      const newData = await this.api.getAggregatedUserWords(
+        { token: logined.token, userId: logined.userId },
+        { wordsPerPage: String(totalWords) },
+        '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
+      ) as UserAggregatedWord[];
+      return newData;
+    } return String(totalWords);
   }
 }
 

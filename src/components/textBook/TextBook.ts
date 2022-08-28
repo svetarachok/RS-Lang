@@ -45,7 +45,7 @@ export class TextBook {
 
   // Update textBook and cards separately
   public updateTextbook(
-    data: Word[] | UserAggregatedWord[],
+    data: string | Word[] | UserAggregatedWord[],
     flag: Boolean,
     group: number,
     page: number,
@@ -158,17 +158,19 @@ export class TextBook {
     return currInput;
   }
 
-  private handlePageAllDone(cardsData: Word[] | UserAggregatedWord[]) {
-    const d: UserAggregatedWord[] = (cardsData as UserAggregatedWord[]).filter(
-      (card: UserAggregatedWord) => (card.userWord && (card.userWord.difficulty === 'hard' || card.userWord.optional.learned === true)),
-    );
-    if (d.length === 20 && this.currentLevel !== 6) {
-      this.cardsWrapper.style.backgroundColor = 'lightblue';
+  private handlePageAllDone(cardsData: string | Word[] | UserAggregatedWord[]) {
+    if (typeof cardsData === 'object') {
+      const d: UserAggregatedWord[] = (cardsData as UserAggregatedWord[]).filter(
+        (card: UserAggregatedWord) => (card.userWord && (card.userWord.difficulty === 'hard' || card.userWord.optional.learned === true)),
+      );
+      if (d.length === 20 && this.currentLevel !== 6) {
+        this.cardsWrapper.style.backgroundColor = 'lightblue';
+      }
     }
   }
 
   // Render TextBook and components
-  public renderTextBook(data: Word[] | UserAggregatedWord[]): HTMLElement {
+  public renderTextBook(data: string | Word[] | UserAggregatedWord[]): HTMLElement {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
     const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
@@ -190,12 +192,16 @@ export class TextBook {
     return pageHead;
   }
 
-  private renderCards(cardsData: Word[] | UserAggregatedWord[]) {
+  private renderCards(cardsData: string | Word[] | UserAggregatedWord[]) {
     this.cardsWrapper.innerHTML = '';
-    cardsData.forEach((card) => {
-      const cardItem = new WordUI(card);
-      this.cardsWrapper.append(cardItem.drawCard());
-    });
+    if (typeof cardsData === 'string') {
+      this.cardsWrapper.innerHTML = cardsData;
+    } else {
+      cardsData.forEach((card) => {
+        const cardItem = new WordUI(card);
+        this.cardsWrapper.append(cardItem.drawCard());
+      });
+    }
     return this.cardsWrapper;
   }
 
