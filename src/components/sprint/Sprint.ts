@@ -524,7 +524,7 @@ export class Sprint {
   }
 
   private async getHardWords(): Promise<Word[]> {
-    const userHardWords = await this.wordController.getUserBookWords();
+    const userHardWords = await this.wordController.getUserBookWords() as UserAggregatedWord[];
     return userHardWords.map((word) => convertAggregatedWordToWord(word));
   }
 
