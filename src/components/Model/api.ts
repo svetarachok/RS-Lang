@@ -199,7 +199,9 @@ export class Api {
     });
     if (!response.ok) return response.text();
     const data: UserAggregatedWordsResult[] = await response.json();
-    return data[0].totalCount[0].count;
+    if (data[0].totalCount.length) {
+      return data[0].totalCount[0].count;
+    } return 'В вашем учебнике нет Сложных слов';
   }
 
   public async getAggregatedUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):

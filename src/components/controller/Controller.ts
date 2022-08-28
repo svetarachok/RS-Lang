@@ -114,6 +114,7 @@ export class Controller {
     if (stored && logined) {
       if (stored.group === 6) {
         const newData = await this.wordController.getUserBookWords();
+        console.log(newData);
         this.textBook.updateTextbook(newData, true, 6, 0);
         console.log('Есть локал бук и залогинен, level hard');
       } else {
