@@ -1,7 +1,7 @@
 import { Endpoint, HTTPMethod, ContentType } from '../types/enums';
 import {
   Word, User, UserCreationData, AuthorizationData,
-  UserWord, UserAggregatedWordsResult, UserAggregatedWord,
+  UserWord, UserAggregatedWordsResult, UserAggregatedWord, Statistic, StatisticResponse,
 } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
 import { generateQueryString, makeUrl } from '../utils/functions';
@@ -221,6 +221,45 @@ export class Api {
 
     return data[0];
   }
+
+  public async setStatistic(
+    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    statistic: Statistic,
+  ):
+    Promise<StatisticResponse | string> {
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.statistics}`, {
+      method: HTTPMethod.PUT,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+        'Content-Type': ContentType.json,
+      },
+      body: JSON.stringify(statistic),
+    });
+
+    const data = await response.json();
+    if (!response.ok) return response.text();
+
+    return data;
+  }
+
+  public async getStatistic(authData: Pick<AuthorizationData, 'token' | 'userId'>):
+  Promise<StatisticResponse | string | null> {
+    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.statistics}`, {
+      method: HTTPMethod.GET,
+      headers: {
+        Authorization: `Bearer ${authData.token}`,
+      },
+    });
+
+    if (response.status === 404) return null;
+    if (!response.ok) return response.text();
+    const data = await response.json();
+    return data;
+  }
 }
 
 export const api: Api = new Api();
+
+// 401 Unauthorized не тот токен
+// 403 Forbidden не тот юзерайди
+// 404 у юзера нет статистики Couldn't find a(an) statistic with: "userId: 630a8bf986a1e800749e9556"
