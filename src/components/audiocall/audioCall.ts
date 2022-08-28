@@ -8,7 +8,7 @@ import { convertAggregatedWordToWord } from '../utils/convertAggregatedWordToWor
 import createNode from '../utils/createNode';
 import { getRandomWordsByGroup } from '../utils/getRandomWords';
 import { shuffleArray } from '../utils/shuffleArray';
-import { wordController } from '../WordController/WordController';
+import { WordController } from '../WordController/WordController';
 import { LevelSelect } from './levelSelect';
 // eslint-disable-next-line import/no-cycle
 import { ResultPage } from './resultPage';
@@ -40,7 +40,10 @@ export class AudioCall {
 
   private userData: AuthorizationData | null;
 
+  private wordController: WordController;
+
   constructor() {
+    this.wordController = new WordController();
     this.container = createNode({ tag: 'div', classes: ['audio-call'] });
     this.closeButton = createNode({
       tag: 'a',
@@ -58,6 +61,7 @@ export class AudioCall {
       const levelSelect = new LevelSelect(this.container, this.startGameFromMenu.bind(this));
       levelSelect.render();
     } else {
+      this.closeButton.setAttribute('href', '/book');
       this.settings = {
         group: String(settings.group),
         page: String(settings.page),
@@ -96,6 +100,14 @@ export class AudioCall {
       const wordsOnPage = await api.getWords(settings);
       return shuffleArray(wordsOnPage).slice(0, MAX_COUNT_WORDS_PER_GAME);
     }
+    // game from group 6
+    if (settings.group === '6') {
+      const userAggregatedWords = await this.wordController.getUserBookWords();
+      const words = userAggregatedWords.map((word) => convertAggregatedWordToWord(word));
+      console.log(words);
+      return shuffleArray(words).slice(0, MAX_COUNT_WORDS_PER_GAME);
+    }
+    // game from group 0-5
     let userAggregatedWords = await this.getAggregatedWords(settings);
     let page = Number(settings.page);
     while (userAggregatedWords.length < MAX_COUNT_WORDS_PER_GAME && Number(page) > 0) {
