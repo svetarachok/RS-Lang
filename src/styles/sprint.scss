@@ -20,9 +20,10 @@
     .header {
       position: absolute;
       top: 0;
+      max-width: 1360px;
       background-color: transparent;
       z-index: 10;
-      padding: 0 40px;
+      align-self: center;
       color: #ffffff;
       border: none;
     }
@@ -396,7 +397,7 @@
   }
 }
 
-.result__repeat-btn {
+.result__restart-btn {
   background-color: rgba(37,130,231,.08);
   border-radius: 4px;
   color: #2582e7;
