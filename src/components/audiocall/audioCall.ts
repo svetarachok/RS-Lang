@@ -103,7 +103,8 @@ export class AudioCall {
     // game from group 6
     if (settings.group === '6') {
       const userAggregatedWords = await this.wordController.getUserBookWords();
-      const words = userAggregatedWords.map((word) => convertAggregatedWordToWord(word));
+      const words = (userAggregatedWords as UserAggregatedWord[])
+        .map((word) => convertAggregatedWordToWord(word));
       console.log(words);
       return shuffleArray(words).slice(0, MAX_COUNT_WORDS_PER_GAME);
     }
@@ -141,7 +142,7 @@ export class AudioCall {
   }
 
   private stageHandler(word: Word, stageResult: boolean) {
-    wordController.sendWordOnServer(word.id, stageResult, GAME.AUDIOCALL);
+    this.wordController.sendWordOnServer(word.id, stageResult, GAME.AUDIOCALL);
     if (stageResult) this.result.correct.push(word);
     else this.result.incorrect.push(word);
 
