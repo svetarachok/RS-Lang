@@ -54,9 +54,11 @@ export class WordController {
       changedWord.optional.correctSeries += 1;
       if (changedWord.difficulty === 'easy' && changedWord.optional.correctSeries >= 3) {
         changedWord.optional.learned = true;
+        UserStatistic.increaseLearnedWordsCount();
       } else if (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries >= 5) {
         changedWord.optional.learned = true;
         changedWord.difficulty = 'easy';
+        UserStatistic.increaseLearnedWordsCount();
       }
     } else {
       changedWord.optional.correctSeries = 0;
@@ -108,11 +110,13 @@ export class WordController {
   }
 
   public async updateLearnedWord(learned: boolean, wordId: string) {
+    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
     const data = this.storage.getData('UserId');
     const word = await api.getUserWordById(data, wordId);
     if (typeof word === 'object') {
       word.optional.learned = learned;
       if (!learned) word.optional.correctSeries = 0;
+      else { UserStatistic.increaseLearnedWordsCount(); }
       word.difficulty = 'easy';
       await api.changeUserWord(
         data,
@@ -122,6 +126,7 @@ export class WordController {
     } else {
       const newWord: UserWord = this.createNewUserWord();
       newWord.optional.learned = learned;
+      if (learned) UserStatistic.increaseLearnedWordsCount();
       await api.setUserWord(data, wordId, newWord);
     }
   }

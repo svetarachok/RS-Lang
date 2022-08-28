@@ -1,9 +1,48 @@
 /* eslint-disable no-restricted-syntax */
 import { api } from '../Model/api';
+import { storage } from '../Storage/Storage';
 import { GAME } from '../types/enums';
 import {
-  AuthorizationData, GameStatistic, UserWord, WordsStatistic,
+  AuthorizationData, GameStatistic, Statistic, UserWord, WordsStatistic,
 } from '../types/interfaces';
+
+function getStatObjectForNewUser() {
+  const date = (new Date()).toLocaleDateString();
+  const statObj: Statistic = {
+    learnedWords: 0,
+    optional: {
+      words: {
+        [date]: {
+          newWords: 0,
+          learnedWords: 0,
+          correctAnswers: 0,
+          incorrectAnswers: 0,
+        },
+      },
+      games: {
+        audiocall: {
+          [date]: {
+            newWords: 0,
+            currentSeries: 0,
+            bestSeries: 0,
+            correctAnswers: 0,
+            incorrectAnswers: 0,
+          },
+        },
+        sprint: {
+          [date]: {
+            newWords: 0,
+            currentSeries: 0,
+            bestSeries: 0,
+            correctAnswers: 0,
+            incorrectAnswers: 0,
+          },
+        },
+      },
+    },
+  };
+  return statObj;
+}
 
 export class UserStatistic {
   private learnedWords: number = 0;
@@ -27,6 +66,46 @@ export class UserStatistic {
     this.currentGame = currentGame;
     this.isCorrect = isCorrect;
     this.isWordNew = typeof userWord === 'string';
+  }
+
+  static async increaseLearnedWordsCount() {
+    const userData = storage.getUserIdData();
+    const statisticObj = await api.getStatistic(userData);
+    const date = (new Date()).toLocaleDateString();
+    if (statisticObj !== null && typeof statisticObj === 'object') {
+      statisticObj.learnedWords += 1;
+      statisticObj.optional.words[date].learnedWords += 1;
+      const statistic: Statistic = {
+        learnedWords: statisticObj.learnedWords,
+        optional: statisticObj.optional,
+      };
+      api.setStatistic(userData, statistic);
+      // return
+    } else if (statisticObj === null) {
+      const statistic: Statistic = getStatObjectForNewUser();
+      statistic.learnedWords += 1;
+      statistic.optional.words[date].learnedWords += 1;
+      api.setStatistic(userData, statistic);
+    }
+  }
+
+  static async decreaseLearnedWordsCount() {
+    const userData = storage.getUserIdData();
+    const statisticObj = await api.getStatistic(userData);
+    const date = (new Date()).toLocaleDateString();
+    if (statisticObj !== null && typeof statisticObj === 'object') {
+      if (statisticObj.learnedWords <= 0) return;
+      statisticObj.learnedWords -= 1;
+      statisticObj.optional.words[date].learnedWords -= 1;
+      const statistic: Statistic = {
+        learnedWords: statisticObj.learnedWords,
+        optional: statisticObj.optional,
+      };
+      api.setStatistic(userData, statistic);
+    } else if (statisticObj === null) {
+      api.setStatistic(userData, getStatObjectForNewUser());
+    }
+    console.log(statisticObj);
   }
 
   public async update() {
