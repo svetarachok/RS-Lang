@@ -37,3 +37,18 @@ export function createHTMLElement(
 export function getRandomIntInclusive(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+export function checkPageAllDone() {
+  const cards: HTMLElement[] = [...document.querySelectorAll('.card')] as HTMLElement[];
+  const pageWrapper: HTMLElement = document.querySelector('.cards-wrapper') as HTMLElement;
+  const res = cards.every((card) => {
+    const hardBtn = card.querySelector('.btn-add');
+    const learnBtn = card.querySelector('.btn-learn');
+    return (hardBtn?.classList.contains('hard-word-btn') || learnBtn?.classList.contains('learn-word-btn'));
+  });
+  if (res) {
+    pageWrapper.style.border = '3px solid lightblue';
+  } else {
+    pageWrapper.style.border = 'none';
+  }
+}

@@ -199,8 +199,7 @@ export class Api {
     });
     if (!response.ok) return response.text();
     const data: UserAggregatedWordsResult[] = await response.json();
-    console.log(data);
-    if (data[0].totalCount[0]) {
+    if (data[0].totalCount.length) {
       return data[0].totalCount[0].count;
     } return 'В вашем учебнике нет Сложных слов';
   }

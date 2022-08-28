@@ -143,7 +143,7 @@ export class WordController {
       { token: logined.token, userId: logined.userId },
       '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
     );
-    if (typeof totalWords === 'object') {
+    if (typeof totalWords === 'number') {
       const newData = await this.api.getAggregatedUserWords(
         { token: logined.token, userId: logined.userId },
         { wordsPerPage: String(totalWords) },

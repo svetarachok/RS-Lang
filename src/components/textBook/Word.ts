@@ -4,6 +4,7 @@ import { BASE_LINK } from '../utils/constants';
 import { soundIcon } from './soundSVG';
 import { WordController } from '../WordController/WordController';
 import { storage } from '../Storage/Storage';
+import { checkPageAllDone } from '../utils/functions';
 
 export class WordUI {
   id: string;
@@ -121,6 +122,7 @@ export class WordUI {
       if (group === 6) {
         this.card.style.display = 'none';
       }
+      checkPageAllDone();
     });
   }
 
@@ -143,6 +145,7 @@ export class WordUI {
       if (group === 6) {
         this.card.style.display = 'none';
       }
+      checkPageAllDone();
     });
   }
 
