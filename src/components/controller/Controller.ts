@@ -14,6 +14,7 @@ import { Storage } from '../Storage/Storage';
 import { UserAggregatedWord, UserCreationData } from '../types/interfaces';
 import { MainPage } from '../MainPage/MainPage';
 import { BurgerMenu } from '../utils/BurgerMenu';
+import { WordController } from '../WordController/WordController';
 
 export class Controller {
   router: Navigo;
@@ -38,6 +39,8 @@ export class Controller {
 
   menu: BurgerMenu;
 
+  wordController: WordController;
+
   constructor() {
     this.router = new Navigo('/', { hash: true });
     this.api = new Api();
@@ -49,7 +52,7 @@ export class Controller {
     this.storage = new Storage();
     this.mainPage = new MainPage();
     this.menu = new BurgerMenu();
-    // this.initUserForms();
+    this.wordController = new WordController();
   }
 
   public initRouter(): void {
@@ -109,12 +112,19 @@ export class Controller {
     const stored = this.storage.getData('textBook');
     const logined = this.storage.getData('UserId');
     if (stored && logined) {
-      const newData = await this.api.getAggregatedUserWords(
-        { token: logined.token, userId: logined.userId },
-        { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
-      ) as UserAggregatedWord[];
-      console.log('Есть локал бук и залогинен');
-      this.textBook.updateTextbook(newData, true, stored.group, stored.page);
+      if (stored.group === 6) {
+        const newData = await this.wordController.getUserBookWords();
+        console.log(newData);
+        this.textBook.updateTextbook(newData, true, 6, 0);
+        console.log('Есть локал бук и залогинен, level hard');
+      } else {
+        const newData = await this.api.getAggregatedUserWords(
+          { token: logined.token, userId: logined.userId },
+          { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
+        ) as UserAggregatedWord[];
+        console.log('Есть локал бук и залогинен');
+        this.textBook.updateTextbook(newData, true, stored.group, stored.page);
+      }
     } else if (stored && !logined) {
       console.log('Есть локал бук и НЕ залогинен');
       const data = await this.api.getWords(stored);
@@ -125,7 +135,7 @@ export class Controller {
         { group: '0', page: '0', wordsPerPage: String(WORDS_PER_PAGE) },
       ) as UserAggregatedWord[];
       console.log('Не ходит по учебнику и залогинен');
-      this.textBook.updateTextbook(newData, true, stored.group, stored.page);
+      this.textBook.updateTextbook(newData, true, 0, 0);
     } else {
       console.log('Не ходит по учебнику и не залогинен');
       const data = await this.api.getWords({ group: '0', page: '0' });
@@ -134,10 +144,8 @@ export class Controller {
   }
 
   public async handleTextBoookPageUpdate(groupStr: string, pageStr: string) {
-    const data = await this.api.getWords({ group: groupStr, page: pageStr });
     this.storage.setData('textBook', `{"group": ${groupStr}, "page": ${pageStr}}`);
     this.handleTextBook();
-    return data;
   }
 
   private startUserForms() {
