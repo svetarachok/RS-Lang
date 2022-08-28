@@ -121,8 +121,9 @@ export class WordUI {
       }
       if (group === 6) {
         this.card.style.display = 'none';
+      } else {
+        checkPageAllDone();
       }
-      checkPageAllDone();
     });
   }
 
@@ -144,8 +145,9 @@ export class WordUI {
       }
       if (group === 6) {
         this.card.style.display = 'none';
+      } else {
+        checkPageAllDone();
       }
-      checkPageAllDone();
     });
   }
 

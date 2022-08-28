@@ -3,7 +3,6 @@ import createNode from '../utils/createNode';
 import { UserAggregatedWord, Word } from '../types/interfaces';
 import { Api } from '../Model/api';
 import { MAX_PAGE_NUMBER } from '../utils/constants';
-import { checkPageAllDone } from '../utils/functions';
 
 export class TextBook {
   textBook: HTMLDivElement;
@@ -53,6 +52,7 @@ export class TextBook {
   ) {
     this.textBook.innerHTML = '';
     this.cardsWrapper.style.border = 'none';
+    this.pageInput.style.backgroundColor = 'transparent';
     this.renderTextBook(data);
     // if (typeof group === 'number' && typeof page === 'number') {
     this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
@@ -61,8 +61,6 @@ export class TextBook {
     this.currentPage = page ? this.currentPage = page : this.currentPage = 0;
     this.pageInput.value = String(page + 1);
     this.handlePageButtons();
-    this.handlePageAllDone(data);
-    checkPageAllDone();
     // }
     if (flag === true) {
       this.level1Btns[6].style.display = 'flex';
@@ -72,6 +70,7 @@ export class TextBook {
       learnBtns.forEach((btn) => btn.style.display = 'flex');
       // eslint-disable-next-line no-param-reassign, no-return-assign
       hardBtns.forEach((btn) => btn.style.display = 'flex');
+      this.handlePageAllDone(data);
     }
   }
 
@@ -168,6 +167,7 @@ export class TextBook {
       );
       if (d.length === 20 && this.currentLevel !== 6) {
         this.cardsWrapper.style.border = '3px solid lightblue';
+        this.pageInput.style.backgroundColor = 'lightblue';
       }
     }
   }
