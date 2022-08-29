@@ -29,6 +29,7 @@ export class WordController {
       difficulty: 'easy',
       optional: {
         learned: false,
+        learnedDate: '',
         correctAnswers: 0,
         incorrectAnswers: 0,
         correctSeries: 0,
@@ -52,18 +53,18 @@ export class WordController {
     if (correct) {
       changedWord.optional.correctAnswers += 1;
       changedWord.optional.correctSeries += 1;
-      if (changedWord.difficulty === 'easy' && changedWord.optional.correctSeries === 3) {
-        changedWord.optional.learned = true;
-        UserStatistic.increaseLearnedWordsCount();
-      } else if (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries === 5) {
+      if ((changedWord.difficulty === 'easy' && changedWord.optional.correctSeries === 3)
+      || (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries === 5)) {
         changedWord.optional.learned = true;
         changedWord.difficulty = 'easy';
         UserStatistic.increaseLearnedWordsCount();
       }
     } else {
       if ((changedWord.difficulty === 'easy' && changedWord.optional.correctSeries >= 3)
-      || (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries === 5)) {
-        UserStatistic.decreaseLearnedWordsCount();
+      || (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries >= 5)) {
+        if (changedWord.optional.learnedDate === (new Date()).toLocaleDateString()) {
+          UserStatistic.decreaseLearnedWordsCount();
+        }
       }
       changedWord.optional.correctSeries = 0;
       changedWord.optional.incorrectAnswers += 1;
@@ -114,15 +115,20 @@ export class WordController {
   }
 
   public async updateLearnedWord(learned: boolean, wordId: string) {
-    console.log('word learned', learned);
     const data = this.storage.getData('UserId');
     const word = await api.getUserWordById(data, wordId);
     if (typeof word === 'object') {
       word.optional.learned = learned;
       if (!learned) {
         word.optional.correctSeries = 0;
-        UserStatistic.decreaseLearnedWordsCount();
-      } else { UserStatistic.increaseLearnedWordsCount(); }
+        // only words learned today are removed from the statistics
+        if (word.optional.learnedDate === (new Date()).toLocaleDateString()) {
+          UserStatistic.decreaseLearnedWordsCount();
+        }
+      } else {
+        UserStatistic.increaseLearnedWordsCount();
+        word.optional.learnedDate = (new Date()).toLocaleDateString();
+      }
       word.difficulty = 'easy';
       await api.changeUserWord(
         data,
@@ -132,7 +138,10 @@ export class WordController {
     } else {
       const newWord: UserWord = this.createNewUserWord();
       newWord.optional.learned = learned;
-      if (learned) UserStatistic.increaseLearnedWordsCount();
+      if (learned) {
+        UserStatistic.increaseLearnedWordsCount();
+        newWord.optional.learnedDate = new Date().toLocaleDateString();
+      }
       await api.setUserWord(data, wordId, newWord);
     }
   }

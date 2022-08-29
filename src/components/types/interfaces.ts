@@ -61,6 +61,7 @@ export interface UserWord {
   wordId?: string,
   optional: {
     learned: boolean;
+    learnedDate: string;
     correctAnswers: number;
     incorrectAnswers: number;
     correctSeries: number;
