@@ -15,3 +15,8 @@ export enum HTTPMethod {
   PUT = 'PUT',
   DELETE = 'DELETE',
 }
+
+export enum GAME {
+  AUDIOCALL = 'audiocall',
+  SPRINT = 'sprint',
+}

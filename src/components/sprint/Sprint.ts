@@ -5,6 +5,7 @@ import { BASE_LINK } from '../utils/constants';
 import { WordController } from '../WordController/WordController';
 import { Storage } from '../Storage/Storage';
 import { convertAggregatedWordToWord } from '../utils/convertAggregatedWordToWord';
+import { GAME } from '../types/enums';
 
 export class Sprint {
   mode: 'menu' | 'book';
@@ -77,8 +78,9 @@ export class Sprint {
     const sprint = createHTMLElement('section', ['sprint']);
     body.classList.add('body--sprint');
     main.innerHTML = '';
-    const btnClose = createHTMLElement('a', ['sprint__close'], [['href', '/'], ['data-navigo', 'true']]);
+    const btnClose = createHTMLElement('a', ['sprint__close'], [['href', '/'], ['data-navigo', 'true']]) as HTMLAnchorElement;
     if (this.mode === 'book') {
+      btnClose.href = '#/book';
       sprint.append(btnClose);
       this.startGame();
     } else if (this.mode === 'menu') {
@@ -112,7 +114,11 @@ export class Sprint {
       select.remove();
       await this.getWordsInLevel(this.currentLevel!);
     } else if (this.mode === 'book') {
-      await this.getWordsOnPage(String(this.bookLevel), String(this.bookPage));
+      if (this.bookLevel < 6) {
+        await this.getWordsOnPage(String(this.bookLevel), String(this.bookPage));
+      } else {
+        this.wordsInGame = await this.getHardWords();
+      }
     }
     const sprint = <HTMLElement>document.querySelector('.sprint');
     const ready = createHTMLElement('div', ['sprint__ready']);
@@ -170,7 +176,7 @@ export class Sprint {
     const ready = <HTMLElement>document.querySelector('.sprint__ready');
     ready.remove();
     this.renderTimer(sprint, 'timer--control');
-    this.startTimer('timer--control', 60, this.renderResult.bind(this));
+    this.startTimer('timer--control', 10, this.renderResult.bind(this));
     const sprintControl = createHTMLElement('div', ['sprint__control']);
     const score = createHTMLElement('h2', ['control__score'], undefined, '0');
     const sound = createHTMLElement('div', ['control__sound']);
@@ -300,8 +306,13 @@ export class Sprint {
     } else {
       this.completeFalseAnswer();
     }
-    if (this.wordsInGame.length === 0 && this.mode === 'book') {
+
+    if (this.wordsInGame.length === 0 && this.mode === 'book' && this.bookLevel < 6) {
       await this.addWordsInGame();
+    }
+
+    if (this.wordsInGame.length === 0 && this.mode === 'book' && this.bookLevel === 6) {
+      this.finishGame();
     }
     this.updateWord();
   }
@@ -314,7 +325,7 @@ export class Sprint {
     this.seriesOfCorrect += 1;
     this.checkSeriesOfCorrect();
     this.changeStyleSeries(this.seriesOfCorrect);
-    this.wordController.sendWordOnServer(this.currentWord?.id!, true);
+    this.wordController.sendWordOnServer(this.currentWord?.id!, true, GAME.SPRINT);
   }
 
   private completeFalseAnswer(): void {
@@ -326,7 +337,7 @@ export class Sprint {
     this.changeMultiplyDescr(1);
     this.clearStyleSeries();
     this.clearParrots();
-    this.wordController.sendWordOnServer(this.currentWord?.id!, false);
+    this.wordController.sendWordOnServer(this.currentWord?.id!, false, GAME.SPRINT);
   }
 
   private updateWord(): void {
@@ -423,13 +434,19 @@ export class Sprint {
     const listsContainer = createHTMLElement('div', ['sprint__lists']);
     const trueList = createHTMLElement('ul', ['result__true'], undefined, `Знаю: ${this.trueWords.length}`);
     const falseList = createHTMLElement('ul', ['result__false'], undefined, `Ошибок: ${this.falseWords.length}`);
-    const btnRepeat = createHTMLElement('button', ['result__repeat-btn'], undefined, 'Продолжить тренировку');
+    const btnRestart = createHTMLElement('button', ['result__restart-btn'], undefined, 'Играть еще раз');
+    btnRestart.addEventListener('click', (e: Event) => {
+      const btn = <HTMLButtonElement>e.target;
+      if (!btn.disabled) {
+        this.restartGame();
+        btn.disabled = true;
+      }
+    });
     this.trueWords.forEach((word) => this.addWordInResult(trueList, word));
     this.falseWords.forEach((word) => this.addWordInResult(falseList, word));
     listsContainer.append(falseList, trueList);
-    resultContainer.append(score, listsContainer, btnRepeat);
+    resultContainer.append(score, listsContainer, btnRestart);
     sprint.append(resultContainer);
-    this.wordController.getUserWords();
   }
 
   private addWordInResult(list: HTMLElement, word: Word): void {
@@ -480,7 +497,7 @@ export class Sprint {
       this.completeFalseAnswer();
     }
 
-    if (this.wordsInGame.length === 0 && this.mode === 'book') {
+    if (this.wordsInGame.length === 0 && this.mode === 'book' && this.bookLevel < 6) {
       await this.addWordsInGame();
     }
     this.updateWord();
@@ -505,11 +522,51 @@ export class Sprint {
     document.removeEventListener('keydown', this.keyListener);
   }
 
-  public closeGame() {
+  public closeGame(): void {
     const body = document.querySelector('.body') as HTMLElement;
     body?.classList.remove('body--sprint');
     clearInterval(this.timerInterval);
     this.timerSound?.pause();
     this.removeKeyboardControl();
+  }
+
+  private async getHardWords(): Promise<Word[]> {
+    const userHardWords = await this.wordController.getUserBookWords() as UserAggregatedWord[];
+    if (Array.isArray(userHardWords)) {
+      return userHardWords.map((word) => convertAggregatedWordToWord(word));
+    }
+    return [];
+  }
+
+  private async checkWordsAvailability(): Promise<boolean> {
+    let words: Word[];
+    if (this.bookLevel < 6) {
+      words = await api.getWords({ group: String(this.bookLevel), page: String(this.bookPage) });
+    } else {
+      words = await this.getHardWords();
+      console.log('words:', words);
+    }
+    if (words.length === 0 || !Array.isArray(words)) {
+      const result = <HTMLElement>document.querySelector('.sprint__result');
+      const message = createHTMLElement('span', ['sprint__restart-message'], undefined, 'Недостаточно слов для запуска новой игры. Выберите другой уровень или страницу');
+      result.append(message);
+      console.log('not found');
+      return false;
+    }
+    return true;
+  }
+
+  private async restartGame() {
+    const isAvailable: boolean = await this.checkWordsAvailability();
+    if (isAvailable) {
+      this.closeGame();
+      this.wordsInGame.length = 0;
+      this.score = 0;
+      this.multiplier = 1;
+      this.seriesOfCorrect = 0;
+      this.trueWords.length = 0;
+      this.falseWords.length = 0;
+      this.renderGame();
+    }
   }
 }
