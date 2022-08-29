@@ -1,0 +1,43 @@
+.data-wrapper {
+  @include card-style;
+  font-family: $headers-font;
+}
+
+.data-wrapper-row1, .data-wrapper-row2 {
+  display: flex;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.data-wrapper-row1 {
+  align-items: center;
+}
+
+.stat-data-item {
+  @include display-flex-space-between;
+
+}
+
+.date-row {
+  padding-right: 8.5rem;
+}
+
+.first-day-text {
+  line-height: 1.2;
+}
+
+.first-day-date {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.stat-data-param {
+  padding-right: 1rem;
+  font-family: $text-font;
+  font-size: 0.9rem;
+}
+
+.stat-data-value {
+  font-family: $text-font;
+}

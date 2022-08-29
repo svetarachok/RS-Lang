@@ -9,3 +9,7 @@ export const REGISTER_BTN: HTMLButtonElement = document.getElementById('register
 export const LOGIN_BTN: HTMLButtonElement = document.getElementById('login-btn') as HTMLButtonElement;
 export const USER_ICON: HTMLElement = document.getElementById('user-icon') as HTMLElement;
 export const USER_AUTH_WRAPPER: HTMLElement = document.querySelector('.auth') as HTMLElement;
+
+// Statistic data
+export const WORDS_DATA_TEXT: string[] = ['новые слова', 'изученные слова', '% правильных ответов'];
+export const GAMES_DATA_TEXT: string[] = ['новые слова', '% правильных ответов', 'самая длинная серия правильных ответов'];

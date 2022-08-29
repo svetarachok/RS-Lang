@@ -114,7 +114,6 @@ export class Controller {
     if (stored && logined) {
       if (stored.group === 6) {
         const newData = await this.wordController.getUserBookWords();
-        console.log(newData);
         this.textBook.updateTextbook(newData, true, 6, 0);
         console.log('Есть локал бук и залогинен, level hard');
       } else {
@@ -177,7 +176,6 @@ export class Controller {
     if (stored.token) {
       this.userUI.authorise(stored);
     }
-    // if ()
   }
 
   public async handleRegistartion(name: string, email: string, password: string) {
@@ -187,7 +185,6 @@ export class Controller {
     const res = await this.api.authorize(obj);
     // this.modal.showMessage('Успешная регистрация! <Войдите в аккаунт')
     if (typeof res === 'object') {
-      console.log('123');
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);

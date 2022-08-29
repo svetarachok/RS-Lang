@@ -111,3 +111,15 @@ export interface Statistic {
 export interface StatisticResponse extends Statistic {
   id: string;
 }
+
+export interface DailyStat {
+  [key: string]: DailyStatObj
+}
+
+export interface DailyStatObj {
+  words: WordsStatistic,
+  games: {
+    audiocall: GameStatistic
+    sprint: GameStatistic
+  }
+}
