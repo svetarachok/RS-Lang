@@ -80,7 +80,7 @@ export class Sprint {
     main.innerHTML = '';
     const btnClose = createHTMLElement('a', ['sprint__close'], [['href', '/'], ['data-navigo', 'true']]) as HTMLAnchorElement;
     if (this.mode === 'book') {
-      btnClose.href = '/book';
+      btnClose.href = '#/book';
       sprint.append(btnClose);
       this.startGame();
     } else if (this.mode === 'menu') {
@@ -435,7 +435,13 @@ export class Sprint {
     const trueList = createHTMLElement('ul', ['result__true'], undefined, `Знаю: ${this.trueWords.length}`);
     const falseList = createHTMLElement('ul', ['result__false'], undefined, `Ошибок: ${this.falseWords.length}`);
     const btnRestart = createHTMLElement('button', ['result__restart-btn'], undefined, 'Играть еще раз');
-    btnRestart.addEventListener('click', this.restartGame.bind(this));
+    btnRestart.addEventListener('click', (e: Event) => {
+      const btn = <HTMLButtonElement>e.target;
+      if (!btn.disabled) {
+        this.restartGame();
+        btn.disabled = true;
+      }
+    });
     this.trueWords.forEach((word) => this.addWordInResult(trueList, word));
     this.falseWords.forEach((word) => this.addWordInResult(falseList, word));
     listsContainer.append(falseList, trueList);
@@ -526,11 +532,41 @@ export class Sprint {
 
   private async getHardWords(): Promise<Word[]> {
     const userHardWords = await this.wordController.getUserBookWords() as UserAggregatedWord[];
-    return userHardWords.map((word) => convertAggregatedWordToWord(word));
+    if (Array.isArray(userHardWords)) {
+      return userHardWords.map((word) => convertAggregatedWordToWord(word));
+    }
+    return [];
   }
 
-  private restartGame() {
-    this.closeGame();
-    this.renderGame();
+  private async checkWordsAvailability(): Promise<boolean> {
+    let words: Word[];
+    if (this.bookLevel < 6) {
+      words = await api.getWords({ group: String(this.bookLevel), page: String(this.bookPage) });
+    } else {
+      words = await this.getHardWords();
+      console.log('words:', words);
+    }
+    if (words.length === 0 || !Array.isArray(words)) {
+      const result = <HTMLElement>document.querySelector('.sprint__result');
+      const message = createHTMLElement('span', ['sprint__restart-message'], undefined, 'Недостаточно слов для запуска новой игры. Выберите другой уровень или страницу');
+      result.append(message);
+      console.log('not found');
+      return false;
+    }
+    return true;
+  }
+
+  private async restartGame() {
+    const isAvailable: boolean = await this.checkWordsAvailability();
+    if (isAvailable) {
+      this.closeGame();
+      this.wordsInGame.length = 0;
+      this.score = 0;
+      this.multiplier = 1;
+      this.seriesOfCorrect = 0;
+      this.trueWords.length = 0;
+      this.falseWords.length = 0;
+      this.renderGame();
+    }
   }
 }
