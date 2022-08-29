@@ -52,15 +52,19 @@ export class WordController {
     if (correct) {
       changedWord.optional.correctAnswers += 1;
       changedWord.optional.correctSeries += 1;
-      if (changedWord.difficulty === 'easy' && changedWord.optional.correctSeries >= 3) {
+      if (changedWord.difficulty === 'easy' && changedWord.optional.correctSeries === 3) {
         changedWord.optional.learned = true;
         UserStatistic.increaseLearnedWordsCount();
-      } else if (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries >= 5) {
+      } else if (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries === 5) {
         changedWord.optional.learned = true;
         changedWord.difficulty = 'easy';
         UserStatistic.increaseLearnedWordsCount();
       }
     } else {
+      if ((changedWord.difficulty === 'easy' && changedWord.optional.correctSeries >= 3)
+      || (changedWord.difficulty === 'hard' && changedWord.optional.correctSeries === 5)) {
+        UserStatistic.decreaseLearnedWordsCount();
+      }
       changedWord.optional.correctSeries = 0;
       changedWord.optional.incorrectAnswers += 1;
       changedWord.optional.learned = false;
@@ -110,13 +114,15 @@ export class WordController {
   }
 
   public async updateLearnedWord(learned: boolean, wordId: string) {
-    console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+    console.log('word learned', learned);
     const data = this.storage.getData('UserId');
     const word = await api.getUserWordById(data, wordId);
     if (typeof word === 'object') {
       word.optional.learned = learned;
-      if (!learned) word.optional.correctSeries = 0;
-      else { UserStatistic.increaseLearnedWordsCount(); }
+      if (!learned) {
+        word.optional.correctSeries = 0;
+        UserStatistic.decreaseLearnedWordsCount();
+      } else { UserStatistic.increaseLearnedWordsCount(); }
       word.difficulty = 'easy';
       await api.changeUserWord(
         data,
