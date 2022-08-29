@@ -2,6 +2,7 @@ import { AuthorizationData } from '../types/interfaces';
 import { StatisticUI } from '../UserStatistic/StatisticUI';
 import { REGISTER_BTN, LOGIN_BTN, USER_AUTH_WRAPPER } from '../utils/constants';
 import createNode from '../utils/createNode';
+import { Charts } from '../Charts/Charts';
 
 export class UserUI {
   userPage: HTMLElement;
@@ -18,6 +19,8 @@ export class UserUI {
 
   statUI: StatisticUI;
 
+  charts: Charts;
+
   constructor() {
     this.headerEnterBtn = createNode({
       tag: 'a', classes: ['enter-cabinet-link'], atributesAdnValues: [['href', '/user'], ['data-navigo', 'true']], inner: 'Enter Cabinet',
@@ -28,6 +31,7 @@ export class UserUI {
     this.exitBtn = createNode({ tag: 'button', classes: ['btn', 'exit-cabinet-btn'], inner: 'Exit cabinet' }) as HTMLButtonElement;
     this.statisticPage = createNode({ tag: 'div', classes: ['statistic-block'] });
     this.statUI = new StatisticUI();
+    this.charts = new Charts();
   }
 
   public authorise(res: AuthorizationData) {
@@ -54,11 +58,24 @@ export class UserUI {
     container.innerHTML = '';
     this.userPage.innerHTML = '';
     const sidebar = createNode({ tag: 'aside', classes: ['aside', 'user-sidebar'] });
-    // this.email.innerHTML = email;
     sidebar.append(this.name, this.email, this.exitBtn);
     const statistic = await this.renderStatisticBlock();
+    const charts = this.renderChartsBlock();
     this.userPage.append(sidebar, statistic);
-    container.append(this.userPage);
+    container.append(this.userPage, charts);
+    const stat = await this.charts.getStatisticForCarts();
+    this.charts.createChart(
+      'myChart-1',
+      stat.dates,
+      stat.newWords,
+      'Количество новых',
+    );
+    this.charts.createChart(
+      'myChart-2',
+      stat.dates,
+      stat.learnedWords,
+      'Количество выученных',
+    );
     return container;
   }
 
@@ -68,5 +85,21 @@ export class UserUI {
     this.statisticPage.append(statisticData);
     console.log('statistic rendered');
     return this.statisticPage;
+  }
+
+  private renderChartsBlock() {
+    const charts = createNode({ tag: 'section', classes: ['charts'] });
+    this.renderChartCanvas(charts, 'chart', 'myChart-1');
+    this.renderChartCanvas(charts, 'chart', 'myChart-2');
+    return charts;
+  }
+
+  private renderChartCanvas(container: HTMLElement, className: string, id: string) {
+    const chart = createNode({
+      tag: 'canvas',
+      classes: [className],
+      atributesAdnValues: [['id', id]],
+    });
+    container.append(chart);
   }
 }

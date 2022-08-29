@@ -105,7 +105,6 @@ export class UserStatistic {
     } else if (statisticObj === null) {
       api.setStatistic(userData, getStatObjectForNewUser());
     }
-    console.log(statisticObj);
   }
 
   public async update() {
