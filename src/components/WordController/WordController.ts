@@ -29,7 +29,7 @@ export class WordController {
       difficulty: 'easy',
       optional: {
         learned: false,
-        learnedDate: '',
+        learnedDate: 'not learned',
         correctAnswers: 0,
         incorrectAnswers: 0,
         correctSeries: 0,
