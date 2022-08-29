@@ -48,7 +48,7 @@ export class UserUI {
     });
   }
 
-  public renderUserPage() {
+  public async renderUserPage() {
     console.log('User Page Rendered');
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
@@ -59,16 +59,17 @@ export class UserUI {
     const charts = this.renderChartsBlock();
     this.userPage.append(sidebar, statistic);
     container.append(this.userPage, charts);
+    const stat = await this.charts.getStatisticForCarts();
     this.charts.createChart(
       'myChart-1',
-      ['22.08', '23.08', '24.08', '25.08', '26.08', '27.08', '28.08'],
-      [34, 43, 87, 11, 32, 11, 22],
+      stat.dates,
+      stat.newWords,
       'Количество новых',
     );
     this.charts.createChart(
       'myChart-2',
-      ['22.08', '23.08', '24.08', '25.08', '26.08', '27.08', '28.08'],
-      [11, 4, 8, 3, 13, 22, 12],
+      stat.dates,
+      stat.learnedWords,
       'Количество выученных',
     );
     return container;

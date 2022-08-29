@@ -111,3 +111,9 @@ export interface Statistic {
 export interface StatisticResponse extends Statistic {
   id: string;
 }
+
+export interface StatisticForCarts {
+  dates: string[],
+  newWords: number[],
+  learnedWords: number[]
+}
