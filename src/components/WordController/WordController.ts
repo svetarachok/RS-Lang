@@ -98,19 +98,19 @@ export class WordController {
   }
 
   public async updateHardWord(difficulty: 'easy' | 'hard', wordId: string) {
-    const { userId, token } = this.storage.getData('UserId');
-    const word: UserWord = await api.getUserWordById({ userId, token }, wordId) as UserWord;
+    const userData = this.storage.getData('UserId');
+    const word: UserWord = await api.getUserWordById(userData, wordId) as UserWord;
     if (typeof word === 'object') {
       word.difficulty = difficulty;
       await api.changeUserWord(
-        { userId, token },
+        userData,
         wordId,
         { difficulty: word.difficulty, optional: word.optional },
       );
     } else {
       const newWord: UserWord = this.createNewUserWord();
       newWord.difficulty = difficulty;
-      await api.setUserWord({ userId, token }, wordId, newWord);
+      await api.setUserWord(userData, wordId, newWord);
     }
   }
 
@@ -156,12 +156,12 @@ export class WordController {
   public async getUserBookWords() {
     const logined = this.storage.getData('UserId');
     const totalWords = await this.api.getTotalUserWords(
-      { token: logined.token, userId: logined.userId },
+      logined,
       '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
     );
     if (typeof totalWords === 'number') {
       const newData = await this.api.getAggregatedUserWords(
-        { token: logined.token, userId: logined.userId },
+        logined,
         { wordsPerPage: String(totalWords) },
         '{"$and":[{"userWord.difficulty":"hard", "userWord.optional.learned":false}]}',
       ) as UserAggregatedWord[];

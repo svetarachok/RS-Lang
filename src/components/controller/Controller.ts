@@ -119,7 +119,7 @@ export class Controller {
         console.log('Есть локал бук и залогинен, level hard');
       } else {
         const newData = await this.api.getAggregatedUserWords(
-          { token: logined.token, userId: logined.userId },
+          logined,
           { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
         ) as UserAggregatedWord[];
         console.log('Есть локал бук и залогинен');
@@ -131,7 +131,7 @@ export class Controller {
       this.textBook.updateTextbook(data, false, stored.group, stored.page);
     } else if (!stored && logined) {
       const newData = await this.api.getAggregatedUserWords(
-        { token: logined.token, userId: logined.userId },
+        logined,
         { group: '0', page: '0', wordsPerPage: String(WORDS_PER_PAGE) },
       ) as UserAggregatedWord[];
       console.log('Не ходит по учебнику и залогинен');

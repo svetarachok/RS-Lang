@@ -45,7 +45,8 @@ export class Api {
     return response.json();
   }
 
-  public async getUserById(authData: Pick<AuthorizationData, 'token' | 'userId'>): Promise<User | string> {
+  // need tocken check
+  public async getUserById(authData: AuthorizationData): Promise<User | string> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}`, {
       method: HTTPMethod.GET,
       headers: {
@@ -73,8 +74,9 @@ export class Api {
     return response.json();
   }
 
+  // need tocken check
   public async setUserWord(
-    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    authData: AuthorizationData,
     wordId:string,
     userWord: Omit<UserWord, 'id' | 'wordId'>,
   ):
@@ -97,7 +99,7 @@ export class Api {
     return response.json();
   }
 
-  public async getUserWords(authData: Pick<AuthorizationData, 'token' | 'userId'>):
+  public async getUserWords(authData: AuthorizationData):
   Promise<Required<UserWord>[] | string> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}`, {
       method: HTTPMethod.GET,
@@ -110,8 +112,9 @@ export class Api {
     return response.json();
   }
 
-  public async getUserWordById(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
+  public async getUserWordById(authData: AuthorizationData, wordId:string):
   Promise<Required<UserWord> | string> {
+    console.log('getUserWordById');
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.GET,
       headers: {
@@ -127,7 +130,7 @@ export class Api {
   }
 
   public async changeUserWord(
-    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    authData: AuthorizationData,
     wordId:string,
     userWord: Omit<UserWord, 'id' | 'wordId'>,
   ):
@@ -150,7 +153,7 @@ export class Api {
     return response.json();
   }
 
-  public async deleteUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
+  public async deleteUserWord(authData: AuthorizationData, wordId:string):
   Promise<boolean> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.DELETE,
@@ -162,7 +165,7 @@ export class Api {
   }
 
   public async getAggregatedUserWords(
-    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    authData: AuthorizationData,
     queryParam: { group?: string, page?: string, wordsPerPage?: string },
     filterStr?: string,
   ):
@@ -183,7 +186,7 @@ export class Api {
   }
 
   public async getTotalUserWords(
-    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    authData: AuthorizationData,
     filterStr: string,
     queryParam?: { group: string, page?: string, wordsPerPage?: string },
   ):
@@ -204,7 +207,7 @@ export class Api {
     } return 'В вашем учебнике нет Сложных слов';
   }
 
-  public async getAggregatedUserWord(authData: Pick<AuthorizationData, 'token' | 'userId'>, wordId:string):
+  public async getAggregatedUserWord(authData: AuthorizationData, wordId:string):
   Promise<UserAggregatedWord | string> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}/${wordId}`, {
       method: HTTPMethod.GET,
@@ -223,7 +226,7 @@ export class Api {
   }
 
   public async setStatistic(
-    authData: Pick<AuthorizationData, 'token' | 'userId'>,
+    authData: AuthorizationData,
     statistic: Statistic,
   ):
     Promise<StatisticResponse | string> {
@@ -242,7 +245,7 @@ export class Api {
     return data;
   }
 
-  public async getStatistic(authData: Pick<AuthorizationData, 'token' | 'userId'>):
+  public async getStatistic(authData: AuthorizationData):
   Promise<StatisticResponse | string | null> {
     const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.statistics}`, {
       method: HTTPMethod.GET,
