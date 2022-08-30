@@ -1,4 +1,5 @@
 import { AuthorizationData } from '../types/interfaces';
+import { StatisticUI } from '../UserStatistic/StatisticUI';
 import { REGISTER_BTN, LOGIN_BTN, USER_AUTH_WRAPPER } from '../utils/constants';
 import createNode from '../utils/createNode';
 import { Charts } from '../Charts/Charts';
@@ -14,7 +15,9 @@ export class UserUI {
 
   exitBtn: HTMLButtonElement;
 
-  statistic: HTMLElement;
+  statisticPage: HTMLElement;
+
+  statUI: StatisticUI;
 
   charts: Charts;
 
@@ -26,7 +29,8 @@ export class UserUI {
     this.name = createNode({ tag: 'h2', classes: ['user-name'] });
     this.email = createNode({ tag: 'p', classes: ['user-name'] });
     this.exitBtn = createNode({ tag: 'button', classes: ['btn', 'exit-cabinet-btn'], inner: 'Exit cabinet' }) as HTMLButtonElement;
-    this.statistic = createNode({ tag: 'div', classes: ['statistic-block'] });
+    this.statisticPage = createNode({ tag: 'div', classes: ['statistic-block'] });
+    this.statUI = new StatisticUI();
     this.charts = new Charts();
   }
 
@@ -49,16 +53,23 @@ export class UserUI {
   }
 
   public async renderUserPage() {
-    console.log('User Page Rendered');
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
     this.userPage.innerHTML = '';
-    const sidebar = createNode({ tag: 'aside', classes: ['aside', 'user-sidebar'] });
-    sidebar.append(this.name, this.email, this.exitBtn);
-    const statistic = this.renderStatisticBlock();
+    console.log(this.userPage.innerHTML);
+    const userSection = createNode({ tag: 'section', classes: ['user-section'] });
+    const chartsSection = createNode({ tag: 'section', classes: ['charts-section'] });
+    const dailyStatSection = createNode({ tag: 'section', classes: ['daily-stat-section'] });
+    const userBlock = createNode({ tag: 'aside', classes: ['aside', 'user-sidebar'] });
+    userBlock.append(this.name, this.email, this.exitBtn);
+    const todayStatistic = await this.renderTodayStatisticBlock();
+    const dailyStatistic = await this.renderStatisticBlock();
     const charts = this.renderChartsBlock();
-    this.userPage.append(sidebar, statistic);
-    container.append(this.userPage, charts);
+    userSection.append(userBlock, todayStatistic);
+    chartsSection.append(charts);
+    dailyStatSection.append(dailyStatistic);
+    this.userPage.append(userSection, chartsSection, dailyStatSection);
+    container.append(this.userPage);
     const stat = await this.charts.getStatisticForCarts();
     this.charts.createChart(
       'myChart-1',
@@ -75,12 +86,18 @@ export class UserUI {
     return container;
   }
 
-  public renderStatisticBlock() {
-    this.statistic.innerHTML = '';
-    const h = createNode({ tag: 'h1', classes: ['statistic-header'], inner: 'Here gonna be staicstic' });
-    this.statistic.append(h);
-    console.log('statistic rendered', h);
-    return this.statistic;
+  public async renderStatisticBlock() {
+    this.statisticPage.innerHTML = '';
+    const statisticData = await this.statUI.drawDailyStat();
+    this.statisticPage.append(statisticData);
+    console.log('statistic rendered');
+    return this.statisticPage;
+  }
+
+  public async renderTodayStatisticBlock() {
+    console.log('try do draw today');
+    const statisticData = await this.statUI.drawTodayStat();
+    return statisticData;
   }
 
   private renderChartsBlock() {

@@ -1,15 +1,23 @@
 .user-page {
   display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem 1rem;
+  gap: 1.5rem;
 }
 
 .user-sidebar {
   display: flex;
   gap: 1.5rem;
   flex-direction: column;
-  width: 25%;
+  width: 36%;
   background-color: lightyellow;
-  margin-top: 2.5rem;
   padding: 2.5rem 1.5rem 1.5rem;
+}
+
+.user-section {
+  display: flex;
+  padding-bottom: 1rem;
+  gap: 2.5rem;
 }
 
 .enter-cabinet-link {
@@ -17,9 +25,9 @@
   font-weight: 600;
 }
 
-.statistic-block {
-  padding: 3rem 2rem 1rem;
-}
+// .statistic-block {
+//   padding: 3rem 2rem 1rem;
+// }
 
 .exit-cabinet-btn {
   width: 10rem;

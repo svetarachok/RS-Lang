@@ -6,7 +6,7 @@ import {
   AuthorizationData, GameStatistic, Statistic, UserWord, WordsStatistic,
 } from '../types/interfaces';
 
-function getStatObjectForNewUser() {
+function getEmptyStatObject() {
   const date = (new Date()).toLocaleDateString();
   const statObj: Statistic = {
     learnedWords: 0,
@@ -74,6 +74,12 @@ export class UserStatistic {
     const date = (new Date()).toLocaleDateString();
     if (statisticObj !== null && typeof statisticObj === 'object') {
       statisticObj.learnedWords += 1;
+      if (!statisticObj.optional.words[date]) {
+        const emptyObject = getEmptyStatObject();
+        statisticObj.optional.words[date] = emptyObject.optional.words[date];
+        statisticObj.optional.games.audiocall[date] = emptyObject.optional.games.audiocall[date];
+        statisticObj.optional.games.sprint[date] = emptyObject.optional.games.sprint[date];
+      }
       statisticObj.optional.words[date].learnedWords += 1;
       const statistic: Statistic = {
         learnedWords: statisticObj.learnedWords,
@@ -82,7 +88,7 @@ export class UserStatistic {
       api.setStatistic(userData, statistic);
       // return
     } else if (statisticObj === null) {
-      const statistic: Statistic = getStatObjectForNewUser();
+      const statistic: Statistic = getEmptyStatObject();
       statistic.learnedWords += 1;
       statistic.optional.words[date].learnedWords += 1;
       api.setStatistic(userData, statistic);
@@ -103,7 +109,7 @@ export class UserStatistic {
       };
       api.setStatistic(userData, statistic);
     } else if (statisticObj === null) {
-      api.setStatistic(userData, getStatObjectForNewUser());
+      api.setStatistic(userData, getEmptyStatObject());
     }
   }
 
