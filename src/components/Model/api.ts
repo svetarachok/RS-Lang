@@ -1,9 +1,11 @@
+import { storage } from '../Storage/Storage';
 import { Endpoint, HTTPMethod, ContentType } from '../types/enums';
 import {
   Word, User, UserCreationData, AuthorizationData,
-  UserWord, UserAggregatedWordsResult, UserAggregatedWord, Statistic, StatisticResponse,
+  UserWord, UserAggregatedWordsResult, UserAggregatedWord,
+  Statistic, StatisticResponse, FetchOptions,
 } from '../types/interfaces';
-import { BASE_LINK } from '../utils/constants';
+import { BASE_LINK, TOKEN_LIFETIME_IN_HOURS } from '../utils/constants';
 import { generateQueryString, makeUrl } from '../utils/functions';
 
 export class Api {
@@ -42,7 +44,9 @@ export class Api {
     });
 
     if (response.status === 404) return 'Incorrect e-mail or password';
-    return response.json();
+    const data = await response.json();
+    data.tokenExpires = Date.now() + TOKEN_LIFETIME_IN_HOURS * 60 * 60 * 1000;
+    return data;
   }
 
   // need tocken check
@@ -54,7 +58,6 @@ export class Api {
         Accept: ContentType.json,
       },
     });
-    console.log(response);
 
     if (response.status === 403) return 'UserId not found';
     if (response.status === 401) return 'Access token is missing or invalid';
@@ -81,10 +84,9 @@ export class Api {
     userWord: Omit<UserWord, 'id' | 'wordId'>,
   ):
     Promise<UserWord | string> {
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.POST,
       headers: {
-        Authorization: `Bearer ${authData.token}`,
         'Content-Type': ContentType.json,
       },
       body: JSON.stringify(userWord),
@@ -101,11 +103,8 @@ export class Api {
 
   public async getUserWords(authData: AuthorizationData):
   Promise<Required<UserWord>[] | string> {
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}`, {
       method: HTTPMethod.GET,
-      headers: {
-        Authorization: `Bearer ${authData.token}`,
-      },
     });
 
     if (!response.ok) return response.text();
@@ -114,12 +113,8 @@ export class Api {
 
   public async getUserWordById(authData: AuthorizationData, wordId:string):
   Promise<Required<UserWord> | string> {
-    console.log('getUserWordById');
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.GET,
-      headers: {
-        Authorization: `Bearer ${authData.token}`,
-      },
     });
     if (response.status === 400) {
       const errorMessage = (await response.json()).error.errors[0].message as string;
@@ -135,10 +130,9 @@ export class Api {
     userWord: Omit<UserWord, 'id' | 'wordId'>,
   ):
     Promise<UserWord | string> {
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.PUT,
       headers: {
-        Authorization: `Bearer ${authData.token}`,
         'Content-Type': ContentType.json,
       },
       body: JSON.stringify(userWord),
@@ -155,11 +149,8 @@ export class Api {
 
   public async deleteUserWord(authData: AuthorizationData, wordId:string):
   Promise<boolean> {
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.words}/${wordId}`, {
       method: HTTPMethod.DELETE,
-      headers: {
-        Authorization: `Bearer ${authData.token}`,
-      },
     });
     return response.ok;
   }
@@ -173,11 +164,8 @@ export class Api {
     const paramString = filterStr
       ? generateQueryString({ ...queryParam, ...{ filter: filterStr } })
       : generateQueryString(queryParam);
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}${paramString}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}${paramString}`, {
       method: HTTPMethod.GET,
-      headers: {
-        Authorization: `Bearer ${authData.token}`,
-      },
     });
     if (!response.ok) return response.text();
     const data: UserAggregatedWordsResult[] = await response.json();
@@ -194,11 +182,8 @@ export class Api {
     const paramString = queryParam
       ? generateQueryString({ ...queryParam, ...{ filter: filterStr } })
       : generateQueryString({ filter: filterStr });
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}${paramString}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}${paramString}`, {
       method: HTTPMethod.GET,
-      headers: {
-        Authorization: `Bearer ${authData.token}`,
-      },
     });
     if (!response.ok) return response.text();
     const data: UserAggregatedWordsResult[] = await response.json();
@@ -209,11 +194,8 @@ export class Api {
 
   public async getAggregatedUserWord(authData: AuthorizationData, wordId:string):
   Promise<UserAggregatedWord | string> {
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}/${wordId}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.aggregatedWords}/${wordId}`, {
       method: HTTPMethod.GET,
-      headers: {
-        Authorization: `Bearer ${authData.token}`,
-      },
     });
     if (response.status === 400) {
       const errorMessage = (await response.json()).error.errors[0].message as string;
@@ -230,10 +212,9 @@ export class Api {
     statistic: Statistic,
   ):
     Promise<StatisticResponse | string> {
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.statistics}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.statistics}`, {
       method: HTTPMethod.PUT,
       headers: {
-        Authorization: `Bearer ${authData.token}`,
         'Content-Type': ContentType.json,
       },
       body: JSON.stringify(statistic),
@@ -247,17 +228,37 @@ export class Api {
 
   public async getStatistic(authData: AuthorizationData):
   Promise<StatisticResponse | string | null> {
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.statistics}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}${Endpoint.statistics}`, {
       method: HTTPMethod.GET,
-      headers: {
-        Authorization: `Bearer ${authData.token}`,
-      },
     });
 
     if (response.status === 404) return null;
     if (!response.ok) return response.text();
     const data = await response.json();
     return data;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private async fetchWithAuth(authData: AuthorizationData, url: string, options: FetchOptions) {
+    let token;
+    if (authData.tokenExpires > Date.now()) {
+      token = authData.token;
+    } else {
+      const newUserData = authData;
+      const response = await this.getNewUserToken(authData);
+      if (typeof response === 'object') {
+        newUserData.token = response.token;
+        newUserData.refreshToken = response.refreshToken;
+        newUserData.tokenExpires = Date.now() + TOKEN_LIFETIME_IN_HOURS * 60 * 60 * 1000;
+
+        storage.setData('UserId', newUserData);
+        token = newUserData.token;
+      }
+    }
+    const fetchOptions = options;
+    fetchOptions.headers = options.headers || {};
+    fetchOptions.headers.Authorization = `Bearer ${token}`;
+    return fetch(url, fetchOptions);
   }
 }
 
