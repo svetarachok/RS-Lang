@@ -128,7 +128,6 @@ export class Sprint {
     ready.append(timerTitle);
     const randomPair = this.getRandomPair();
     this.startTimer('timer--ready', 3, this.renderGameContol.bind(this, randomPair.word, randomPair.wordTranslate));
-    this.addKeyboardControl();
   }
 
   private renderTimer(container: HTMLElement, className: string) {
@@ -204,6 +203,7 @@ export class Sprint {
     sprint.append(sprintControl);
     buttonFalse.addEventListener('click', (e) => this.selectAnswer(e));
     buttonTrue.addEventListener('click', (e) => this.selectAnswer(e));
+    this.addKeyboardControl();
   }
 
   private async getWordsInLevel(level: string): Promise<void> {
@@ -544,13 +544,11 @@ export class Sprint {
       words = await api.getWords({ group: String(this.bookLevel), page: String(this.bookPage) });
     } else {
       words = await this.getHardWords();
-      console.log('words:', words);
     }
     if (words.length === 0 || !Array.isArray(words)) {
       const result = <HTMLElement>document.querySelector('.sprint__result');
       const message = createHTMLElement('span', ['sprint__restart-message'], undefined, 'Недостаточно слов для запуска новой игры. Выберите другой уровень или страницу');
       result.append(message);
-      console.log('not found');
       return false;
     }
     return true;

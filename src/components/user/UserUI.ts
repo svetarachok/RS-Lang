@@ -49,7 +49,6 @@ export class UserUI {
   }
 
   public async renderUserPage() {
-    console.log('User Page Rendered');
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
     this.userPage.innerHTML = '';
@@ -79,7 +78,6 @@ export class UserUI {
     this.statistic.innerHTML = '';
     const h = createNode({ tag: 'h1', classes: ['statistic-header'], inner: 'Here gonna be staicstic' });
     this.statistic.append(h);
-    console.log('statistic rendered', h);
     return this.statistic;
   }
 
