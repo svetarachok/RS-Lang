@@ -27,6 +27,8 @@ export class TextBook {
 
   pageInput: HTMLInputElement;
 
+  words: WordUI[];
+
   constructor(numberOfLevels: number) {
     this.textBook = createNode({ tag: 'section', classes: ['textbook'] }) as HTMLDivElement;
     this.cardsWrapper = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
@@ -41,6 +43,7 @@ export class TextBook {
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
     this.pageInput = createNode({ tag: 'input', classes: ['page-input'], atributesAdnValues: [['type', 'number']] }) as HTMLInputElement;
     this.pageInput.value = String(this.currentPage + 1);
+    this.words = [];
   }
 
   // Update textBook and cards separately
@@ -201,8 +204,9 @@ export class TextBook {
       this.cardsWrapper.innerHTML = cardsData;
     } else {
       cardsData.forEach((card) => {
-        const cardItem = new WordUI(card);
+        const cardItem = new WordUI(card, this.words);
         this.cardsWrapper.append(cardItem.drawCard());
+        this.words.push(cardItem);
       });
     }
     return this.cardsWrapper;
