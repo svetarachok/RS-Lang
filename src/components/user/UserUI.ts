@@ -53,7 +53,6 @@ export class UserUI {
   }
 
   public async renderUserPage() {
-    console.log('User Page Rendered');
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
     this.userPage.innerHTML = '';
