@@ -1,3 +1,5 @@
+import { HTTPMethod } from './enums';
+
 export interface Word {
   id: string,
   group: number,
@@ -27,6 +29,7 @@ export interface AuthorizationData {
   refreshToken: string,
   userId: string,
   name: string,
+  tokenExpires: number,
 }
 
 export interface User extends Pick<UserCreationData, 'name' | 'email'> {
@@ -129,4 +132,13 @@ export interface DailyStatObj {
     audiocall: GameStatistic
     sprint: GameStatistic
   }
+}
+
+export interface FetchOptions {
+  method: HTTPMethod,
+  headers?: {
+    Authorization?: string,
+    'Content-Type'?: string,
+  }
+  body?: string;
 }

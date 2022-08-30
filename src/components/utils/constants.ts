@@ -1,5 +1,6 @@
 export const BASE_LINK: string = 'http://localhost:8088';
 export const APP_LINK: string = 'http://localhost:8000';
+export const TOKEN_LIFETIME_IN_HOURS: number = 3;
 export const LEVELS_OF_TEXTBOOK: number = 7;
 export const MAX_PAGE_NUMBER: number = 30;
 export const WORDS_PER_PAGE: number = 20;
