@@ -118,3 +118,15 @@ export interface StatisticForCarts {
   newWords: number[],
   learnedWords: number[]
 }
+
+export interface DailyStat {
+  [key: string]: DailyStatObj
+}
+
+export interface DailyStatObj {
+  words: WordsStatistic,
+  games: {
+    audiocall: GameStatistic
+    sprint: GameStatistic
+  }
+}
