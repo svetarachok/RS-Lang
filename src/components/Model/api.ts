@@ -1,12 +1,21 @@
 import { Endpoint, HTTPMethod, ContentType } from '../types/enums';
 import {
   Word, User, UserCreationData, AuthorizationData,
-  UserWord, UserAggregatedWordsResult, UserAggregatedWord, Statistic, StatisticResponse,
+  UserWord, UserAggregatedWordsResult,
+  UserAggregatedWord, Statistic, StatisticResponse, DailyStatObj,
 } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
 import { generateQueryString, makeUrl } from '../utils/functions';
+import { storage } from '../Storage/Storage';
+import { makeDailyStat } from '../utils/makeDailyStatObject';
 
 export class Api {
+  storage: typeof storage;
+
+  constructor() {
+    this.storage = storage;
+  }
+
   public async getWords(queryParam?: { group: string, page: string }): Promise<Word[]> {
     const url: URL = makeUrl(BASE_LINK, Endpoint.words, queryParam);
     const response = await fetch(url);
@@ -253,9 +262,21 @@ export class Api {
 
     if (response.status === 404) return null;
     if (!response.ok) return response.text();
-    console.log(response);
     const data = await response.json();
     return data;
+  }
+
+  public async getStatDataForRender() {
+    const { userId, token } = this.storage.getUserIdData();
+    let dailyStat: [string, DailyStatObj][] = [];
+    const statData: StatisticResponse = await this.getStatistic({
+      token, userId,
+    }) as StatisticResponse;
+    if (statData) {
+      dailyStat = makeDailyStat(statData);
+      return dailyStat;
+    } dailyStat = [];
+    return dailyStat;
   }
 }
 

@@ -13,6 +13,5 @@ export function makeDailyStat(stat: Statistic) {
     return acc;
   }, {} as DailyStat);
   const res: [string, DailyStatObj][] = Object.entries(obj as DailyStat);
-  console.log(res);
-  return res;
+  return res.reverse();
 }

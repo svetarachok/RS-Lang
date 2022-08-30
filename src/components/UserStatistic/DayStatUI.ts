@@ -11,16 +11,16 @@ export class DayStatUI {
   wrapper: HTMLElement;
 
   constructor(data: [string, DailyStatObj]) {
-    [this.date, this.obj] = data;
     this.wrapper = createNode({ tag: 'div', classes: ['wrapper_day-stat'] });
+    [this.date, this.obj] = data;
   }
 
   public drawFirstDayStat() {
-    const dayWrap = createNode({ tag: 'div', classes: ['data-wrapper', 'first-day-wrapper'] });
+    const dayWrap = createNode({ tag: 'div', classes: ['todaystat-wrapper'] });
     const textRow = createNode({ tag: 'div', classes: ['date-row'] });
     const firstRow = createNode({ tag: 'div', classes: ['data-wrapper-row1'] });
     const secondRow = createNode({ tag: 'div', classes: ['data-wrapper-row2'] });
-    const dayText = createNode({ tag: 'p', classes: ['first-day-text'], inner: 'Ваша статистка за сегодня' });
+    const dayText = createNode({ tag: 'p', classes: ['first-day-text'], inner: 'Статистка за сегодня' });
     const dayData = createNode({ tag: 'p', classes: ['first-day-date'], inner: `${this.date}` });
     const corrWordAnsw = findCorrectAnswPercent(
       this.obj.words.correctAnswers,
@@ -38,15 +38,15 @@ export class DayStatUI {
     const audioWrap = this.createColumn('word', 'Игра Audiocall', GAMES_DATA_TEXT, [this.obj.games.audiocall.newWords, corrAudioAnsw, this.obj.games.audiocall.bestSeries]);
     const sprintWrap = this.createColumn('word', 'Игра Sprint', GAMES_DATA_TEXT, [this.obj.games.sprint.newWords, corrSprintAnsw, this.obj.games.sprint.bestSeries]);
     textRow.append(dayText, dayData);
-    firstRow.append(textRow, wordWrap);
-    secondRow.append(audioWrap, sprintWrap);
+    firstRow.append(textRow, audioWrap);
+    secondRow.append(wordWrap, sprintWrap);
     dayWrap.append(firstRow, secondRow);
     return dayWrap;
   }
 
   public drawDayStat() {
-    const dayWrap = createNode({ tag: 'div', classes: ['data-wrapper'] });
-    const day = createNode({ tag: 'p', classes: ['data-text'], inner: `${this.date}` });
+    const dayWrap = createNode({ tag: 'div', classes: ['daystat-wrapper'] });
+    const day = createNode({ tag: 'p', classes: ['date-text'], inner: `${this.date}` });
     const corrWordAnsw = findCorrectAnswPercent(
       this.obj.words.correctAnswers,
       this.obj.words.incorrectAnswers,
@@ -66,7 +66,12 @@ export class DayStatUI {
     return dayWrap;
   }
 
-  private createColumn(classData: string, inner: string, params: string[], values: number[]) {
+  private createColumn(
+    classData: string,
+    inner: string,
+    params: string[],
+    values: (number | string)[],
+  ) {
     const wrap = createNode({ tag: 'div', classes: [`${classData}-wrapper`] });
     const text = createNode({ tag: 'p', classes: [`${classData}-text`], inner: `${inner}` });
     const list = createNode({ tag: 'div', classes: ['stat-data-items'] });
@@ -76,7 +81,7 @@ export class DayStatUI {
       listParams.push(paramText);
     });
     const listValues: HTMLElement[] = [];
-    values.forEach((value: number): void => {
+    values.forEach((value: number | string): void => {
       const valueText: HTMLElement = createNode({ tag: 'p', classes: ['stat-data-value'], inner: `${String(value)}` });
       listValues.push(valueText);
     });

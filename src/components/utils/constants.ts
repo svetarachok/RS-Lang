@@ -11,5 +11,5 @@ export const USER_ICON: HTMLElement = document.getElementById('user-icon') as HT
 export const USER_AUTH_WRAPPER: HTMLElement = document.querySelector('.auth') as HTMLElement;
 
 // Statistic data
-export const WORDS_DATA_TEXT: string[] = ['новые слова', 'изученные слова', '% правильных ответов'];
-export const GAMES_DATA_TEXT: string[] = ['новые слова', '% правильных ответов', 'самая длинная серия правильных ответов'];
+export const WORDS_DATA_TEXT: string[] = ['новые слова', 'изученные слова', 'правильные ответы'];
+export const GAMES_DATA_TEXT: string[] = ['новые слова', 'правильные ответы', 'самая длинная серия'];
