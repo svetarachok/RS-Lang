@@ -8,7 +8,6 @@ import {
 } from '../types/interfaces';
 import { BASE_LINK, TOKEN_LIFETIME_IN_HOURS } from '../utils/constants';
 import { generateQueryString, makeUrl } from '../utils/functions';
-import { storage } from '../Storage/Storage';
 import { makeDailyStat } from '../utils/makeDailyStatObject';
 
 export class Api {
@@ -39,7 +38,7 @@ export class Api {
       body: JSON.stringify(userCreationData),
     });
 
-    if (response.status === 417) return response.text();
+    if (!response.ok) return response.text();
     return response.json();
   }
 
@@ -248,11 +247,9 @@ export class Api {
   }
 
   public async getStatDataForRender() {
-    const { userId, token } = this.storage.getUserIdData();
+    const userData = this.storage.getUserIdData();
     let dailyStat: [string, DailyStatObj][] = [];
-    const statData: StatisticResponse = await this.getStatistic({
-      token, userId,
-    }) as StatisticResponse;
+    const statData: StatisticResponse = await this.getStatistic(userData) as StatisticResponse;
     if (statData) {
       dailyStat = makeDailyStat(statData);
       return dailyStat;
@@ -260,7 +257,6 @@ export class Api {
     return dailyStat;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private async fetchWithAuth(authData: AuthorizationData, url: string, options: FetchOptions) {
     let token;
     if (authData.tokenExpires > Date.now()) {
