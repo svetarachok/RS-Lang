@@ -52,6 +52,8 @@ export class Sprint {
 
   keyListener: (e: KeyboardEvent) => void;
 
+  linksHandler: (e: Event) => void;
+
   constructor(mode: 'menu' | 'book') {
     this.mode = mode;
     this.api = api;
@@ -70,6 +72,7 @@ export class Sprint {
     this.falseAnswerSound = this.createAnswerSoud(false);
     this.mute = false;
     this.keyListener = this.selectAnswerByKey.bind(this);
+    this.linksHandler = this.closeGameByLink.bind(this);
   }
 
   public renderGame(): void {
@@ -88,6 +91,7 @@ export class Sprint {
       sprint.append(select, btnClose);
     }
     main.append(sprint);
+    this.addLinksHandler();
   }
 
   private renderSelectLevel(): HTMLElement {
@@ -566,5 +570,28 @@ export class Sprint {
       this.falseWords.length = 0;
       this.renderGame();
     }
+  }
+
+  private closeGameByLink(e: Event) {
+    const target = <HTMLAnchorElement>e.target;
+    if (target.href !== `${BASE_LINK}/sprint`) {
+      this.removeLinksListeners();
+      this.closeGame();
+    }
+  }
+
+  private removeLinksListeners() {
+    const links = <NodeListOf<HTMLAnchorElement>>document.querySelectorAll('a');
+    links.forEach((link) => link.removeEventListener('click', this.linksHandler));
+  }
+
+  private addLinksHandler() {
+    const href = `${document.location.protocol}//${document.location.host}`;
+    const links = <NodeListOf<HTMLAnchorElement>>document.querySelectorAll('a');
+    links.forEach((link) => {
+      if (link.href !== `${href}/sprint`) {
+        link.addEventListener('click', this.linksHandler);
+      }
+    });
   }
 }
