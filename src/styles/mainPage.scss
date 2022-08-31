@@ -142,6 +142,10 @@
   padding-top: 2.5rem;
   flex-wrap: wrap;
   justify-content: center;
+  width: 80%;
+  @media (max-width: $breakpoint-laptop) {
+    width: 100%;
+  }
 }
 
 .team-member {
