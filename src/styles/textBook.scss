@@ -6,7 +6,7 @@
 }
 
 .aside {
-  padding: 2.5rem 0;
+  padding: 2rem 1rem;
   width: 15%;
   flex-shrink: 0;
   font-family: $headers-font;
@@ -21,7 +21,7 @@
   justify-content: center;
   align-items: center;
   padding-right: 1.5rem;
-  border-right: 1px solid $light-grey;
+  // border-right: 1px solid $light-grey;
   gap: 1rem;
 }
 
@@ -45,9 +45,12 @@
 
 .text-book-page {
   @include display-flex-space-between;
+  @include section-bg-colored;
+  background-color: #FFDDB1;
   flex-direction: column;
-  padding: 1.5rem 2.5rem;
+  padding: 0 2.5rem;
   width: 85%;
+  border: 3px solid #ffffff;
 }
 
 .text-book-page-head {
@@ -95,7 +98,7 @@
 .card-img {
   width: 10rem;
   height: 8rem;
-  border-radius: 0.5rem;
+  border-radius: 30px;
 }
 
 .card-word-info {

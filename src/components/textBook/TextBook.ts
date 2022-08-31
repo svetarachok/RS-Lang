@@ -166,7 +166,9 @@ export class TextBook {
         (card: UserAggregatedWord) => (card.userWord && (card.userWord.difficulty === 'hard' || card.userWord.optional.learned === true)),
       );
       if (d.length === 20 && this.currentLevel !== 6) {
-        this.cardsWrapper.style.border = '3px solid lightblue';
+        const textBookWrapper = document.querySelector('.text-book-page') as HTMLElement;
+        textBookWrapper.style.border = '3px solid #fddb9f';
+        // this.cardsWrapper.style.border = '3px solid lightblue';
         this.pageInput.style.backgroundColor = 'lightblue';
       }
     }
@@ -225,6 +227,7 @@ export class TextBook {
     let i: number = 1;
     while (levelsNumber) {
       const btn = createNode({ tag: 'button', classes: ['btn-level'], inner: `${i}` }) as HTMLButtonElement;
+      btn.classList.add(`btn-level-${i}`);
       arr.push(btn);
       i += 1;
       // eslint-disable-next-line no-param-reassign

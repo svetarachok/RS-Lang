@@ -1,17 +1,20 @@
 .hero-section {
   @include display-flex-center;
   flex-direction: column;
-  padding: 10rem;
+  padding: 5rem;
+  background: center / cover no-repeat url('./assets/main-bg1.jpg');
+  border-radius: 30px;
   @media (max-width: $breakpoint-tablet) {
     padding: 3.5rem 2rem;
   }
   @media (max-width: $breakpoint-mobile) {
     padding: 1.5rem;
   }
+  box-shadow: inset -1px -1px 3px rgba(255, 255, 255, 0.75), inset 1px 1px 2px rgba(7, 7, 69, 0.15);
 }
 
 .hero-section-header {
-  width: 70%;
+  width: 50%;
   text-align: center;
   line-height: 1;
   padding-bottom: 2rem;
@@ -25,13 +28,14 @@
 
 .hero-section-text {
   text-align: center;
-  width: 80%;
+  width: 60%;
+  padding-bottom: 1.5rem;
 }
 
 .advantages-section {
   display: flex;
-  padding: $section-padding;
-  padding-top: 2.5rem;
+  padding: 0;
+  margin-top: 4.5rem;
   gap: 1rem;
   flex-wrap: wrap;
   justify-content: center;
@@ -40,7 +44,8 @@
 .advantage_wrapper {
   @include card-style;
   text-align: center;
-  width: 20rem;
+  padding: 1rem;
+  width: 23%;
 }
 
 .advantage-header {
@@ -58,13 +63,18 @@
   }
 }
 
+.advantage-image {
+  width: 100%;
+  border-radius: 30px;
+}
+
 .advantage-text {
   padding-top: 2rem;
 }
 
 .info-section {
+  @include display-flex-space-between;
   padding: $section-padding;
-  background-color: $light-grey;
 }
 
 .info-text-wrapper {
@@ -88,11 +98,20 @@
   padding-right: 0.5rem; 
 }
 
+.info-image {
+  @include section-bg-colored;
+  background: center / cover no-repeat url('./assets/info-section2.jpg');;
+  width: 50%;
+  height: 25rem;
+}
+
 .team-section {
+  // @include section-bg-colored;
   padding: $section-padding;
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin-bottom: 2.5rem;
 }
 
 .team-section-header {
@@ -109,6 +128,7 @@
 
 .team-member {
   @include card-style;
+  padding: 1rem;
   width: 20rem;
   display: flex;
   justify-content: flex-start;
@@ -117,7 +137,13 @@
 }
 
 .team-member-name {
-  font-size: 1.3rem;
+  font-size: 1.6rem;
+  padding: 1rem 0 0;
+}
+
+.team-member-img {
+  width: 100%;
+  border-radius: 30px;
 }
 
 .member-duty {
@@ -129,7 +155,7 @@
 
 .member-actions {
   text-align: center;
-  padding-bottom: 1.5rem;
+  padding-bottom: 1rem;
   & ul {
     text-align: left;
   }
@@ -138,4 +164,3 @@
     padding-bottom: 0.3rem;
   }
 }
-
