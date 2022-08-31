@@ -35,7 +35,13 @@ export class WordUI {
 
   storage: typeof storage;
 
-  constructor(obj: Word | UserAggregatedWord) {
+  wordAudio: HTMLAudioElement | undefined;
+
+  audioPointer: number;
+
+  words: WordUI[];
+
+  constructor(obj: Word | UserAggregatedWord, TBWords: WordUI[]) {
     this.obj = obj;
     if ((obj as Word)?.id) {
       this.id = (obj as Word).id;
@@ -64,6 +70,8 @@ export class WordUI {
     this.listenHardWordBtn();
     this.listenLearnBtn();
     this.storage = storage;
+    this.audioPointer = 0;
+    this.words = TBWords;
   }
 
   public drawCard(): HTMLDivElement {
@@ -172,26 +180,27 @@ export class WordUI {
     return arr;
   }
 
-  private playNext(audioPointer: number, audioArray: string[]) {
-    if (audioPointer < audioArray.length) {
-      const audio = new Audio(audioArray[audioPointer]);
-      audio.addEventListener('ended', () => this.playNext(audioPointer, audioArray));
-      audio.play();
-      // eslint-disable-next-line no-param-reassign
-      audioPointer += 1;
+  private playNext() {
+    this.audioPointer += 1;
+    if (this.audioPointer < this.makeSoundURL().length) {
+      this.wordAudio = new Audio(this.makeSoundURL()[this.audioPointer]);
+      this.wordAudio.addEventListener('ended', this.playNext.bind(this));
+      this.wordAudio.play();
     }
   }
 
-  private play(arr: string[]) {
-    const audioPointer = 0;
-    this.playNext(audioPointer, arr);
+  private play() {
+    this.audioPointer = 0;
+    this.wordAudio = new Audio(this.makeSoundURL()[this.audioPointer]);
+    this.wordAudio.addEventListener('ended', this.playNext.bind(this));
+    this.wordAudio.play();
   }
 
   public playWord() {
     this.playBtn.addEventListener('click', () => {
-      const soundUrl: string[] = this.makeSoundURL();
-      this.play(soundUrl);
-      console.log(this.id);
+      this.wordAudio?.pause();
+      this.words.forEach((word) => word.wordAudio?.pause());
+      this.play();
     });
   }
 }
