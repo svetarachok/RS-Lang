@@ -66,6 +66,8 @@ export class TextBook {
       this.level1Btns[6].style.display = 'flex';
       const learnBtns = document.querySelectorAll('.btn-learn') as NodeListOf<HTMLElement>;
       const hardBtns = document.querySelectorAll('.btn-add') as NodeListOf<HTMLElement>;
+      const userBookMark = document.querySelector('.userbook-mark') as HTMLElement;
+      userBookMark.style.display = 'flex';
       // eslint-disable-next-line no-param-reassign, no-return-assign
       learnBtns.forEach((btn) => btn.style.display = 'flex');
       // eslint-disable-next-line no-param-reassign, no-return-assign
@@ -167,9 +169,12 @@ export class TextBook {
       );
       if (d.length === 20 && this.currentLevel !== 6) {
         const textBookWrapper = document.querySelector('.text-book-page') as HTMLElement;
-        textBookWrapper.style.border = '3px solid #fddb9f';
+        textBookWrapper.style.border = '3px solid #332a7c';
         // this.cardsWrapper.style.border = '3px solid lightblue';
-        this.pageInput.style.backgroundColor = 'lightblue';
+        this.pageInput.style.border = '3px solid #332a7c';
+      } else {
+        this.pageInput.style.border = 'none';
+        this.pageInput.style.borderBottom = '1px solid';
       }
     }
   }
@@ -182,9 +187,13 @@ export class TextBook {
     const pageHead: HTMLDivElement = this.renderTBHeader();
     const sidebar = this.rendeSidebar();
     this.renderCards(data);
-    const paginationWrapper: HTMLDivElement = this.renderPagination();
-    paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
-    page.append(pageHead, this.cardsWrapper, paginationWrapper);
+    page.append(pageHead, this.cardsWrapper);
+    if (!this.level1Btns[6].classList.contains('btn-active')) {
+      console.log(this.level1Btns[6]);
+      const paginationWrapper: HTMLDivElement = this.renderPagination();
+      paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
+      page.append(paginationWrapper);
+    }
     this.textBook.append(sidebar, page);
     container.append(this.textBook);
     return container;
@@ -213,12 +222,15 @@ export class TextBook {
   private rendeSidebar(): HTMLElement {
     const sideBar: HTMLElement = createNode({ tag: 'aside', classes: ['aside'] });
     const sideBarContent: HTMLElement = createNode({ tag: 'div', classes: ['sidebar-content'] });
-    const sidebarText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['sidebar-text'], inner: 'Уровни сложности' }) as HTMLParagraphElement;
+    const sidebarText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['sidebar-text'], inner: 'Уровни' }) as HTMLParagraphElement;
+    const userBookMark: HTMLDivElement = createNode({ tag: 'div', classes: ['userbook-mark'], inner: '<span class="material-icons-outlined btn-icon">menu_book</span>' }) as HTMLDivElement;
     sideBarContent.append(sidebarText);
     this.level1Btns.forEach((btn) => sideBarContent.append(btn));
+    sideBarContent.append(userBookMark);
     sideBar.append(sideBarContent);
     this.level1Btns[6].classList.add('user-words-btn');
     this.level1Btns[6].style.display = 'none';
+    userBookMark.style.display = 'none';
     return sideBar;
   }
 

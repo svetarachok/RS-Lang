@@ -48,10 +48,11 @@ export function checkPageAllDone() {
     return (hardBtn?.classList.contains('hard-word-btn') || learnBtn?.classList.contains('learn-word-btn'));
   });
   if (res) {
-    pageWrapper.style.border = '3px solid #fddb9f';
-    pageNumber.style.backgroundColor = 'lightblue';
+    pageWrapper.style.border = '3px solid #332a7c';
+    pageNumber.style.border = '3px solid #332a7c';
   } else {
     pageWrapper.style.border = '3px solid #ffffff';
-    pageNumber.style.backgroundColor = 'transparent';
+    console.log(pageNumber);
+    pageNumber.style.border = 'none';
   }
 }
