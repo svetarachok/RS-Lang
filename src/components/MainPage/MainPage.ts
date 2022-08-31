@@ -42,7 +42,7 @@ export class MainPage {
     <p class="team-section-text">Мы старались:)</p>
     <div class="team-members">
       <div class="team-member">
-        <img src="./../assets/sveta-photo.jpg" alt="" class="team-member-img">
+        <img src="./assets/sveta-photo.jpg" alt="" class="team-member-img">
         <h3 class="team-member-name">Светлана</h3>
         <p class="member-duty">Team lead, developer, designer</p>
         <div class="member-actions">
@@ -59,7 +59,7 @@ export class MainPage {
         </div>
       </div>
       <div class="team-member">
-        <img src="" alt="" class="team-member-img">
+        <img src="./assets/evgen-photo.jpg" alt="" class="team-member-img">
         <h3 class="team-member-name">Евгений</h3>
         <p class="member-duty">Developer, designer</p>
         <div class="member-actions">
@@ -74,7 +74,7 @@ export class MainPage {
         </div>
       </div>
       <div class="team-member">
-        <img src="" alt="" class="team-member-img">
+        <img src="./assets/sergey-photo.jpg" alt="" class="team-member-img">
         <h3 class="team-member-name">Сергей</h3>
         <p class="member-duty">Developer, designer</p>
         <div class="member-actions">
