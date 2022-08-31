@@ -58,38 +58,27 @@ export class Controller {
   public initRouter(): void {
     this.router
       .on(() => {
-        console.log('Render home page');
         this.handleUser();
-        this.closeSprint();
         this.mainPage.renderMain();
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
-        this.closeSprint();
         await this.handleTextBook();
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
-        this.closeSprint();
         this.initSprintFromMenu();
       })
       .on('/book/sprint', () => {
-        this.closeSprint();
         this.initSprintFromBook();
       })
       .on('/audiocall', () => {
-        this.closeSprint();
         this.initAudioCallfromMenu();
-        console.log('Render audiocall from menu');
       })
       .on('/book/audiocall', () => {
-        this.closeSprint();
         this.initAudioCallfromBook();
-        console.log('Render audiocall from book');
       })
       .on('/user', () => {
-        console.log('Render user page');
-        this.closeSprint();
         this.handleUser();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
@@ -114,12 +103,11 @@ export class Controller {
     if (stored && logined) {
       if (stored.group === 6) {
         const newData = await this.wordController.getUserBookWords();
-        console.log(newData);
         this.textBook.updateTextbook(newData, true, 6, 0);
         console.log('Есть локал бук и залогинен, level hard');
       } else {
         const newData = await this.api.getAggregatedUserWords(
-          { token: logined.token, userId: logined.userId },
+          logined,
           { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
         ) as UserAggregatedWord[];
         console.log('Есть локал бук и залогинен');
@@ -131,7 +119,7 @@ export class Controller {
       this.textBook.updateTextbook(data, false, stored.group, stored.page);
     } else if (!stored && logined) {
       const newData = await this.api.getAggregatedUserWords(
-        { token: logined.token, userId: logined.userId },
+        logined,
         { group: '0', page: '0', wordsPerPage: String(WORDS_PER_PAGE) },
       ) as UserAggregatedWord[];
       console.log('Не ходит по учебнику и залогинен');
@@ -177,7 +165,6 @@ export class Controller {
     if (stored.token) {
       this.userUI.authorise(stored);
     }
-    // if ()
   }
 
   public async handleRegistartion(name: string, email: string, password: string) {
@@ -187,7 +174,6 @@ export class Controller {
     const res = await this.api.authorize(obj);
     // this.modal.showMessage('Успешная регистрация! <Войдите в аккаунт')
     if (typeof res === 'object') {
-      console.log('123');
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);

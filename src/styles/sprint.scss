@@ -20,9 +20,11 @@
     .header {
       position: absolute;
       top: 0;
+      max-width: 1360px;
+      padding: 0 2.5rem;
       background-color: transparent;
       z-index: 10;
-      padding: 0 40px;
+      align-self: center;
       color: #ffffff;
       border: none;
     }
@@ -396,7 +398,7 @@
   }
 }
 
-.result__repeat-btn {
+.result__restart-btn {
   background-color: rgba(37,130,231,.08);
   border-radius: 4px;
   color: #2582e7;
@@ -411,4 +413,11 @@
   &:hover {
     background-color: rgba(37,130,231,.12);
   }
+}
+
+.sprint__restart-message {
+  font-size: 14px;
+  width: 60%;
+  color: #ed593b;
+  margin-top: 10px;
 }

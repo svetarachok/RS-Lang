@@ -4,6 +4,7 @@ export enum Endpoint {
   signin = '/signin',
   tokens = '/tokens',
   aggregatedWords = '/aggregatedWords',
+  statistics = '/statistics',
 }
 export enum ContentType {
   json = 'application/json',
@@ -13,4 +14,9 @@ export enum HTTPMethod {
   POST = 'POST',
   PUT = 'PUT',
   DELETE = 'DELETE',
+}
+
+export enum GAME {
+  AUDIOCALL = 'audiocall',
+  SPRINT = 'sprint',
 }
