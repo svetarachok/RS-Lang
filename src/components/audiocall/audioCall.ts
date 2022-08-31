@@ -120,7 +120,7 @@ export class AudioCall {
       );
     }
     const words = userAggregatedWords.map((word) => convertAggregatedWordToWord(word));
-    return shuffleArray(words).slice(0, MAX_COUNT_WORDS_PER_GAME);
+    return words.slice(0, MAX_COUNT_WORDS_PER_GAME);
   }
 
   private async getAggregatedWords(settings: { group: string, page: string }) {
@@ -129,7 +129,7 @@ export class AudioCall {
       { page: settings.page, group: settings.group, wordsPerPage: '20' },
     ) as UserAggregatedWord[];
     userAggregatedWords = userAggregatedWords.filter((word) => !word?.userWord?.optional?.learned);
-    return userAggregatedWords;
+    return shuffleArray(userAggregatedWords);
   }
 
   private startGameStage() {
