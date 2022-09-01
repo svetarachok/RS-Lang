@@ -27,7 +27,7 @@ export class Charts {
     };
 
     const config: ChartConfiguration = {
-      type: 'line',
+      type: 'bar',
       data,
       options: {
         responsive: false,
