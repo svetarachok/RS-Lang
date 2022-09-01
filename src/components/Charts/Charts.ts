@@ -19,8 +19,8 @@ export class Charts {
       labels: days,
       datasets: [{
         label: descr,
-        backgroundColor: 'rgb(75, 192, 192)',
-        borderColor: 'rgb(75, 192, 192)',
+        backgroundColor: '#332A7C',
+        borderColor: '#332A7C',
         tension: 0.3,
         data: wordsCout,
       }],

@@ -6,12 +6,13 @@ import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import {
   REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK, WORDS_PER_PAGE,
+  REFRESHTOKEN_LIFETIME_IN_HOURS, TOKEN_LIFETIME_IN_HOURS,
 } from '../utils/constants';
 import { UserUI } from '../user/UserUI';
 import { Sprint } from '../sprint/Sprint';
 import { AudioCall } from '../audiocall/audioCall';
 import { Storage } from '../Storage/Storage';
-import { UserAggregatedWord, UserCreationData } from '../types/interfaces';
+import { AuthorizationData, UserAggregatedWord, UserCreationData } from '../types/interfaces';
 import { MainPage } from '../MainPage/MainPage';
 import { BurgerMenu } from '../utils/BurgerMenu';
 import { WordController } from '../WordController/WordController';
@@ -84,6 +85,8 @@ export class Controller {
         this.router.updatePageLinks();
       })
       .resolve();
+
+    this.router.navigate('/');
   }
 
   public async initApp() {
@@ -150,6 +153,7 @@ export class Controller {
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
+      this.router.updatePageLinks();
       if (window.location.href === `${APP_LINK}/#/book`) {
         console.log('boook');
         await this.handleTextBook();
@@ -161,9 +165,13 @@ export class Controller {
   }
 
   public handleUser() {
-    const stored = this.storage.getData('UserId');
-    if (stored.token) {
-      this.userUI.authorise(stored);
+    console.log('handleUser');
+    const stored = this.storage.getData('UserId') as AuthorizationData | null;
+    if (stored) {
+      const refreshTokenExpires = stored.tokenExpires
+      + (REFRESHTOKEN_LIFETIME_IN_HOURS - TOKEN_LIFETIME_IN_HOURS) * 60 * 60 * 1000;
+      if (refreshTokenExpires > Date.now()) this.userUI.authorise(stored);
+      else { this.handleUnLogin(); }
     }
   }
 

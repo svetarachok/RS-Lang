@@ -59,10 +59,9 @@ export class Api {
 
   // need tocken check
   public async getUserById(authData: AuthorizationData): Promise<User | string> {
-    const response = await fetch(`${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}`, {
+    const response = await this.fetchWithAuth(authData, `${makeUrl(BASE_LINK, Endpoint.users)}/${authData.userId}`, {
       method: HTTPMethod.GET,
       headers: {
-        Authorization: `Bearer ${authData.token}`,
         Accept: ContentType.json,
       },
     });
