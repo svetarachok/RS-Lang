@@ -1,24 +1,41 @@
 .user-page {
+  @include section-bg-colored;
+  background-color: $l2;
   display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem 1rem;
+  gap: 1.5rem;
+  
 }
 
 .user-sidebar {
   display: flex;
   gap: 1.5rem;
   flex-direction: column;
-  width: 25%;
-  background-color: lightyellow;
-  margin-top: 2.5rem;
+  width: 36%;
   padding: 2.5rem 1.5rem 1.5rem;
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+    padding: 0 1rem 1.5rem;
+    align-items: center;
+  }
+}
+
+.user-section {
+  display: flex;
+  padding-bottom: 1rem;
+  gap: 2.5rem;
+  @media (max-width: $breakpoint-tablet) {
+    gap: 0;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: column;
+  }
 }
 
 .enter-cabinet-link {
   color: $dark-color;
   font-weight: 600;
-}
-
-.statistic-block {
-  padding: 3rem 2rem 1rem;
 }
 
 .exit-cabinet-btn {

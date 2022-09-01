@@ -10,31 +10,30 @@ export class LoginForm extends Form {
 
   btnName: string;
 
+  emailWrapper: HTMLElement;
+
+  passWrapper: HTMLElement;
+
   constructor(formName: string, btnName: string) {
     super(formName, btnName);
     this.formName = formName;
     this.btnName = btnName;
-    this.email = createNode({ tag: 'input', classes: ['email-input'], atributesAdnValues: [['type', 'email'], ['placeholder', 'Your e-mail']] }) as HTMLInputElement;
-    this.password = createNode({ tag: 'input', classes: ['password-input'], atributesAdnValues: [['type', 'password'], ['placeholder', 'Password'], ['autocomplete', 'on']] }) as HTMLInputElement;
+    this.email = createNode({ tag: 'input', classes: ['email-input'], atributesAdnValues: [['type', 'email'], ['placeholder', 'Your e-mail'], ['data-name', 'e-mail']] }) as HTMLInputElement;
+    this.password = createNode({ tag: 'input', classes: ['password-input'], atributesAdnValues: [['type', 'password'], ['placeholder', 'Password'], ['autocomplete', 'on'], ['data-name', 'пароль']] }) as HTMLInputElement;
+    this.emailWrapper = super.createInput(this.email);
+    this.passWrapper = super.createInput(this.password);
   }
 
   public renderForm(): HTMLDivElement {
     const formWrapper = super.renderForm();
-    this.form.prepend(this.email, this.password);
+    this.form.prepend(this.emailWrapper, this.passWrapper);
     return formWrapper;
   }
 
   public listenForm(callback: (mail: string, pass: string) => void) {
     this.submitBtn.addEventListener('click', () => {
-      const email = super.checkInputValue(this.email);
-      const password = super.checkInputValue(this.password);
-      if (!email && !password) {
-        console.log('Enter email and password');
-      } else if (!email) {
-        console.log('Enter email');
-      } else if (!password) {
-        console.log('Enter password');
-      } else {
+      const validate = super.validateForm(this.form);
+      if (validate) {
         callback(this.email.value, this.password.value);
       }
     });
