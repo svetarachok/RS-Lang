@@ -85,6 +85,8 @@ export class Controller {
         this.router.updatePageLinks();
       })
       .resolve();
+
+    this.router.navigate('/');
   }
 
   public async initApp() {
@@ -151,6 +153,7 @@ export class Controller {
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
+      this.router.updatePageLinks();
       if (window.location.href === `${APP_LINK}/#/book`) {
         console.log('boook');
         await this.handleTextBook();
