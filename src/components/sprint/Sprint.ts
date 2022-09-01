@@ -52,6 +52,8 @@ export class Sprint {
 
   keyListener: (e: KeyboardEvent) => void;
 
+  linksHandler: (e: Event) => void;
+
   constructor(mode: 'menu' | 'book') {
     this.mode = mode;
     this.api = api;
@@ -70,6 +72,7 @@ export class Sprint {
     this.falseAnswerSound = this.createAnswerSoud(false);
     this.mute = false;
     this.keyListener = this.selectAnswerByKey.bind(this);
+    this.linksHandler = this.closeGameByLink.bind(this);
   }
 
   public renderGame(): void {
@@ -80,7 +83,7 @@ export class Sprint {
     main.innerHTML = '';
     const btnClose = createHTMLElement('a', ['sprint__close'], [['href', '/'], ['data-navigo', 'true']]) as HTMLAnchorElement;
     if (this.mode === 'book') {
-      btnClose.href = '/book';
+      btnClose.href = '#/book';
       sprint.append(btnClose);
       this.startGame();
     } else if (this.mode === 'menu') {
@@ -88,11 +91,14 @@ export class Sprint {
       sprint.append(select, btnClose);
     }
     main.append(sprint);
+    this.addLinksHandler();
   }
 
   private renderSelectLevel(): HTMLElement {
     const select = createHTMLElement('div', ['sprint__select']);
-    const selectTitle = createHTMLElement('h2', ['sprint__select-title'], undefined, 'Выберите уровень:');
+    const selectTitle = createHTMLElement('h2', ['sprint__select-title'], undefined, 'Спринт');
+    const selectDescription = createHTMLElement('p', ['sprint__select-descr'], undefined, 'Учит быстро переводить на ваш родной язык');
+    const selectText = createHTMLElement('p', ['sprint__select-text'], undefined, 'Выберите уровень:');
     const levels = createHTMLElement('div', ['sprint__levels']);
     for (let i = 1; i <= 6; i += 1) {
       const level = createHTMLElement('div', ['sprint__level'], [['data-level', `${i - 1}`]], `${i}`);
@@ -104,7 +110,7 @@ export class Sprint {
       });
       levels.append(level);
     }
-    select.append(selectTitle, levels);
+    select.append(selectTitle, selectDescription, selectText, levels);
     return select;
   }
 
@@ -128,7 +134,6 @@ export class Sprint {
     ready.append(timerTitle);
     const randomPair = this.getRandomPair();
     this.startTimer('timer--ready', 3, this.renderGameContol.bind(this, randomPair.word, randomPair.wordTranslate));
-    this.addKeyboardControl();
   }
 
   private renderTimer(container: HTMLElement, className: string) {
@@ -204,6 +209,7 @@ export class Sprint {
     sprint.append(sprintControl);
     buttonFalse.addEventListener('click', (e) => this.selectAnswer(e));
     buttonTrue.addEventListener('click', (e) => this.selectAnswer(e));
+    this.addKeyboardControl();
   }
 
   private async getWordsInLevel(level: string): Promise<void> {
@@ -435,7 +441,13 @@ export class Sprint {
     const trueList = createHTMLElement('ul', ['result__true'], undefined, `Знаю: ${this.trueWords.length}`);
     const falseList = createHTMLElement('ul', ['result__false'], undefined, `Ошибок: ${this.falseWords.length}`);
     const btnRestart = createHTMLElement('button', ['result__restart-btn'], undefined, 'Играть еще раз');
-    btnRestart.addEventListener('click', this.restartGame.bind(this));
+    btnRestart.addEventListener('click', (e: Event) => {
+      const btn = <HTMLButtonElement>e.target;
+      if (!btn.disabled) {
+        this.restartGame();
+        btn.disabled = true;
+      }
+    });
     this.trueWords.forEach((word) => this.addWordInResult(trueList, word));
     this.falseWords.forEach((word) => this.addWordInResult(falseList, word));
     listsContainer.append(falseList, trueList);
@@ -526,11 +538,62 @@ export class Sprint {
 
   private async getHardWords(): Promise<Word[]> {
     const userHardWords = await this.wordController.getUserBookWords() as UserAggregatedWord[];
-    return userHardWords.map((word) => convertAggregatedWordToWord(word));
+    if (Array.isArray(userHardWords)) {
+      return userHardWords.map((word) => convertAggregatedWordToWord(word));
+    }
+    return [];
   }
 
-  private restartGame() {
-    this.closeGame();
-    this.renderGame();
+  private async checkWordsAvailability(): Promise<boolean> {
+    let words: Word[];
+    if (this.bookLevel < 6) {
+      words = await api.getWords({ group: String(this.bookLevel), page: String(this.bookPage) });
+    } else {
+      words = await this.getHardWords();
+    }
+    if (words.length === 0 || !Array.isArray(words)) {
+      const result = <HTMLElement>document.querySelector('.sprint__result');
+      const message = createHTMLElement('span', ['sprint__restart-message'], undefined, 'Недостаточно слов для запуска новой игры. Выберите другой уровень или страницу');
+      result.append(message);
+      return false;
+    }
+    return true;
+  }
+
+  private async restartGame() {
+    const isAvailable: boolean = await this.checkWordsAvailability();
+    if (isAvailable) {
+      this.closeGame();
+      this.wordsInGame.length = 0;
+      this.score = 0;
+      this.multiplier = 1;
+      this.seriesOfCorrect = 0;
+      this.trueWords.length = 0;
+      this.falseWords.length = 0;
+      this.renderGame();
+    }
+  }
+
+  private closeGameByLink(e: Event) {
+    const target = <HTMLAnchorElement>e.target;
+    if (target.href !== `${BASE_LINK}/sprint`) {
+      this.removeLinksListeners();
+      this.closeGame();
+    }
+  }
+
+  private removeLinksListeners() {
+    const links = <NodeListOf<HTMLAnchorElement>>document.querySelectorAll('a');
+    links.forEach((link) => link.removeEventListener('click', this.linksHandler));
+  }
+
+  private addLinksHandler() {
+    const href = `${document.location.protocol}//${document.location.host}`;
+    const links = <NodeListOf<HTMLAnchorElement>>document.querySelectorAll('a');
+    links.forEach((link) => {
+      if (link.href !== `${href}/sprint`) {
+        link.addEventListener('click', this.linksHandler);
+      }
+    });
   }
 }

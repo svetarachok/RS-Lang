@@ -7,9 +7,9 @@
   height: 75px;
   margin: auto;
   width: 100%;
-  border-bottom: 1px solid $light-grey;
+  // border-bottom: 1px solid $light-grey;
   z-index: 1;
-  // overflow-x: hidden;
+  padding: 0 2rem;
 }
 
 .logo {
@@ -56,10 +56,10 @@
   }
 }
 
-.menu-item {
+.menu-item-link {
   cursor: pointer;
-  padding: 29px;
   font-weight: 600;
+  padding: 29px;
   &:hover {
     border-bottom: 2px solid $dark-color;
     padding-bottom: 27px;

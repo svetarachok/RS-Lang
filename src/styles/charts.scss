@@ -5,9 +5,19 @@
   flex-wrap: wrap;
   width: 100%;
   padding: 20px;
+  @media (max-width: $breakpoint-laptop) {
+    gap: 1.5rem;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+  }
 }
 
 .chart {
   width: 35%;
   height: 300px;
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+    height: max-content;
+  }
 }

@@ -13,11 +13,21 @@ export class ResultPage {
 
   private button: HTMLElement;
 
-  constructor(container: HTMLElement, result: GameResult) {
+  private links: NodeListOf<HTMLAnchorElement>;
+
+  private nextGameSettings: { group: string; page: string; } | undefined;
+
+  constructor(
+    container: HTMLElement,
+    result: GameResult,
+    nextGameSettings?: { group: string; page: string },
+  ) {
     this.container = container;
     this.result = result;
+    this.nextGameSettings = nextGameSettings;
     this.wrapper = createNode({ tag: 'div', classes: ['game__result'] });
     this.button = createNode({ tag: 'button', classes: ['result__button'], inner: 'сыграть еще раз' });
+    this.links = document.querySelectorAll('a');
   }
 
   public start() {
@@ -32,6 +42,14 @@ export class ResultPage {
     const trueLi = this.result.correct.map((word) => this.createResultLi(word));
     const falseLi = this.result.incorrect.map((word) => this.createResultLi(word));
     this.button.addEventListener('click', this.startNewGame);
+    document.addEventListener('keydown', this.keyHandler);
+
+    this.links.forEach((link) => link.addEventListener('click', () => {
+      if (link.href !== `${BASE_LINK}/audiocall`) {
+        this.removeListeners();
+        this.container.remove();
+      }
+    }));
 
     trueList.append(...trueLi);
     falseList.append(...falseLi);
@@ -70,7 +88,24 @@ export class ResultPage {
 
   private startNewGame = () => {
     this.container.remove();
+    document.removeEventListener('keydown', this.keyHandler);
     const game = new AudioCall();
+    if (this.nextGameSettings) {
+      console.log('this.nextGameSettings');
+      game.start({
+        group: Number(this.nextGameSettings.group), page: Number(this.nextGameSettings.page),
+      });
+      return;
+    }
     game.start();
+  };
+
+  private removeListeners = () => {
+    document.removeEventListener('keydown', this.keyHandler);
+    this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
+  };
+
+  private keyHandler = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') this.startNewGame();
   };
 }

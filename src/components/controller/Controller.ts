@@ -6,12 +6,13 @@ import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import {
   REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK, WORDS_PER_PAGE,
+  REFRESHTOKEN_LIFETIME_IN_HOURS, TOKEN_LIFETIME_IN_HOURS,
 } from '../utils/constants';
 import { UserUI } from '../user/UserUI';
 import { Sprint } from '../sprint/Sprint';
 import { AudioCall } from '../audiocall/audioCall';
 import { Storage } from '../Storage/Storage';
-import { UserAggregatedWord, UserCreationData } from '../types/interfaces';
+import { AuthorizationData, UserAggregatedWord, UserCreationData } from '../types/interfaces';
 import { MainPage } from '../MainPage/MainPage';
 import { BurgerMenu } from '../utils/BurgerMenu';
 import { WordController } from '../WordController/WordController';
@@ -58,39 +59,26 @@ export class Controller {
   public initRouter(): void {
     this.router
       .on(() => {
-        console.log('Render home page');
-        this.handleUser();
-        this.closeSprint();
         this.mainPage.renderMain();
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
-        this.closeSprint();
         await this.handleTextBook();
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
-        this.closeSprint();
         this.initSprintFromMenu();
       })
       .on('/book/sprint', () => {
-        this.closeSprint();
         this.initSprintFromBook();
       })
       .on('/audiocall', () => {
-        this.closeSprint();
         this.initAudioCallfromMenu();
-        console.log('Render audiocall from menu');
       })
       .on('/book/audiocall', () => {
-        this.closeSprint();
         this.initAudioCallfromBook();
-        console.log('Render audiocall from book');
       })
       .on('/user', () => {
-        console.log('Render user page');
-        this.closeSprint();
-        this.handleUser();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
       })
@@ -106,6 +94,7 @@ export class Controller {
     this.registerForm.listenForm(this.handleRegistartion.bind(this));
     this.userUI.unAuthorize(this.handleUnLogin.bind(this));
     this.handleUser();
+    this.router.updatePageLinks();
   }
 
   public async handleTextBook() {
@@ -114,12 +103,11 @@ export class Controller {
     if (stored && logined) {
       if (stored.group === 6) {
         const newData = await this.wordController.getUserBookWords();
-        console.log(newData);
         this.textBook.updateTextbook(newData, true, 6, 0);
         console.log('Есть локал бук и залогинен, level hard');
       } else {
         const newData = await this.api.getAggregatedUserWords(
-          { token: logined.token, userId: logined.userId },
+          logined,
           { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
         ) as UserAggregatedWord[];
         console.log('Есть локал бук и залогинен');
@@ -131,7 +119,7 @@ export class Controller {
       this.textBook.updateTextbook(data, false, stored.group, stored.page);
     } else if (!stored && logined) {
       const newData = await this.api.getAggregatedUserWords(
-        { token: logined.token, userId: logined.userId },
+        logined,
         { group: '0', page: '0', wordsPerPage: String(WORDS_PER_PAGE) },
       ) as UserAggregatedWord[];
       console.log('Не ходит по учебнику и залогинен');
@@ -162,32 +150,48 @@ export class Controller {
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
-      if (window.location.href === `${APP_LINK}/#/book`) {
+      this.router.updatePageLinks();
+      if (window.location.href.includes('/book')) {
         console.log('boook');
         await this.handleTextBook();
       }
     } else {
-      // ! Вывести текст ошибки в модалку
-      console.log(res);
+      this.modal.showLoginMessage();
     }
   }
 
   public handleUser() {
-    const stored = this.storage.getData('UserId');
-    if (stored.token) {
-      this.userUI.authorise(stored);
+    console.log('handleUser');
+    const stored = this.storage.getData('UserId') as AuthorizationData | null;
+    if (stored) {
+      const refreshTokenExpires = stored.tokenExpires
+      + (REFRESHTOKEN_LIFETIME_IN_HOURS - TOKEN_LIFETIME_IN_HOURS) * 60 * 60 * 1000;
+      if (refreshTokenExpires > Date.now()) this.userUI.authorise(stored);
+      else { this.handleUnLogin(); }
     }
-    // if ()
   }
 
-  public async handleRegistartion(name: string, email: string, password: string) {
+  public async handleRegistartion(
+    name: string,
+    email: string,
+    password: string,
+    errorMessage: HTMLElement,
+  ) {
     const object: UserCreationData = { name, email, password };
-    await this.api.createUser(object);
-    const obj: Pick<UserCreationData, 'email' | 'password'> = { email, password };
+    const regResponse = await this.api.createUser(object);
+    if (typeof regResponse === 'object') {
+      this.modal.showMessage(`Успешная регистрация! Добро пожаловать, ${name}`);
+      const obj: Pick<UserCreationData, 'email' | 'password'> = { email, password };
+      setTimeout(() => this.makeNewUser(obj), 3000);
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      errorMessage.innerHTML = 'Пользователь с таким e-mail уже существует';
+    }
+  }
+
+  private async makeNewUser(obj: Pick<UserCreationData, 'email' | 'password'>) {
     const res = await this.api.authorize(obj);
-    // this.modal.showMessage('Успешная регистрация! <Войдите в аккаунт')
     if (typeof res === 'object') {
-      console.log('123');
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
