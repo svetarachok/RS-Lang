@@ -23,7 +23,7 @@ export class DayStatUI {
     const dayText = createNode({ tag: 'p', classes: ['first-day-text'], inner: 'Последний раз вы занимались' });
     const dayData = createNode({ tag: 'p', classes: ['first-day-date'] });
     const today = new Date();
-    if (this.date === (today.toLocaleString().split(',')[0])) {
+    if (this.date === today.toLocaleDateString()) {
       dayData.innerHTML = 'Сегодня';
     } else {
       dayData.innerHTML = `${this.date}`;
