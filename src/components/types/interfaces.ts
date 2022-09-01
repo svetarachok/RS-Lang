@@ -1,3 +1,5 @@
+import { HTTPMethod } from './enums';
+
 export interface Word {
   id: string,
   group: number,
@@ -27,6 +29,7 @@ export interface AuthorizationData {
   refreshToken: string,
   userId: string,
   name: string,
+  tokenExpires: number,
 }
 
 export interface User extends Pick<UserCreationData, 'name' | 'email'> {
@@ -61,6 +64,7 @@ export interface UserWord {
   wordId?: string,
   optional: {
     learned: boolean;
+    learnedDate: string;
     correctAnswers: number;
     incorrectAnswers: number;
     correctSeries: number;
@@ -76,26 +80,10 @@ export interface WordsStatistic {
 
 export interface GameStatistic {
   newWords: number,
-  series: number,
+  currentSeries: number,
+  bestSeries: number,
   correctAnswers: number,
   incorrectAnswers: number,
-}
-
-export interface Statistic {
-  learnedWords: 1,
-  optional: {
-    words:
-    // string - строка в виде даты, например '24.08.2022'
-    Record<string, WordsStatistic>
-    games: {
-      auiocall:
-      // string - строка в виде даты, например '24.08.2022'
-      Record<string, GameStatistic>
-      sprint:
-      // string - строка в виде даты, например '24.08.2022'
-      Record<string, GameStatistic>
-    }
-  }
 }
 
 export interface UserAggregatedWord extends Omit<Word, 'id'> {
@@ -106,4 +94,52 @@ export interface UserAggregatedWord extends Omit<Word, 'id'> {
 export interface UserAggregatedWordsResult {
   paginatedResults: UserAggregatedWord[],
   totalCount: { count: number }[]
+}
+
+export interface Statistic {
+  learnedWords: number,
+  optional: {
+    words:
+    // string - строка в виде даты, например '24.08.2022'
+    Record<string, WordsStatistic>
+    games: {
+      audiocall:
+      // string - строка в виде даты, например '24.08.2022'
+      Record<string, GameStatistic>
+      sprint:
+      // string - строка в виде даты, например '24.08.2022'
+      Record<string, GameStatistic>
+    }
+  }
+}
+export interface StatisticResponse extends Statistic {
+  id: string;
+}
+
+export interface StatisticForCarts {
+  dates: string[],
+  newWords: number[],
+  learnedWords: number[]
+}
+
+export interface DailyStat {
+  [key: string]: DailyStatObj
+}
+
+export interface DailyStatObj {
+  words: WordsStatistic,
+  games: {
+    audiocall: GameStatistic
+    sprint: GameStatistic
+  }
+}
+
+export interface FetchOptions {
+  method: HTTPMethod,
+  headers?: {
+    Authorization?: string,
+    'Content-Type'?: string,
+    Accept?: string,
+  }
+  body?: string,
 }
