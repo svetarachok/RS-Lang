@@ -40,7 +40,6 @@ export class RegisterForm extends Form {
       const validated = this.validateForm();
       if (validated) {
         const userName = makeFirslLetterUpperCase(this.name.value);
-        console.log(userName);
         callback(userName, this.email.value, this.password.value, this.errorMessage);
       }
     });
