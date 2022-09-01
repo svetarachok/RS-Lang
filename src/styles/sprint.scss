@@ -21,7 +21,7 @@
       position: absolute;
       top: 0;
       max-width: 1360px;
-      padding: 0 2.5rem;
+      padding: 0 2rem;
       background-color: transparent;
       z-index: 10;
       align-self: center;
@@ -29,17 +29,24 @@
       border: none;
     }
 
-    .menu-item {
-      &:hover {
-        border-bottom: 2px solid #ffffff;
-      }
-
+    .logo {
       a {
-      color: #ffffff;
+        color: #ffffff;
       }
     }
 
-    .btn-secondary,
+    .menu-item-link {
+      color: #ffffff;
+
+      &:hover {
+        border-bottom: 2px solid #ffffff;
+      }
+    }
+
+    .btn-secondary {
+      color: #000000;
+    }
+
     .enter-cabinet-link {
       color: #ffffff;
     }
@@ -64,6 +71,10 @@
   padding: 20px 0;
   color: #ffffff;
   width: 100%;
+
+  .sprint__select-title {
+    font-size: 2.4rem;
+  }
 }
 
 .sprint__select {
@@ -73,21 +84,31 @@
   min-width: 50%;
 }
 
+.sprint__select-descr {
+  margin-top: 2rem;
+}
+
+.sprint__select-text {
+  margin-top: 2rem;
+}
+
 .sprint__levels {
   margin-top: 20px;
   display: flex;
   justify-content: space-between;
   width: 100%;
+  gap: 0.4rem;
 }
 
 .sprint__level {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 3px solid #ffffff;
+  box-sizing: border-box;
+  width: 162px;
+  height: 55px;
+  border-radius: 3px;
+  border: 1px solid #ffffff;
   cursor: pointer;
 }
 

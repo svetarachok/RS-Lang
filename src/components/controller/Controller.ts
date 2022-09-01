@@ -59,7 +59,6 @@ export class Controller {
   public initRouter(): void {
     this.router
       .on(() => {
-        this.handleUser();
         this.mainPage.renderMain();
         this.router.updatePageLinks();
       })
@@ -80,13 +79,10 @@ export class Controller {
         this.initAudioCallfromBook();
       })
       .on('/user', () => {
-        this.handleUser();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
       })
       .resolve();
-
-    this.router.navigate('/');
   }
 
   public async initApp() {
@@ -98,6 +94,7 @@ export class Controller {
     this.registerForm.listenForm(this.handleRegistartion.bind(this));
     this.userUI.unAuthorize(this.handleUnLogin.bind(this));
     this.handleUser();
+    this.router.updatePageLinks();
   }
 
   public async handleTextBook() {
