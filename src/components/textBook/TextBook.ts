@@ -119,7 +119,7 @@ export class TextBook {
       this.handlePageButtons();
       handler(String(level), String(this.currentPage));
     });
-    this.pageInput.addEventListener('input', (e: Event) => {
+    this.pageInput.addEventListener('change', (e: Event) => {
       const level = this.handleLevelButtons();
       const newPageNumber: number = Number((e.target as HTMLInputElement).value);
       this.currentPage = newPageNumber - 1;

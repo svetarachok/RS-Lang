@@ -56,7 +56,6 @@ export class AudioCall {
   }
 
   public start(settings?: { group: number, page: number }) {
-    (document.querySelector('header') as HTMLElement).style.background = 'red';
     this.render();
     if (!settings) {
       const levelSelect = new LevelSelect(this.container, this.startGameFromMenu.bind(this));
