@@ -91,7 +91,11 @@ export class AudioCall {
 
   private async startGameFromBook() {
     if (this.settings) this.words = await this.getWordsForGame(this.settings);
-    if (this.words.length === 0) return;
+    if (this.words.length === 0) {
+      const levelSelect = new LevelSelect(this.container, this.startGameFromMenu.bind(this));
+      levelSelect.render();
+      return;
+    }
     this.startGameStage();
   }
 
@@ -154,7 +158,7 @@ export class AudioCall {
   }
 
   private endGameHandler() {
-    const resultPage = new ResultPage(this.container, this.result);
+    const resultPage = new ResultPage(this.container, this.result, this.settings);
     resultPage.start();
   }
 
