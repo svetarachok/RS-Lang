@@ -37,7 +37,6 @@ export class Api {
       },
       body: JSON.stringify(userCreationData),
     });
-
     if (!response.ok) return response.text();
     return response.json();
   }

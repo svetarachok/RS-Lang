@@ -15,3 +15,6 @@ export const USER_AUTH_WRAPPER: HTMLElement = document.querySelector('.auth') as
 // Statistic data
 export const WORDS_DATA_TEXT: string[] = ['новые слова', 'изученные слова', 'правильные ответы'];
 export const GAMES_DATA_TEXT: string[] = ['новые слова', 'правильные ответы', 'самая длинная серия'];
+
+// Forms validation
+export const EMAIL_REGEX: RegExp = /^[A-Za-z0-9_!#$%&'*+\\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/gm;

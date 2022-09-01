@@ -56,3 +56,10 @@ export function checkPageAllDone() {
     pageNumber.style.border = 'none';
   }
 }
+
+export function makeFirslLetterUpperCase(string: string) {
+  const firstLetter = string[0].toUpperCase();
+  const rest = string.slice(1).toLowerCase();
+  const res = firstLetter + rest;
+  return res;
+}

@@ -151,13 +151,12 @@ export class Controller {
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
       this.router.updatePageLinks();
-      if (window.location.href === `${APP_LINK}/#/book`) {
+      if (window.location.href.includes('/book')) {
         console.log('boook');
         await this.handleTextBook();
       }
     } else {
-      // ! Вывести текст ошибки в модалку
-      console.log(res);
+      this.modal.showLoginMessage();
     }
   }
 
@@ -172,12 +171,26 @@ export class Controller {
     }
   }
 
-  public async handleRegistartion(name: string, email: string, password: string) {
+  public async handleRegistartion(
+    name: string,
+    email: string,
+    password: string,
+    errorMessage: HTMLElement,
+  ) {
     const object: UserCreationData = { name, email, password };
-    await this.api.createUser(object);
-    const obj: Pick<UserCreationData, 'email' | 'password'> = { email, password };
+    const regResponse = await this.api.createUser(object);
+    if (typeof regResponse === 'object') {
+      this.modal.showMessage(`Успешная регистрация! Добро пожаловать, ${name}`);
+      const obj: Pick<UserCreationData, 'email' | 'password'> = { email, password };
+      setTimeout(() => this.makeNewUser(obj), 3000);
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      errorMessage.innerHTML = 'Пользователь с таким e-mail уже существует';
+    }
+  }
+
+  private async makeNewUser(obj: Pick<UserCreationData, 'email' | 'password'>) {
     const res = await this.api.authorize(obj);
-    // this.modal.showMessage('Успешная регистрация! <Войдите в аккаунт')
     if (typeof res === 'object') {
       this.modal.exitModal();
       this.storage.setData('UserId', res);
