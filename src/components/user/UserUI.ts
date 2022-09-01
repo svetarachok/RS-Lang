@@ -90,12 +90,10 @@ export class UserUI {
     this.statisticPage.innerHTML = '';
     const statisticData = await this.statUI.drawDailyStat();
     this.statisticPage.append(statisticData);
-    console.log('statistic rendered');
     return this.statisticPage;
   }
 
   public async renderTodayStatisticBlock() {
-    console.log('try do draw today');
     const statisticData = await this.statUI.drawTodayStat();
     return statisticData;
   }

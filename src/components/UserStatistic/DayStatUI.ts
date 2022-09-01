@@ -20,8 +20,14 @@ export class DayStatUI {
     const textRow = createNode({ tag: 'div', classes: ['date-row'] });
     const firstRow = createNode({ tag: 'div', classes: ['data-wrapper-row1'] });
     const secondRow = createNode({ tag: 'div', classes: ['data-wrapper-row2'] });
-    const dayText = createNode({ tag: 'p', classes: ['first-day-text'], inner: 'Статистка за сегодня' });
-    const dayData = createNode({ tag: 'p', classes: ['first-day-date'], inner: `${this.date}` });
+    const dayText = createNode({ tag: 'p', classes: ['first-day-text'], inner: 'Последний раз вы занимались' });
+    const dayData = createNode({ tag: 'p', classes: ['first-day-date'] });
+    const today = new Date();
+    if (this.date === today.toLocaleDateString()) {
+      dayData.innerHTML = 'Сегодня';
+    } else {
+      dayData.innerHTML = `${this.date}`;
+    }
     const corrWordAnsw = findCorrectAnswPercent(
       this.obj.words.correctAnswers,
       this.obj.words.incorrectAnswers,
