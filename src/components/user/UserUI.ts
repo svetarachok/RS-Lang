@@ -28,7 +28,7 @@ export class UserUI {
     this.userPage = createNode({ tag: 'div', classes: ['user-page'] });
     this.name = createNode({ tag: 'h2', classes: ['user-name'] });
     this.email = createNode({ tag: 'p', classes: ['user-name'] });
-    this.exitBtn = createNode({ tag: 'button', classes: ['btn', 'exit-cabinet-btn'], inner: 'Exit cabinet' }) as HTMLButtonElement;
+    this.exitBtn = createNode({ tag: 'button', classes: ['btn', 'exit-cabinet-btn'], inner: 'Выйти из аккаунта' }) as HTMLButtonElement;
     this.statisticPage = createNode({ tag: 'div', classes: ['statistic-block'] });
     this.statUI = new StatisticUI();
     this.charts = new Charts();
@@ -71,18 +71,21 @@ export class UserUI {
     this.userPage.append(userSection, chartsSection, dailyStatSection);
     container.append(this.userPage);
     const stat = await this.charts.getStatisticForCarts();
-    this.charts.createChart(
-      'myChart-1',
-      stat.dates,
-      stat.newWords,
-      'Количество новых',
-    );
-    this.charts.createChart(
-      'myChart-2',
-      stat.dates,
-      stat.learnedWords,
-      'Количество выученных',
-    );
+    if (stat) {
+      this.charts.createChart(
+        'myChart-1',
+        stat.dates,
+        stat.newWords,
+        'Количество новых',
+      );
+      this.charts.createChart(
+        'myChart-2',
+        stat.dates,
+        stat.learnedWords,
+        'Количество выученных',
+      );
+    }
+
     return container;
   }
 

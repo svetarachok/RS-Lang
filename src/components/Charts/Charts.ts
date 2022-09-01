@@ -1,7 +1,7 @@
 import Chart, { ChartConfiguration, ChartItem } from 'chart.js/auto';
 import { api } from '../Model/api';
 import { storage } from '../Storage/Storage';
-import { StatisticForCarts, StatisticResponse } from '../types/interfaces';
+import { StatisticForCarts } from '../types/interfaces';
 
 export class Charts {
   api: typeof api;
@@ -38,12 +38,10 @@ export class Charts {
     return new Chart(ctx, config);
   }
 
-  private async getStatisticForChart(): Promise<StatisticResponse> {
-    return await this.api.getStatistic(this.storage.getUserIdData()) as StatisticResponse;
-  }
-
-  public async getStatisticForCarts(): Promise<StatisticForCarts> {
-    const data = await this.getStatisticForChart();
+  public async getStatisticForCarts(): Promise<StatisticForCarts | null> {
+    const userData = this.storage.getUserIdData();
+    const data = await this.api.getStatistic(userData);
+    if (!data || typeof data === 'string') return null;
     const dates = Object.keys(data.optional.words);
     const newWords: number[] = [];
     const learnedWords: number[] = [];
