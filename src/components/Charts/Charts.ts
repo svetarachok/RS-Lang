@@ -45,9 +45,10 @@ export class Charts {
     const dates = Object.keys(data.optional.words);
     const newWords: number[] = [];
     const learnedWords: number[] = [];
-    dates.forEach((date) => {
+    dates.forEach((date, index) => {
       newWords.push(data.optional.words[date].newWords);
-      learnedWords.push(data.optional.words[date].learnedWords);
+      if (index === 0) learnedWords.push(data.optional.words[date].learnedWords);
+      else learnedWords.push(data.optional.words[date].learnedWords + learnedWords[index - 1]);
     });
     const result = { dates, newWords, learnedWords };
     return result;
