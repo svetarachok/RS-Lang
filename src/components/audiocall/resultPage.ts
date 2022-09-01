@@ -15,9 +15,16 @@ export class ResultPage {
 
   private links: NodeListOf<HTMLAnchorElement>;
 
-  constructor(container: HTMLElement, result: GameResult) {
+  private nextGameSettings: { group: string; page: string; } | undefined;
+
+  constructor(
+    container: HTMLElement,
+    result: GameResult,
+    nextGameSettings?: { group: string; page: string },
+  ) {
     this.container = container;
     this.result = result;
+    this.nextGameSettings = nextGameSettings;
     this.wrapper = createNode({ tag: 'div', classes: ['game__result'] });
     this.button = createNode({ tag: 'button', classes: ['result__button'], inner: 'сыграть еще раз' });
     this.links = document.querySelectorAll('a');
@@ -83,6 +90,13 @@ export class ResultPage {
     this.container.remove();
     document.removeEventListener('keydown', this.keyHandler);
     const game = new AudioCall();
+    if (this.nextGameSettings) {
+      console.log('this.nextGameSettings');
+      game.start({
+        group: Number(this.nextGameSettings.group), page: Number(this.nextGameSettings.page),
+      });
+      return;
+    }
     game.start();
   };
 
