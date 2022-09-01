@@ -61,7 +61,7 @@ export class AudioCall {
       const levelSelect = new LevelSelect(this.container, this.startGameFromMenu.bind(this));
       levelSelect.render();
     } else {
-      this.closeButton.setAttribute('href', '/book');
+      this.closeButton.setAttribute('href', '#/book');
       this.settings = {
         group: String(settings.group),
         page: String(settings.page),
