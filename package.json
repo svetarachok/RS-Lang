@@ -34,6 +34,8 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
+    "chart.js": "^3.9.1",
+    "navigo": "^8.11.1",
     "sass": "^1.54.4",
     "sass-loader": "^13.0.2"
   }

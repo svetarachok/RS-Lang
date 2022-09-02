@@ -2,14 +2,37 @@
 @import './styles/variables.scss';
 @import './styles/mixins.scss';
 @import './styles/components.scss';
+@import './styles/modal.scss';
+@import './styles/form.scss';
 
-@import './styles/body.scss';
+@import "./styles/body.scss";
 
 //Header
-@import './styles/header.scss';
+@import "./styles/header.scss";
 
 //Footer
-@import './styles/footer.scss';
+@import "./styles/footer.scss";
 
 // Main
-@import './styles/main.scss';
+@import "./styles/main.scss";
+
+//Audio call
+@import "./styles/audio-call.scss";
+
+// Sprint
+@import "./styles/sprint.scss";
+
+// TextBook
+@import "./styles/textBook.scss";
+
+//UserPage
+@import './styles/userPage.scss';
+
+//Main page
+@import './styles/mainPage.scss';
+
+//Charts
+@import './styles/charts.scss';
+
+// Stats Block
+@import './styles/statPage.scss';

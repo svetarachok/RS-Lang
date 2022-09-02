@@ -1,0 +1,191 @@
+.hero-section {
+  @include display-flex-center;
+  flex-direction: column;
+  padding: 5rem;
+  background: center / cover no-repeat url('./assets/main-bg1.jpg');
+  border-radius: 30px;
+  @media (max-width: $breakpoint-laptop) {
+    padding: 1.5rem;
+    padding-top: 2.5rem;
+  }
+  @media (max-width: $breakpoint-tablet) {
+    padding: 3.5rem 2rem;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    padding: 2.5rem 1.5rem;
+  }
+  box-shadow: inset -1px -1px 3px rgba(255, 255, 255, 0.75), inset 1px 1px 2px rgba(7, 7, 69, 0.15);
+}
+
+.hero-section-header {
+  width: 50%;
+  text-align: center;
+  line-height: 1;
+  padding-bottom: 2rem;
+  @media (max-width: $breakpoint-laptop) {
+    width: 60%;
+  }
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+  }
+}
+
+.hero-section-text {
+  text-align: center;
+  width: 60%;
+  padding-bottom: 1.5rem;
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+  }
+}
+
+.advantages-section {
+  display: flex;
+  padding: 0;
+  margin-top: 4.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.advantage_wrapper {
+  @include card-style;
+  text-align: center;
+  padding: 1rem;
+  width: 23%;
+  @media (max-width: $breakpoint-tablet) {
+    width: 48%;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+  }
+}
+
+.advantage-header {
+  position: relative;
+  font-size: 2rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  &::after {
+    position: absolute;
+    content: '';
+    height: 2px;
+    background-color: $dark-color;
+    width: 30%;
+    bottom: 0;
+    left: 34.5%;
+  }
+}
+
+.advantage-image {
+  width: 100%;
+  border-radius: 30px;
+}
+
+.advantage-text {
+  padding-top: 1rem;
+  padding-bottom: 1rem
+}
+
+.info-section {
+  @include display-flex-space-between;
+  padding: $section-padding;
+}
+
+.info-text-wrapper {
+  width: 40%;
+  padding: 0 4.5rem;
+}
+
+.info-header {
+  font-size: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.info-text {
+  list-style: none;
+  padding-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+}
+
+.info-text-icon {
+  padding-right: 0.5rem; 
+}
+
+.info-image {
+  @include section-bg-colored;
+  background: center / cover no-repeat url('./assets/info-section2.jpg');;
+  width: 50%;
+  height: 25rem;
+}
+
+.team-section {
+  // @include section-bg-colored;
+  padding: $section-padding;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 2.5rem;
+}
+
+.team-section-header {
+  text-align: center;
+}
+
+.team-members {
+  display: flex;
+  gap: 1.5rem;
+  padding-top: 2.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 80%;
+  @media (max-width: $breakpoint-laptop) {
+    width: 100%;
+  }
+}
+
+.team-member {
+  @include card-style;
+  padding: 1rem;
+  width: 30%;
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: center;
+  @media (max-width: $breakpoint-tablet) {
+    width: 100%;
+  }
+}
+
+.team-member-name {
+  font-size: 1.6rem;
+  padding: 1rem 0 0;
+}
+
+.team-member-img {
+  width: 100%;
+  border-radius: 30px;
+}
+
+.member-duty {
+  font-size: 0.9rem;
+  line-height: 2;
+  padding-bottom: 1rem;
+  color: $mid-grey;
+}
+
+.member-actions {
+  text-align: center;
+  padding-bottom: 1rem;
+  & ul {
+    text-align: left;
+  }
+  & li {
+    list-style: none;
+    padding-bottom: 0.3rem;
+  }
+}

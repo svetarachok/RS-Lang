@@ -7,24 +7,59 @@
   height: 75px;
   margin: auto;
   width: 100%;
-  border-bottom: 1px solid $light-grey;
+  // border-bottom: 1px solid $light-grey;
+  z-index: 1;
+  padding: 0 2rem;
 }
 
 .logo {
   font-size: 1.5rem;
   line-height: 1.4;
   font-weight: 800;
+  @media (max-width: $breakpoint-tablet) {
+    line-height: 1.1;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    font-size: 1.2rem;
+    line-height: 1.1;
+  }
+}
+
+.header-menu {
+  @media (max-width: $breakpoint-tablet-vertical) {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 320px;
+    height: 100vh;
+    top: 0;
+    background-color: $white-color;
+    right: -320px;
+    z-index: 2;
+    font-size: 32px;
+    line-height: 51.2px;
+    overflow-x: hidden;
+    transition: all .8s ease-in-out;
+  }
 }
 
 .menu-items {
   @include display-flex-center;
   list-style: none;
+  @media (max-width: $breakpoint-tablet-vertical) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: 48px;
+    gap: 43px;
+  }
 }
 
-.menu-item {
+.menu-item-link {
   cursor: pointer;
+  font-weight: 600;
   padding: 29px;
-  font-weight: 600; 
   &:hover {
     border-bottom: 2px solid $dark-color;
     padding-bottom: 27px;
@@ -36,3 +71,60 @@
   gap: 1rem;
 }
 
+.burger-icon {
+  @media (max-width: $breakpoint-tablet-vertical) {
+    display: inline-block;
+    position: relative;
+    width: 30px;
+    height: 22px;
+    margin: 0 1rem;
+    z-index: 9;
+    cursor: pointer;
+    transition: 0.5s;
+  }
+}
+
+.burger-line {
+  @media (max-width: $breakpoint-tablet-vertical) {
+    display: inline-block;
+    position: absolute;
+    background-color: $dark-color;
+    height: 2px;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    &::before {
+      display: inline-block;
+      position: absolute;
+      background-color: $dark-color;
+      height: 2px;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      content: "";
+      margin-top: 10px;
+      background-color: $dark-color;
+    }
+    &::after {
+      display: inline-block;
+      position: absolute;
+      background-color: $dark-color;
+      height: 2px;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      content: "";
+      margin-top: -10px;
+      background-color: $dark-color;
+    }
+  }
+}
+
+.clicked {
+  transform: rotate(90deg);
+  z-index: 99;
+}
+
+.opened {
+  right: 0;   
+}

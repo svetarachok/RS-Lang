@@ -1,20 +1,9 @@
-import Router from './components/Model/Router';
+import { Controller } from './components/controller/Controller';
 import './global.scss';
 
 console.log('Lets go');
 
-const router = new Router({
-  mode: 'hash',
-  root: '/',
-});
+const controller = new Controller();
 
-router
-  .add('main', () => {
-    console.log('Render main page');
-  })
-  .add('games', () => {
-    console.log('Render games page');
-  })
-  .add('words', () => {
-    console.log('Render words page');
-  });
+controller.initRouter();
+controller.initApp();

@@ -16,4 +16,7 @@
   align-content: stretch;
   flex-wrap: nowrap;
   max-width: 1440px;
+  @media (max-width: $breakpoint-tablet) {
+    padding: 0 1rem;
+  }
 }

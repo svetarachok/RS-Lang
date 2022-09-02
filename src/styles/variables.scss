@@ -2,6 +2,40 @@ $headers-font: 'Montserrat', sans-serif;
 $text-font: 'Open Sans', sans-serif;
 
 $dark-color: #191a15;
+$accent-color: #332A7C;
+$secondary-color: #ffddb0;
 $white-color: #ffffff;
+$mid-grey: #a1a1a1;
 $light-grey: #d8d8d8;
 $text-color: #333333;
+$overlay-color: rgba(41, 41, 41, 0.6);
+
+$section-padding: 4.5rem 0;
+
+// media
+$breakpoint-laptop: 1025px;
+$breakpoint-tablet: 768px;
+$breakpoint-mobile: 425px;
+$breakpoint-tablet-vertical: 600px;
+
+$learned-word-btn-color: $secondary-color;
+$hard-word-btn-color: $accent-color;
+
+$box-shadow: 0px 1px 4px 1px rgba(50, 50, 71, 0.15);
+// level colors
+
+$l1: #FCFCFF;
+$l2: #F4F4FF;
+$l3: #F0F0FF;
+$l4: #EAEAFF;
+$l5: #E4E4FF;
+$l6: #DEDEFF;
+
+/*
+$l1: #ECDCA3;
+$l2: #CCDFAF;
+$l3: #ABD8D3;
+$l4: #96D7E0;
+$l5: #76ADDA;
+$l6: #5A78CA;
+*/
