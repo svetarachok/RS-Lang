@@ -29,6 +29,8 @@ export class TextBook {
 
   words: WordUI[];
 
+  linksHandler: (e: Event) => void;
+
   constructor(numberOfLevels: number) {
     this.textBook = createNode({ tag: 'section', classes: ['textbook'] }) as HTMLDivElement;
     this.cardsWrapper = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
@@ -44,6 +46,7 @@ export class TextBook {
     this.pageInput = createNode({ tag: 'input', classes: ['page-input'], atributesAdnValues: [['type', 'number']] }) as HTMLInputElement;
     this.pageInput.value = String(this.currentPage + 1);
     this.words = [];
+    this.linksHandler = this.stopSoundByLink.bind(this);
   }
 
   // Update textBook and cards separately
@@ -77,6 +80,7 @@ export class TextBook {
       hardBtns.forEach((btn) => btn.style.display = 'flex');
       this.handlePageAllDone(data);
     }
+    this.words.forEach((word) => word.wordAudio?.pause());
   }
 
   public updateCards(data: Word[] | UserAggregatedWord[]) {
@@ -258,5 +262,25 @@ export class TextBook {
     this.nextPageBtn.disabled = false;
     paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
     return paginationWrapper;
+  }
+
+  private stopSoundByLink() {
+    this.removeLinksListeners();
+    this.words.forEach((word) => word.wordAudio?.pause());
+  }
+
+  private removeLinksListeners() {
+    const links = <NodeListOf<HTMLAnchorElement>>document.querySelectorAll('a');
+    links.forEach((link) => link.removeEventListener('click', this.linksHandler));
+  }
+
+  public addLinksHandler() {
+    const href = `${document.location.protocol}//${document.location.host}`;
+    const links = <NodeListOf<HTMLAnchorElement>>document.querySelectorAll('a');
+    links.forEach((link) => {
+      if (link.href !== `${href}/book`) {
+        link.addEventListener('click', this.linksHandler);
+      }
+    });
   }
 }
