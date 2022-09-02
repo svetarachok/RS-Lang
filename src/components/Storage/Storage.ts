@@ -1,3 +1,5 @@
+import { AuthorizationData } from '../types/interfaces';
+
 export class Storage {
   setData(key: string, value: string | object) {
     if (typeof value === 'object') {
@@ -16,6 +18,12 @@ export class Storage {
     } return false;
   }
 
+  getUserIdData(): AuthorizationData {
+    const data = localStorage.getItem('UserId')!;
+    const parsedData = JSON.parse(data);
+    return parsedData;
+  }
+
   checkData(key: string): Boolean {
     const keyToCheck: string | null = localStorage.getItem(key);
     if (keyToCheck) return true;
@@ -26,3 +34,5 @@ export class Storage {
     localStorage.clear();
   }
 }
+
+export const storage = new Storage();

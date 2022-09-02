@@ -1,6 +1,6 @@
 import { WordUI } from './Word';
 import createNode from '../utils/createNode';
-import { Word } from '../types/interfaces';
+import { UserAggregatedWord, Word } from '../types/interfaces';
 import { Api } from '../Model/api';
 import { MAX_PAGE_NUMBER } from '../utils/constants';
 
@@ -27,6 +27,8 @@ export class TextBook {
 
   pageInput: HTMLInputElement;
 
+  words: WordUI[];
+
   constructor(numberOfLevels: number) {
     this.textBook = createNode({ tag: 'section', classes: ['textbook'] }) as HTMLDivElement;
     this.cardsWrapper = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
@@ -41,45 +43,49 @@ export class TextBook {
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
     this.pageInput = createNode({ tag: 'input', classes: ['page-input'], atributesAdnValues: [['type', 'number']] }) as HTMLInputElement;
     this.pageInput.value = String(this.currentPage + 1);
-    this.learnWord();
+    this.words = [];
   }
 
   // Update textBook and cards separately
-  public updateTextbook(data: Word[], flag: Boolean, group?: number, page?: number) {
+  public updateTextbook(
+    data: string | Word[] | UserAggregatedWord[],
+    flag: Boolean,
+    group: number,
+    page: number,
+  ) {
     this.textBook.innerHTML = '';
+    this.cardsWrapper.style.border = 'none';
+    this.pageInput.style.backgroundColor = 'transparent';
     this.renderTextBook(data);
-    if (typeof group === 'number' && typeof page === 'number') {
-      this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
-      this.level1Btns[group].classList.add('btn-active');
-      this.currentLevel = group;
-      this.currentPage = page;
-      this.pageInput.value = String(page + 1);
-      this.handlePageButtons();
-    }
+    // if (typeof group === 'number' && typeof page === 'number') {
+    this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
+    this.level1Btns[group].classList.add('btn-active');
+    this.currentLevel = group;
+    this.currentPage = page ? this.currentPage = page : this.currentPage = 0;
+    this.pageInput.value = String(page + 1);
+    this.handlePageButtons();
+    // }
     if (flag === true) {
       this.level1Btns[6].style.display = 'flex';
       const learnBtns = document.querySelectorAll('.btn-learn') as NodeListOf<HTMLElement>;
       const hardBtns = document.querySelectorAll('.btn-add') as NodeListOf<HTMLElement>;
+      const userBookMark = document.querySelector('.userbook-mark') as HTMLElement;
+      userBookMark.style.display = 'flex';
       // eslint-disable-next-line no-param-reassign, no-return-assign
       learnBtns.forEach((btn) => btn.style.display = 'flex');
       // eslint-disable-next-line no-param-reassign, no-return-assign
       hardBtns.forEach((btn) => btn.style.display = 'flex');
+      this.handlePageAllDone(data);
     }
   }
 
-  public updateCards(data: Word[]) {
+  public updateCards(data: Word[] | UserAggregatedWord[]) {
     this.cardsWrapper.innerHTML = '';
     this.renderCards(data);
   }
 
-  // Listen Learn Button in each word
-  learnWord() {
-    this.cardsWrapper.addEventListener('click', (e: Event) => {
-      console.log((e.target as HTMLElement).innerHTML);
-    });
-  }
-
   // Listen level buttons and pagination
+
   listenLevels(handler: (group: string, page: string) => void) {
     this.level1Btns.forEach((button) => {
       button.addEventListener('click', (e: Event) => {
@@ -113,7 +119,7 @@ export class TextBook {
       this.handlePageButtons();
       handler(String(level), String(this.currentPage));
     });
-    this.pageInput.addEventListener('input', (e: Event) => {
+    this.pageInput.addEventListener('change', (e: Event) => {
       const level = this.handleLevelButtons();
       const newPageNumber: number = Number((e.target as HTMLInputElement).value);
       this.currentPage = newPageNumber - 1;
@@ -159,20 +165,40 @@ export class TextBook {
     return currInput;
   }
 
+  private handlePageAllDone(cardsData: string | Word[] | UserAggregatedWord[]) {
+    if (typeof cardsData === 'object') {
+      const d: UserAggregatedWord[] = (cardsData as UserAggregatedWord[]).filter(
+        (card: UserAggregatedWord) => (card.userWord && (card.userWord.difficulty === 'hard' || card.userWord.optional.learned === true)),
+      );
+      if (d.length === 20 && this.currentLevel !== 6) {
+        const textBookWrapper = document.querySelector('.text-book-page') as HTMLElement;
+        textBookWrapper.style.border = '3px solid #332a7c';
+        // this.cardsWrapper.style.border = '3px solid lightblue';
+        this.pageInput.style.border = '3px solid #332a7c';
+      } else {
+        this.pageInput.style.border = 'none';
+        this.pageInput.style.borderBottom = '1px solid';
+      }
+    }
+  }
+
   // Render TextBook and components
-  public renderTextBook(data: Word[]): HTMLElement {
+  public renderTextBook(data: string | Word[] | UserAggregatedWord[]): HTMLElement {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
     const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
     const pageHead: HTMLDivElement = this.renderTBHeader();
     const sidebar = this.rendeSidebar();
     this.renderCards(data);
-    const paginationWrapper: HTMLDivElement = this.renderPagination();
-    paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
-    page.append(pageHead, this.cardsWrapper, paginationWrapper);
+    page.append(pageHead, this.cardsWrapper);
+    if (!this.level1Btns[6].classList.contains('btn-active')) {
+      console.log(this.level1Btns[6]);
+      const paginationWrapper: HTMLDivElement = this.renderPagination();
+      paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
+      page.append(paginationWrapper);
+    }
     this.textBook.append(sidebar, page);
     container.append(this.textBook);
-    this.level1Btns[0].classList.add('btn-active');
     return container;
   }
 
@@ -183,24 +209,32 @@ export class TextBook {
     return pageHead;
   }
 
-  private renderCards(cardsData: Word[]) {
+  private renderCards(cardsData: string | Word[] | UserAggregatedWord[]) {
     this.cardsWrapper.innerHTML = '';
-    cardsData.forEach((card) => {
-      const cardItem = new WordUI(card);
-      this.cardsWrapper.append(cardItem.drawCard());
-    });
+    if (typeof cardsData === 'string') {
+      this.cardsWrapper.innerHTML = cardsData;
+    } else {
+      cardsData.forEach((card) => {
+        const cardItem = new WordUI(card, this.words);
+        this.cardsWrapper.append(cardItem.drawCard());
+        this.words.push(cardItem);
+      });
+    }
     return this.cardsWrapper;
   }
 
   private rendeSidebar(): HTMLElement {
     const sideBar: HTMLElement = createNode({ tag: 'aside', classes: ['aside'] });
     const sideBarContent: HTMLElement = createNode({ tag: 'div', classes: ['sidebar-content'] });
-    const sidebarText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['sidebar-text'], inner: 'Уровни сложности' }) as HTMLParagraphElement;
+    const sidebarText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['sidebar-text'], inner: 'Уровни' }) as HTMLParagraphElement;
+    const userBookMark: HTMLDivElement = createNode({ tag: 'div', classes: ['userbook-mark'], inner: '<span class="material-icons-outlined btn-icon">menu_book</span>' }) as HTMLDivElement;
     sideBarContent.append(sidebarText);
     this.level1Btns.forEach((btn) => sideBarContent.append(btn));
+    sideBarContent.append(userBookMark);
     sideBar.append(sideBarContent);
     this.level1Btns[6].classList.add('user-words-btn');
     this.level1Btns[6].style.display = 'none';
+    userBookMark.style.display = 'none';
     return sideBar;
   }
 
@@ -209,6 +243,7 @@ export class TextBook {
     let i: number = 1;
     while (levelsNumber) {
       const btn = createNode({ tag: 'button', classes: ['btn-level'], inner: `${i}` }) as HTMLButtonElement;
+      btn.classList.add(`btn-level-${i}`);
       arr.push(btn);
       i += 1;
       // eslint-disable-next-line no-param-reassign
