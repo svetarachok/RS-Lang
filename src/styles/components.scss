@@ -121,5 +121,11 @@ h2 {
 }
 
 .user-icon {
+  background-color: transparent;
   font-size: 45px;
+  border-radius: 50%;
+  transition: all 0.5s;
+  &:hover {
+    background-color: $secondary-color;
+  }
 }
