@@ -11,7 +11,7 @@ export class TextBook {
 
   level1Btns: HTMLButtonElement[];
 
-  auduoCallBtn: HTMLAnchorElement;
+  audioCallBtn: HTMLAnchorElement;
 
   sprintBtn: HTMLAnchorElement;
 
@@ -33,7 +33,7 @@ export class TextBook {
     this.textBook = createNode({ tag: 'section', classes: ['textbook'] }) as HTMLDivElement;
     this.cardsWrapper = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
     this.level1Btns = this.createLevelButtons(numberOfLevels);
-    this.auduoCallBtn = createNode({
+    this.audioCallBtn = createNode({
       tag: 'a', classes: ['btn'], inner: 'Аудиовызов', atributesAdnValues: [['href', '/book/audiocall'], ['data-navigo', 'true']],
     }) as HTMLAnchorElement;
     this.sprintBtn = createNode({
@@ -175,9 +175,13 @@ export class TextBook {
         textBookWrapper.style.border = '3px solid #332a7c';
         // this.cardsWrapper.style.border = '3px solid lightblue';
         this.pageInput.style.border = '3px solid #332a7c';
+        this.audioCallBtn.classList.add('btn__disabled');
+        this.sprintBtn.classList.add('btn__disabled');
       } else {
         this.pageInput.style.border = 'none';
         this.pageInput.style.borderBottom = '1px solid';
+        this.audioCallBtn.classList.remove('btn__disabled');
+        this.sprintBtn.classList.remove('btn__disabled');
       }
     }
   }
@@ -205,7 +209,7 @@ export class TextBook {
   private renderTBHeader() {
     const pageHead: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page-head'] }) as HTMLDivElement;
     const pageHeadText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['page-head-wrapper'], inner: 'Играть с текущим набором слов:' }) as HTMLParagraphElement;
-    pageHead.append(pageHeadText, this.auduoCallBtn, this.sprintBtn);
+    pageHead.append(pageHeadText, this.audioCallBtn, this.sprintBtn);
     return pageHead;
   }
 
@@ -213,6 +217,8 @@ export class TextBook {
     this.cardsWrapper.innerHTML = '';
     if (typeof cardsData === 'string') {
       this.cardsWrapper.innerHTML = cardsData;
+      this.audioCallBtn.classList.add('btn__disabled');
+      this.sprintBtn.classList.add('btn__disabled');
     } else {
       cardsData.forEach((card) => {
         const cardItem = new WordUI(card, this.words);

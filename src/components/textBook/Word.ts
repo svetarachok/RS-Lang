@@ -129,6 +129,7 @@ export class WordUI {
       }
       if (group === 6) {
         this.card.style.display = 'none';
+        console.log(this.words);
       } else {
         checkPageAllDone();
       }
