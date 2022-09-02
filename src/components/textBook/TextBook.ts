@@ -3,6 +3,7 @@ import createNode from '../utils/createNode';
 import { UserAggregatedWord, Word } from '../types/interfaces';
 import { Api } from '../Model/api';
 import { MAX_PAGE_NUMBER } from '../utils/constants';
+import { checkEmptyUserBook } from '../utils/checkEmptyUserBook';
 
 export class TextBook {
   textBook: HTMLDivElement;
@@ -34,10 +35,10 @@ export class TextBook {
     this.cardsWrapper = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
     this.level1Btns = this.createLevelButtons(numberOfLevels);
     this.audioCallBtn = createNode({
-      tag: 'a', classes: ['btn'], inner: 'Аудиовызов', atributesAdnValues: [['href', '/book/audiocall'], ['data-navigo', 'true']],
+      tag: 'a', classes: ['btn'], inner: 'Аудиовызов', atributesAdnValues: [['id', 'audiocall-btn'], ['href', '/book/audiocall'], ['data-navigo', 'true']],
     }) as HTMLAnchorElement;
     this.sprintBtn = createNode({
-      tag: 'a', classes: ['btn'], inner: 'Спринт', atributesAdnValues: [['href', '/book/sprint'], ['data-navigo', 'true']],
+      tag: 'a', classes: ['btn'], inner: 'Спринт', atributesAdnValues: [['id', 'sprint-btn'], ['href', '/book/sprint'], ['data-navigo', 'true']],
     }) as HTMLAnchorElement;
     this.prevPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Предыдущая' }) as HTMLButtonElement;
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
@@ -76,6 +77,7 @@ export class TextBook {
       // eslint-disable-next-line no-param-reassign, no-return-assign
       hardBtns.forEach((btn) => btn.style.display = 'flex');
       this.handlePageAllDone(data);
+      checkEmptyUserBook();
     }
   }
 
@@ -195,8 +197,8 @@ export class TextBook {
     const sidebar = this.rendeSidebar();
     this.renderCards(data);
     page.append(pageHead, this.cardsWrapper);
-    if (!this.level1Btns[6].classList.contains('btn-active')) {
-      console.log(this.level1Btns[6]);
+    if (this.currentLevel !== 6) {
+      console.log(this.currentLevel);
       const paginationWrapper: HTMLDivElement = this.renderPagination();
       paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
       page.append(paginationWrapper);

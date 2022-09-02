@@ -15,7 +15,15 @@ a {
   cursor: pointer;
   transition: 0.5s all ease-in-out;
   &__disabled {
-    background-color: lighten($color: $dark-color, $amount: 30%);
+    background-color: transparent;
+    border: 1px solid $mid-grey;
+    color: $mid-grey;
+    pointer-events: none;
+  }
+  &:disabled {
+    background-color: transparent;
+    border: 1px solid $mid-grey;
+    color: $mid-grey;
     pointer-events: none;
   }
 }
@@ -91,12 +99,6 @@ a {
 .btn-active {
   background-color: $secondary-color;
   color: $dark-color;
-}
-
-.btn:disabled {
-  background-color: transparent;
-  border: 1px solid $mid-grey;
-  color: $mid-grey;
 }
 
 .btn-add,
