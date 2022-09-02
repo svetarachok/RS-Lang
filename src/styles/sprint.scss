@@ -5,10 +5,9 @@
     min-height: 100vh;
     padding: 0;
     background-color: #0d3848;
-    background-image:
-      url('./assets/sprint/sprint-bg-bottom.svg'),
-      url('./assets/sprint/sprint-bg-left.svg'),
-      url('./assets/sprint/sprint-bg-right.svg');
+    background-image: url("./assets/sprint/sprint-bg-bottom.svg"),
+      url("./assets/sprint/sprint-bg-left.svg"),
+      url("./assets/sprint/sprint-bg-right.svg");
     background-repeat: no-repeat, no-repeat, no-repeat;
     background-size: 100%, auto, auto;
     background-position: bottom, 0 0, 100% 0;
@@ -56,9 +55,23 @@
       display: flex;
       min-height: 100vh;
     }
-  
+
     .footer {
       display: none;
+    }
+
+    .burger-line {
+      background-color: #ffffff;
+      &::after {
+        background-color: #ffffff;
+      }
+      &::before {
+        background-color: #ffffff;
+      }
+    }
+
+    .opened {
+      background-color: #0d3848;
     }
   }
 }
@@ -124,7 +137,7 @@
   cursor: pointer;
 
   &::before {
-    content: '+';
+    content: "+";
     color: #ffffff;
     position: absolute;
     z-index: 2;
@@ -137,7 +150,7 @@
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -210,12 +223,12 @@
   right: 0;
   width: 23px;
   height: 24px;
-  background-image: url('./assets/sprint/sound-default.svg');
+  background-image: url("./assets/sprint/sound-default.svg");
   background-repeat: no-repeat;
   cursor: pointer;
 
   &--off {
-    background-image: url('./assets/sprint/sound-mute.svg');
+    background-image: url("./assets/sprint/sound-mute.svg");
   }
 }
 
@@ -229,7 +242,7 @@
   margin-top: 10px;
   border: 1px solid #ffffff;
   border-radius: 10px;
-  background-color: hsla(0,0%,100%,.06);
+  background-color: hsla(0, 0%, 100%, 0.06);
 }
 
 .control__voice {
@@ -238,13 +251,13 @@
   top: 20px;
   width: 33px;
   height: 33px;
-  background-image: url('./assets/sprint/voice.svg');
+  background-image: url("./assets/sprint/voice.svg");
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
 
   &:hover {
-    background-image: url('./assets/sprint/voice-hover.svg');
+    background-image: url("./assets/sprint/voice-hover.svg");
   }
 }
 
@@ -258,13 +271,13 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background-image: url('./assets/sprint/circle-empty.svg');
+  background-image: url("./assets/sprint/circle-empty.svg");
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: contain;
 
   &--active {
-    background-image: url('./assets/sprint/true-series.svg');
+    background-image: url("./assets/sprint/true-series.svg");
   }
 }
 
@@ -277,7 +290,7 @@
   width: 204px;
   height: 57px;
   margin-top: 30px;
-  background-image: url('./assets/sprint/branch.svg');
+  background-image: url("./assets/sprint/branch.svg");
   background-repeat: no-repeat;
   background-position: bottom;
 }
@@ -294,7 +307,7 @@
 
 .control__word-ru {
   font-size: 24px;
-  color: hsla(0,0%,100%,.6);
+  color: hsla(0, 0%, 100%, 0.6);
 }
 
 .control__buttons {
@@ -409,18 +422,18 @@
 .result__voice {
   width: 33px;
   height: 33px;
-  background-image: url('./assets/sprint/voice-grey.svg');
+  background-image: url("./assets/sprint/voice-grey.svg");
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
 
   &:hover {
-    background-image: url('./assets/sprint/voice-hover.svg');
+    background-image: url("./assets/sprint/voice-hover.svg");
   }
 }
 
 .result__restart-btn {
-  background-color: rgba(37,130,231,.08);
+  background-color: rgba(37, 130, 231, 0.08);
   border-radius: 4px;
   color: #2582e7;
   cursor: pointer;
@@ -432,7 +445,7 @@
   text-align: center;
 
   &:hover {
-    background-color: rgba(37,130,231,.12);
+    background-color: rgba(37, 130, 231, 0.12);
   }
 }
 

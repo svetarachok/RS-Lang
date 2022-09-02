@@ -5,7 +5,7 @@ import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import {
-  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK, WORDS_PER_PAGE,
+  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, WORDS_PER_PAGE,
   REFRESHTOKEN_LIFETIME_IN_HOURS, TOKEN_LIFETIME_IN_HOURS,
 } from '../utils/constants';
 import { UserUI } from '../user/UserUI';
@@ -63,10 +63,12 @@ export class Controller {
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
+        this.menu.closeMenu();
         await this.handleTextBook();
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
+        this.menu.closeMenu();
         this.initSprintFromMenu();
       })
       .on('/book/sprint', () => {
@@ -74,11 +76,13 @@ export class Controller {
       })
       .on('/audiocall', () => {
         this.initAudioCallfromMenu();
+        this.menu.closeMenu();
       })
       .on('/book/audiocall', () => {
         this.initAudioCallfromBook();
       })
       .on('/user', () => {
+        this.menu.closeMenu();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
       })
@@ -129,6 +133,7 @@ export class Controller {
       const data = await this.api.getWords({ group: '0', page: '0' });
       this.textBook.updateTextbook(data, false, 0, 0);
     }
+    this.textBook.addLinksHandler();
   }
 
   public async handleTextBoookPageUpdate(groupStr: string, pageStr: string) {
@@ -151,8 +156,7 @@ export class Controller {
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
       this.router.updatePageLinks();
-      if (window.location.href.includes('/book')) {
-        console.log('boook');
+      if (window.location.href.match(/\/book$/)) {
         await this.handleTextBook();
       }
     } else {
@@ -195,7 +199,7 @@ export class Controller {
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
-      if (window.location.href === `${APP_LINK}/book`) {
+      if (window.location.href.match(/\/book$/)) {
         await this.handleTextBook();
       }
     }
