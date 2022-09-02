@@ -4,6 +4,7 @@ import { UserAggregatedWord, Word } from '../types/interfaces';
 import { Api } from '../Model/api';
 import { MAX_PAGE_NUMBER } from '../utils/constants';
 import { checkEmptyUserBook } from '../utils/checkEmptyUserBook';
+import { checkPageAllDone } from '../utils/checkPageAllDone';
 
 export class TextBook {
   textBook: HTMLDivElement;
@@ -78,7 +79,8 @@ export class TextBook {
       learnBtns.forEach((btn) => btn.style.display = 'flex');
       // eslint-disable-next-line no-param-reassign, no-return-assign
       hardBtns.forEach((btn) => btn.style.display = 'flex');
-      this.handlePageAllDone(data);
+      // this.handlePageAllDone(data);
+      checkPageAllDone();
       checkEmptyUserBook();
     }
     this.words.forEach((word) => word.wordAudio?.pause());
@@ -170,26 +172,6 @@ export class TextBook {
       currInput.value = String(this.currentPage + 1);
     }
     return currInput;
-  }
-
-  private handlePageAllDone(cardsData: string | Word[] | UserAggregatedWord[]) {
-    if (typeof cardsData === 'object') {
-      const d: UserAggregatedWord[] = (cardsData as UserAggregatedWord[]).filter(
-        (card: UserAggregatedWord) => (card.userWord && (card.userWord.difficulty === 'hard' || card.userWord.optional.learned === true)),
-      );
-      if (d.length === 20 && this.currentLevel !== 6) {
-        const textBookWrapper = document.querySelector('.text-book-page') as HTMLElement;
-        textBookWrapper.style.border = '3px solid #332a7c';
-        this.pageInput.style.border = '3px solid #332a7c';
-        this.audioCallBtn.classList.add('btn__disabled');
-        this.sprintBtn.classList.add('btn__disabled');
-      } else {
-        this.pageInput.style.border = 'none';
-        this.pageInput.style.borderBottom = '1px solid';
-        this.audioCallBtn.classList.remove('btn__disabled');
-        this.sprintBtn.classList.remove('btn__disabled');
-      }
-    }
   }
 
   // Render TextBook and components
