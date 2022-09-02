@@ -57,15 +57,13 @@ export class TextBook {
     this.textBook.innerHTML = '';
     this.cardsWrapper.style.border = 'none';
     this.pageInput.style.backgroundColor = 'transparent';
-    this.renderTextBook(data);
-    // if (typeof group === 'number' && typeof page === 'number') {
     this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
     this.level1Btns[group].classList.add('btn-active');
     this.currentLevel = group;
+    this.renderTextBook(data);
     this.currentPage = page ? this.currentPage = page : this.currentPage = 0;
     this.pageInput.value = String(page + 1);
     this.handlePageButtons();
-    // }
     if (flag === true) {
       this.level1Btns[6].style.display = 'flex';
       const learnBtns = document.querySelectorAll('.btn-learn') as NodeListOf<HTMLElement>;
@@ -149,7 +147,8 @@ export class TextBook {
 
   private handleLevelButtons() {
     const levelBtn = this.level1Btns.filter((btn) => btn.classList.contains('btn-active'));
-    const level = levelBtn.length > 0 ? Number(levelBtn[0].innerHTML) - 1 : '0';
+    const level = levelBtn.length === 0 ? '0' : Number(levelBtn[0].innerHTML) - 1;
+    this.currentLevel = Number(level);
     return level;
   }
 
@@ -175,7 +174,6 @@ export class TextBook {
       if (d.length === 20 && this.currentLevel !== 6) {
         const textBookWrapper = document.querySelector('.text-book-page') as HTMLElement;
         textBookWrapper.style.border = '3px solid #332a7c';
-        // this.cardsWrapper.style.border = '3px solid lightblue';
         this.pageInput.style.border = '3px solid #332a7c';
         this.audioCallBtn.classList.add('btn__disabled');
         this.sprintBtn.classList.add('btn__disabled');
@@ -197,8 +195,8 @@ export class TextBook {
     const sidebar = this.rendeSidebar();
     this.renderCards(data);
     page.append(pageHead, this.cardsWrapper);
+    this.handleLevelButtons();
     if (this.currentLevel !== 6) {
-      console.log(this.currentLevel);
       const paginationWrapper: HTMLDivElement = this.renderPagination();
       paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
       page.append(paginationWrapper);
