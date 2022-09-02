@@ -74,8 +74,6 @@ export class TextBook {
       this.level1Btns[6].style.display = 'flex';
       const learnBtns = document.querySelectorAll('.btn-learn') as NodeListOf<HTMLElement>;
       const hardBtns = document.querySelectorAll('.btn-add') as NodeListOf<HTMLElement>;
-      const userBookMark = document.querySelector('.userbook-mark') as HTMLElement;
-      userBookMark.style.display = 'flex';
       // eslint-disable-next-line no-param-reassign, no-return-assign
       learnBtns.forEach((btn) => btn.style.display = 'flex');
       // eslint-disable-next-line no-param-reassign, no-return-assign
@@ -242,14 +240,11 @@ export class TextBook {
     const sideBar: HTMLElement = createNode({ tag: 'aside', classes: ['aside'] });
     const sideBarContent: HTMLElement = createNode({ tag: 'div', classes: ['sidebar-content'] });
     const sidebarText: HTMLParagraphElement = createNode({ tag: 'p', classes: ['sidebar-text'], inner: 'Уровни' }) as HTMLParagraphElement;
-    const userBookMark: HTMLDivElement = createNode({ tag: 'div', classes: ['userbook-mark'], inner: '<span class="material-icons-outlined btn-icon">menu_book</span>' }) as HTMLDivElement;
     sideBarContent.append(sidebarText);
     this.level1Btns.forEach((btn) => sideBarContent.append(btn));
-    sideBarContent.append(userBookMark);
     sideBar.append(sideBarContent);
     this.level1Btns[6].classList.add('user-words-btn');
     this.level1Btns[6].style.display = 'none';
-    userBookMark.style.display = 'none';
     return sideBar;
   }
 

@@ -14,18 +14,6 @@ a {
   padding: 0.5rem 1.2rem;
   cursor: pointer;
   transition: 0.5s all ease-in-out;
-  &__disabled {
-    background-color: transparent;
-    border: 1px solid $mid-grey;
-    color: $mid-grey;
-    pointer-events: none;
-  }
-  &:disabled {
-    background-color: transparent;
-    border: 1px solid $mid-grey;
-    color: $mid-grey;
-    pointer-events: none;
-  }
 }
 
 .btn-secondary {
@@ -38,9 +26,7 @@ a {
 .video-btn {
   padding: 0 1rem 0 0.2rem;
   border-color: $white-color;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
-    rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
-    rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
   &:hover {
     box-shadow: $box-shadow;
   }
@@ -61,14 +47,6 @@ a {
 //level buttons
 .btn-level {
   box-shadow: $box-shadow;
-  border: 2px solid transparent;
-  &:hover {
-    background-color: $secondary-color;
-  }
-  &.btn-active {
-    border-color: $accent-color;
-    color: $dark-color;
-  }
 }
 
 .btn-level-1 {
@@ -98,23 +76,46 @@ a {
 .user-words-btn {
   background-color: $accent-color;
   color: $secondary-color;
+  position: relative;
   &.btn-active {
     background-color: $secondary-color;
     color: $accent-color;
   }
+  &::after {
+    content: '\ea19';
+    position: absolute;
+    font-family: Material Icons Outlined;
+    font-size: 1.3rem;
+    font-weight: 300;
+    font-style: normal;
+    background: #ffddb0;
+    color: #332A7C;
+    padding: 0.5rem;
+    box-shadow: 0px 1px 4px 1px rgb(50 50 71 / 15%);
+    border-radius: 30px;
+    right: -15px;
+    top: -6px;
+  }
 }
 
-.btn-add,
-.btn-learn {
+.btn-active {
+  background-color: $secondary-color;
+  color: $dark-color;
+}
+
+.btn:disabled {
+  background-color: transparent;
+  border: 1px solid $mid-grey;
+  color: $mid-grey;
+}
+
+.btn-add, .btn-learn {
   padding: 0.5rem;
   width: 3rem;
   height: 3rem;
 }
 
-h1,
-h2,
-h3,
-h4 {
+h1, h2, h3, h4 {
   font-family: $headers-font;
 }
 
