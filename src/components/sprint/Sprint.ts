@@ -83,7 +83,7 @@ export class Sprint {
     main.innerHTML = '';
     const btnClose = createHTMLElement('a', ['sprint__close'], [['href', '/'], ['data-navigo', 'true']]) as HTMLAnchorElement;
     if (this.mode === 'book') {
-      btnClose.href = '#/book';
+      btnClose.href = '/book';
       sprint.append(btnClose);
       this.startGame();
     } else if (this.mode === 'menu') {
