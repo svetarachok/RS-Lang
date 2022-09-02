@@ -63,10 +63,12 @@ export class Controller {
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
+        this.menu.closeMenu();
         await this.handleTextBook();
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
+        this.menu.closeMenu();
         this.initSprintFromMenu();
       })
       .on('/book/sprint', () => {
@@ -74,11 +76,13 @@ export class Controller {
       })
       .on('/audiocall', () => {
         this.initAudioCallfromMenu();
+        this.menu.closeMenu();
       })
       .on('/book/audiocall', () => {
         this.initAudioCallfromBook();
       })
       .on('/user', () => {
+        this.menu.closeMenu();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
       })
