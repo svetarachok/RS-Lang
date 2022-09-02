@@ -30,10 +30,13 @@ export class TextBook {
 
   words: WordUI[];
 
+  page: HTMLDivElement;
+
   constructor(numberOfLevels: number) {
     this.textBook = createNode({ tag: 'section', classes: ['textbook'] }) as HTMLDivElement;
     this.cardsWrapper = createNode({ tag: 'div', classes: ['cards-wrapper'] }) as HTMLDivElement;
     this.level1Btns = this.createLevelButtons(numberOfLevels);
+    this.page = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
     this.audioCallBtn = createNode({
       tag: 'a', classes: ['btn'], inner: 'Аудиовызов', atributesAdnValues: [['id', 'audiocall-btn'], ['href', '/book/audiocall'], ['data-navigo', 'true']],
     }) as HTMLAnchorElement;
@@ -149,6 +152,7 @@ export class TextBook {
     const levelBtn = this.level1Btns.filter((btn) => btn.classList.contains('btn-active'));
     const level = levelBtn.length === 0 ? '0' : Number(levelBtn[0].innerHTML) - 1;
     this.currentLevel = Number(level);
+    console.log(levelBtn[0].style.backgroundColor);
     return level;
   }
 
@@ -190,19 +194,20 @@ export class TextBook {
   public renderTextBook(data: string | Word[] | UserAggregatedWord[]): HTMLElement {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
-    const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
+    this.page.innerHTML = '';
     const pageHead: HTMLDivElement = this.renderTBHeader();
     const sidebar = this.rendeSidebar();
     this.renderCards(data);
-    page.append(pageHead, this.cardsWrapper);
+    this.page.append(pageHead, this.cardsWrapper);
     this.handleLevelButtons();
     if (this.currentLevel !== 6) {
       const paginationWrapper: HTMLDivElement = this.renderPagination();
       paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
-      page.append(paginationWrapper);
+      this.page.append(paginationWrapper);
     }
-    this.textBook.append(sidebar, page);
+    this.textBook.append(sidebar, this.page);
     container.append(this.textBook);
+    this.changPageBG();
     return container;
   }
 
@@ -264,5 +269,11 @@ export class TextBook {
     this.nextPageBtn.disabled = false;
     paginationWrapper.append(this.prevPageBtn, this.pageInput, this.nextPageBtn);
     return paginationWrapper;
+  }
+
+  private changPageBG() {
+    const btnActive = this.level1Btns.filter((btn) => btn.classList.contains('btn-active'))[0];
+    const btnColor = window.getComputedStyle(btnActive, null).getPropertyValue('background-color');
+    this.page.style.backgroundColor = btnColor;
   }
 }

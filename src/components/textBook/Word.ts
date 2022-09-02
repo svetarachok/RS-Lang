@@ -117,7 +117,6 @@ export class WordUI {
 
   public listenHardWordBtn() {
     this.addToUserWordsBtn.addEventListener('click', () => {
-      console.log(this.words);
       const { group } = this.storage.getData('textBook');
       let difficulty: 'easy' | 'hard';
       if (this.addToUserWordsBtn.classList.contains('hard-word-btn')) {
