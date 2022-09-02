@@ -13,12 +13,18 @@
     background-size: 100%, auto, auto;
     background-position: bottom, 0 0, 100% 0;
 
+    h2 {
+      font-size: 24px;
+    }
+
     .header {
       position: absolute;
       top: 0;
+      max-width: 1360px;
+      padding: 0 2.5rem;
       background-color: transparent;
       z-index: 10;
-      padding: 0 40px;
+      align-self: center;
       color: #ffffff;
       border: none;
     }
@@ -33,7 +39,8 @@
       }
     }
 
-    .btn-secondary {
+    .btn-secondary,
+    .enter-cabinet-link {
       color: #ffffff;
     }
 
@@ -389,4 +396,28 @@
   &:hover {
     background-image: url('./assets/sprint/voice-hover.svg');
   }
+}
+
+.result__restart-btn {
+  background-color: rgba(37,130,231,.08);
+  border-radius: 4px;
+  color: #2582e7;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.43;
+  margin-top: 24px;
+  padding: 10px 42px;
+  text-align: center;
+
+  &:hover {
+    background-color: rgba(37,130,231,.12);
+  }
+}
+
+.sprint__restart-message {
+  font-size: 14px;
+  width: 60%;
+  color: #ed593b;
+  margin-top: 10px;
 }

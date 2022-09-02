@@ -1,6 +1,6 @@
 import { WordUI } from './Word';
 import createNode from '../utils/createNode';
-import { Word } from '../types/interfaces';
+import { UserAggregatedWord, Word } from '../types/interfaces';
 import { Api } from '../Model/api';
 import { MAX_PAGE_NUMBER } from '../utils/constants';
 
@@ -41,21 +41,27 @@ export class TextBook {
     this.nextPageBtn = createNode({ tag: 'button', classes: ['btn'], inner: 'Следующая' }) as HTMLButtonElement;
     this.pageInput = createNode({ tag: 'input', classes: ['page-input'], atributesAdnValues: [['type', 'number']] }) as HTMLInputElement;
     this.pageInput.value = String(this.currentPage + 1);
-    this.learnWord();
   }
 
   // Update textBook and cards separately
-  public updateTextbook(data: Word[], flag: Boolean, group?: number, page?: number) {
+  public updateTextbook(
+    data: string | Word[] | UserAggregatedWord[],
+    flag: Boolean,
+    group: number,
+    page: number,
+  ) {
     this.textBook.innerHTML = '';
+    this.cardsWrapper.style.border = 'none';
+    this.pageInput.style.backgroundColor = 'transparent';
     this.renderTextBook(data);
-    if (typeof group === 'number' && typeof page === 'number') {
-      this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
-      this.level1Btns[group].classList.add('btn-active');
-      this.currentLevel = group;
-      this.currentPage = page;
-      this.pageInput.value = String(page + 1);
-      this.handlePageButtons();
-    }
+    // if (typeof group === 'number' && typeof page === 'number') {
+    this.level1Btns.map((btn) => btn.classList.remove('btn-active'));
+    this.level1Btns[group].classList.add('btn-active');
+    this.currentLevel = group;
+    this.currentPage = page ? this.currentPage = page : this.currentPage = 0;
+    this.pageInput.value = String(page + 1);
+    this.handlePageButtons();
+    // }
     if (flag === true) {
       this.level1Btns[6].style.display = 'flex';
       const learnBtns = document.querySelectorAll('.btn-learn') as NodeListOf<HTMLElement>;
@@ -64,22 +70,17 @@ export class TextBook {
       learnBtns.forEach((btn) => btn.style.display = 'flex');
       // eslint-disable-next-line no-param-reassign, no-return-assign
       hardBtns.forEach((btn) => btn.style.display = 'flex');
+      this.handlePageAllDone(data);
     }
   }
 
-  public updateCards(data: Word[]) {
+  public updateCards(data: Word[] | UserAggregatedWord[]) {
     this.cardsWrapper.innerHTML = '';
     this.renderCards(data);
   }
 
-  // Listen Learn Button in each word
-  learnWord() {
-    this.cardsWrapper.addEventListener('click', (e: Event) => {
-      console.log((e.target as HTMLElement).innerHTML);
-    });
-  }
-
   // Listen level buttons and pagination
+
   listenLevels(handler: (group: string, page: string) => void) {
     this.level1Btns.forEach((button) => {
       button.addEventListener('click', (e: Event) => {
@@ -159,11 +160,21 @@ export class TextBook {
     return currInput;
   }
 
+  private handlePageAllDone(cardsData: string | Word[] | UserAggregatedWord[]) {
+    if (typeof cardsData === 'object') {
+      const d: UserAggregatedWord[] = (cardsData as UserAggregatedWord[]).filter(
+        (card: UserAggregatedWord) => (card.userWord && (card.userWord.difficulty === 'hard' || card.userWord.optional.learned === true)),
+      );
+      if (d.length === 20 && this.currentLevel !== 6) {
+        this.cardsWrapper.style.border = '3px solid lightblue';
+        this.pageInput.style.backgroundColor = 'lightblue';
+      }
+    }
+  }
+
   // Render TextBook and components
-  public renderTextBook(data: Word[]): HTMLElement {
-    const body = document.querySelector('.body') as HTMLElement;
+  public renderTextBook(data: string | Word[] | UserAggregatedWord[]): HTMLElement {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
-    body.classList.remove('body--sprint');
     container.innerHTML = '';
     const page: HTMLDivElement = createNode({ tag: 'div', classes: ['text-book-page'] }) as HTMLDivElement;
     const pageHead: HTMLDivElement = this.renderTBHeader();
@@ -174,7 +185,6 @@ export class TextBook {
     page.append(pageHead, this.cardsWrapper, paginationWrapper);
     this.textBook.append(sidebar, page);
     container.append(this.textBook);
-    this.level1Btns[0].classList.add('btn-active');
     return container;
   }
 
@@ -185,12 +195,16 @@ export class TextBook {
     return pageHead;
   }
 
-  private renderCards(cardsData: Word[]) {
+  private renderCards(cardsData: string | Word[] | UserAggregatedWord[]) {
     this.cardsWrapper.innerHTML = '';
-    cardsData.forEach((card) => {
-      const cardItem = new WordUI(card);
-      this.cardsWrapper.append(cardItem.drawCard());
-    });
+    if (typeof cardsData === 'string') {
+      this.cardsWrapper.innerHTML = cardsData;
+    } else {
+      cardsData.forEach((card) => {
+        const cardItem = new WordUI(card);
+        this.cardsWrapper.append(cardItem.drawCard());
+      });
+    }
     return this.cardsWrapper;
   }
 
