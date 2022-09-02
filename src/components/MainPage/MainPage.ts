@@ -13,7 +13,9 @@ export class MainPage {
     const template = `<section class="hero-section">
     <h1 class="hero-section-header">Learn Engish and play</h1>
     <p class="hero-section-text">Some text about this cool and great and perfect app goes here may be some words about the rules and the text book and games or about that there are 6 level, but you may get statistic and 7th level after registration</p>
+    <a href="https://youtu.be/_86RUdmUWtk" target="_blank">
     <button class="video-btn btn-secondary"><span class="material-icons-outlined video-icon">play_circle_filled</span>как учиться</button>
+    </a>
       <section class="advantages-section">
       <div class="advantage_wrapper">
         <img src="./assets/books.jpg" alt="Преимущество - учебник с более чем 3600 слов" class="advantage-image">
