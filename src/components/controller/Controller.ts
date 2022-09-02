@@ -129,6 +129,7 @@ export class Controller {
       const data = await this.api.getWords({ group: '0', page: '0' });
       this.textBook.updateTextbook(data, false, 0, 0);
     }
+    this.textBook.addLinksHandler();
   }
 
   public async handleTextBoookPageUpdate(groupStr: string, pageStr: string) {
