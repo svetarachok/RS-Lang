@@ -45,7 +45,7 @@ export class ResultPage {
     document.addEventListener('keydown', this.keyHandler);
 
     this.links.forEach((link) => link.addEventListener('click', () => {
-      if (link.href !== `${BASE_LINK}/audiocall`) {
+      if (!link.href.includes('/audiocall')) {
         this.removeListeners();
         this.container.remove();
       }
