@@ -128,11 +128,6 @@ a {
   }
 }
 
-.btn-active {
-  background-color: $secondary-color;
-  color: $dark-color;
-}
-
 .btn:disabled {
   background-color: transparent;
   border: 1px solid $mid-grey;
