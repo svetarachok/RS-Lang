@@ -77,12 +77,14 @@ export class UserUI {
         stat.dates,
         stat.newWords,
         'Количество новых',
+        'bar',
       );
       this.charts.createChart(
         'myChart-2',
         stat.dates,
         stat.learnedWords,
         'Количество выученных',
+        'line',
       );
     }
 

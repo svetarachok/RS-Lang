@@ -1,4 +1,4 @@
-import Chart, { ChartConfiguration, ChartItem } from 'chart.js/auto';
+import Chart, { ChartConfiguration, ChartItem, ChartTypeRegistry } from 'chart.js/auto';
 import { api } from '../Model/api';
 import { storage } from '../Storage/Storage';
 import { StatisticForCarts } from '../types/interfaces';
@@ -13,7 +13,8 @@ export class Charts {
     this.storage = storage;
   }
 
-  public createChart(id: string, days: string[], wordsCout: number[], descr: string): Chart {
+  // eslint-disable-next-line max-len
+  public createChart(id: string, days: string[], wordsCout: number[], descr: string, type: keyof ChartTypeRegistry): Chart {
     const ctx = <ChartItem>document.getElementById(id);
     const data = {
       labels: days,
@@ -27,7 +28,7 @@ export class Charts {
     };
 
     const config: ChartConfiguration = {
-      type: 'bar',
+      type,
       data,
       options: {
         responsive: false,
