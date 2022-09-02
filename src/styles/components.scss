@@ -61,6 +61,14 @@ a {
 //level buttons
 .btn-level {
   box-shadow: $box-shadow;
+  border: 2px solid transparent;
+  &:hover {
+    background-color: $secondary-color;
+  }
+  &.btn-active {
+    border-color: $accent-color;
+    color: $dark-color;
+  }
 }
 
 .btn-level-1 {
@@ -94,11 +102,6 @@ a {
     background-color: $secondary-color;
     color: $accent-color;
   }
-}
-
-.btn-active {
-  background-color: $secondary-color;
-  color: $dark-color;
 }
 
 .btn-add,
