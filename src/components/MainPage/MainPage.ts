@@ -39,7 +39,6 @@ export class MainPage {
   </section>
   <section class="team-section">
     <h2 class="team-section-header">Наша команда</h2>
-    <p class="team-section-text">Мы старались:)</p>
     <div class="team-members">
       <div class="team-member">
         <img src="./assets/sveta-photo.jpg" alt="" class="team-member-img">
@@ -48,8 +47,10 @@ export class MainPage {
         <div class="member-actions">
           <ul>
             <li>Учебник</li>
-            <li>Регистрация / Авторизация</li>
+            <li>Дизайн приложения</li>
+            <li>Регистрация и авторизация</li>
             <li>Главная страница</li>
+            <li>Рендер страницы статистика</li>
           </ul>
         </div>
         <a class="git-icon" href="https://github.com/svetarachok" target="_blank"></a>
@@ -60,8 +61,10 @@ export class MainPage {
         <p class="member-duty">Developer, designer</p>
         <div class="member-actions">
           <ul>
-            <li>Роутер - маршрутизация страниц</li>
+            <li>Роутинг</li>
             <li>Игра Спринт</li>
+            <li>Логика работы со словами пользователя</li>
+            <li>Графики на странице статистики</li>
         </div>
         <a class="git-icon" href="https://github.com/Parxommm" target="_blank"></a>
       </div>
@@ -71,8 +74,10 @@ export class MainPage {
         <p class="member-duty">Developer, designer</p>
         <div class="member-actions">
           <ul>
-            <li>API - взаимодействие с бэкенд</li>
+            <li>Деплой и настройка бэкенда</li>
+            <li>Взаимодействие с API</li>
             <li>Игра Аудиовызов</li>
+            <li>Логика формирования статистики</li>
           </ul>
         </div>
         <a class="git-icon" href="https://github.com/SiarheiHa" target="_blank"></a>
