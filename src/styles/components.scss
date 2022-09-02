@@ -134,13 +134,17 @@ a {
   color: $mid-grey;
 }
 
-.btn-add, .btn-learn {
+.btn-add,
+.btn-learn {
   padding: 0.5rem;
   width: 3rem;
   height: 3rem;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: $headers-font;
 }
 
@@ -156,5 +160,11 @@ h2 {
 }
 
 .user-icon {
-  font-size: 34px;
+  background-color: transparent;
+  font-size: 45px;
+  border-radius: 50%;
+  transition: all 0.5s;
+  &:hover {
+    background-color: $secondary-color;
+  }
 }
