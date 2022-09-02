@@ -33,6 +33,23 @@ export class Charts {
       options: {
         responsive: false,
         maintainAspectRatio: false,
+        scales: {
+          x: {
+            min: 0,
+          },
+          y: {
+            min: 0,
+            ticks: {
+              // Include a dollar sign in the ticks
+              // eslint-disable-next-line consistent-return
+              callback(value) {
+                if (Number(value) % 1 === 0) {
+                  return value;
+                }
+              },
+            },
+          },
+        },
       },
     };
 
