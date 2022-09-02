@@ -123,6 +123,9 @@ a {
     right: -15px;
     top: -6px;
   }
+  &:hover {
+    color: $accent-color;
+  }
 }
 
 .btn-active {
