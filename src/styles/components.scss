@@ -76,9 +76,25 @@ a {
 .user-words-btn {
   background-color: $accent-color;
   color: $secondary-color;
+  position: relative;
   &.btn-active {
     background-color: $secondary-color;
     color: $accent-color;
+  }
+  &::after {
+    content: '\ea19';
+    position: absolute;
+    font-family: Material Icons Outlined;
+    font-size: 1.3rem;
+    font-weight: 300;
+    font-style: normal;
+    background: #ffddb0;
+    color: #332A7C;
+    padding: 0.5rem;
+    box-shadow: 0px 1px 4px 1px rgb(50 50 71 / 15%);
+    border-radius: 30px;
+    right: -15px;
+    top: -6px;
   }
 }
 

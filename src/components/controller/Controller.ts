@@ -5,7 +5,7 @@ import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import {
-  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK, WORDS_PER_PAGE,
+  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, WORDS_PER_PAGE,
   REFRESHTOKEN_LIFETIME_IN_HOURS, TOKEN_LIFETIME_IN_HOURS,
 } from '../utils/constants';
 import { UserUI } from '../user/UserUI';
@@ -152,8 +152,7 @@ export class Controller {
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
       this.router.updatePageLinks();
-      if (window.location.href.includes('/book')) {
-        console.log('boook');
+      if (window.location.href.match(/\/book$/)) {
         await this.handleTextBook();
       }
     } else {
@@ -196,7 +195,7 @@ export class Controller {
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
-      if (window.location.href === `${APP_LINK}/book`) {
+      if (window.location.href.match(/\/book$/)) {
         await this.handleTextBook();
       }
     }
