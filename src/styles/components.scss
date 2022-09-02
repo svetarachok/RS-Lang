@@ -26,7 +26,9 @@ a {
 .video-btn {
   padding: 0 1rem 0 0.2rem;
   border-color: $white-color;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+    rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+    rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
   &:hover {
     box-shadow: $box-shadow;
   }
@@ -93,13 +95,17 @@ a {
   color: $mid-grey;
 }
 
-.btn-add, .btn-learn {
+.btn-add,
+.btn-learn {
   padding: 0.5rem;
   width: 3rem;
   height: 3rem;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   font-family: $headers-font;
 }
 
@@ -115,5 +121,5 @@ h2 {
 }
 
 .user-icon {
-  font-size: 34px;
+  font-size: 45px;
 }
