@@ -82,6 +82,17 @@ export class TextBook {
       // this.handlePageAllDone(data);
       checkPageAllDone();
       checkEmptyUserBook();
+      console.log(this.currentLevel);
+      if (this.currentLevel === 6) {
+        const tooltipHard = document.querySelectorAll('.tooltip-add-btn') as NodeListOf<HTMLElement>;
+        const tooltipLearn = document.querySelectorAll('.tooltip-learn-btn') as NodeListOf<HTMLElement>;
+        if (tooltipHard && tooltipLearn) {
+          // eslint-disable-next-line no-return-assign, no-param-reassign
+          tooltipHard.forEach((tooltip) => tooltip.innerHTML = 'Удалить из сложных');
+          // eslint-disable-next-line no-return-assign, no-param-reassign
+          tooltipLearn.forEach((tooltip) => tooltip.innerHTML = 'Удалить из изученных');
+        }
+      }
     }
     this.words.forEach((word) => word.wordAudio?.pause());
   }
