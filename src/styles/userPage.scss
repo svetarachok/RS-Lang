@@ -10,7 +10,7 @@
 
 .user-sidebar {
   display: flex;
-  gap: 1.5rem;
+  line-height: 1.4;
   flex-direction: column;
   width: 36%;
   padding: 2.5rem 1.5rem 1.5rem;
@@ -18,6 +18,24 @@
     width: 100%;
     padding: 0 1rem 1.5rem;
     align-items: center;
+  }
+  .user-name {
+    padding-bottom: 1.2rem;
+  }
+  .text-at-stat-page {
+    ul {
+      margin-left: 1.2rem;
+      padding-top: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+  }
+  .exit-cabinet-btn {
+    width: 15rem;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    @media (max-width: $breakpoint-tablet) {
+      width: 13rem;
+    }
   }
 }
 
@@ -36,8 +54,4 @@
 .enter-cabinet-link {
   color: $dark-color;
   font-weight: 600;
-}
-
-.exit-cabinet-btn {
-  width: 10rem;
 }

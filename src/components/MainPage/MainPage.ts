@@ -12,7 +12,7 @@ export class MainPage {
   makePage() {
     const template = `<section class="hero-section">
     <h1 class="hero-section-header">Learn Engish and play</h1>
-    <p class="hero-section-text">Some text about this cool and great and perfect app goes here may be some words about the rules and the text book and games or about that there are 6 level, but you may get statistic and 7th level after registration</p>
+    <p class="hero-section-text">Добро пожаловать в RS-Lang - приложение для самостоятельного изучения английского языка. Мы предлагаем словарь в более чем 3600 слов, отсортированных по уровням сложности, а также интерактивные игры, помогающие в игровой форме запоминать слова. Для зарегистрированных пользователей доступна статистика.</p>
     <a href="https://youtu.be/_86RUdmUWtk" target="_blank">
     <button class="video-btn btn-secondary"><span class="material-icons-outlined video-icon">play_circle_filled</span>как учиться</button>
     </a>

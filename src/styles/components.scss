@@ -30,14 +30,16 @@ a {
 
 .btn-secondary {
   @extend .btn;
-  background-color: $white-color;
-  border: 2px solid $accent-color;
-  color: $accent-color;
+  background-color: transparent;
+  border: 1px solid $dark-color;
+  color: $dark-color;
 }
 
 .video-btn {
   padding: 0 1rem 0 0.2rem;
   border-color: $white-color;
+  background-color: $white-color;
+  color: $accent-color;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
     rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
     rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
@@ -134,11 +136,90 @@ a {
   color: $mid-grey;
 }
 
-.btn-add,
+.btn-add {
+  padding: 0.5rem;
+  width: 3rem;
+  height: 3rem;
+  color: $accent-color;
+  border-color: $accent-color;
+  transition: 0.5s all ease;
+  position: relative;
+  &:hover {
+    background-color: $secondary-color;
+    border-color: $secondary-color;
+    transition: all 0.5s ease-in-out;
+    .tooltip-add-btn {
+      visibility: visible;
+    }
+  }
+  .tooltip-add-btn {
+    visibility: hidden;
+    background-color: #191a15;
+    border: 1px solid $dark-color;
+    color: #ffffff;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 12px;
+    position: absolute;
+    z-index: 1;
+    top: 12px;
+    right: 105%;
+    font-size: 0.8rem;
+    width: max-content;
+    &::after {
+      content: " ";
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      margin-top: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent transparent $dark-color;
+    }
+  }
+}
+
 .btn-learn {
   padding: 0.5rem;
   width: 3rem;
   height: 3rem;
+  color: $accent-color;
+  border-color: $accent-color;
+  position: relative;
+  transition: all 0.5s ease-in-out;
+  &:hover {
+    background-color: $secondary-color;
+    border-color: $secondary-color;
+    transition: all 0.5s ease-in-out;
+    .tooltip-learn-btn {
+      visibility: visible;
+    }
+  }
+  .tooltip-learn-btn {
+    visibility: hidden;
+    background-color: #191a15;
+    border: 1px solid $dark-color;
+    color: #ffffff;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 12px;
+    position: absolute;
+    z-index: 1;
+    top: 12px;
+    right: 105%;
+    font-size: 0.8rem;
+    width: max-content;
+    &::after {
+      content: " ";
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      margin-top: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent transparent $dark-color;
+    }
+  }
 }
 
 h1,

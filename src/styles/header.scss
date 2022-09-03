@@ -10,6 +10,9 @@
   // border-bottom: 1px solid $light-grey;
   z-index: 1;
   padding: 0 2rem;
+  @media (max-width: $breakpoint-mobile) {
+    padding: 0;
+  }
 }
 
 .logo {
@@ -63,6 +66,9 @@
   &:hover {
     border-bottom: 2px solid $dark-color;
     padding-bottom: 27px;
+  }
+  @media (max-width: $breakpoint-tablet) {
+    padding: 1rem;
   }
 }
 
