@@ -31,7 +31,7 @@ export class StatisticUI {
         this.dailyWrapper.append(card);
       });
       return this.dailyWrapper;
-    } this.dailyWrapper.innerHTML = '<p>У вас пока нет статистики. Поиграйте в игру и она появится.</p>';
+    } this.dailyWrapper.innerHTML = '<p>У вас пока нет статистики. Сыграйте в игру и она появится.</p>';
     return this.dailyWrapper;
   }
 
