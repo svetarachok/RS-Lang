@@ -73,16 +73,31 @@ export class TextBook {
     this.handlePageButtons();
     if (flag === true) {
       this.level1Btns[6].style.display = 'flex';
-      const learnBtns = document.querySelectorAll('.btn-learn') as NodeListOf<HTMLElement>;
-      const hardBtns = document.querySelectorAll('.btn-add') as NodeListOf<HTMLElement>;
-      // eslint-disable-next-line no-param-reassign, no-return-assign
-      learnBtns.forEach((btn) => btn.style.display = 'flex');
-      // eslint-disable-next-line no-param-reassign, no-return-assign
-      hardBtns.forEach((btn) => btn.style.display = 'flex');
+      const learnBtns = document.querySelectorAll('.btn-learn') as NodeListOf<HTMLButtonElement>;
+      const hardBtns = document.querySelectorAll('.btn-add') as NodeListOf<HTMLButtonElement>;
+      learnBtns.forEach((btn) => {
+        const tooltipLearn = btn.querySelector('.tooltip-learn-btn') as HTMLElement;
+        // eslint-disable-next-line no-param-reassign, no-return-assign
+        btn.style.display = 'flex';
+        if (btn.classList.contains('learn-word-btn')) {
+          tooltipLearn.style.display = 'none';
+        } else {
+          tooltipLearn.style.display = 'block';
+        }
+      });
+      hardBtns.forEach((btn) => {
+        // eslint-disable-next-line no-param-reassign, no-return-assign
+        btn.style.display = 'flex';
+        const tooltipHard = btn.querySelector('.tooltip-add-btn') as HTMLElement;
+        if (btn.classList.contains('.hard-word-btn')) {
+          tooltipHard.style.display = 'none';
+        } else {
+          tooltipHard.style.display = 'block';
+        }
+      });
       // this.handlePageAllDone(data);
       checkPageAllDone();
       checkEmptyUserBook();
-      console.log(this.currentLevel);
       if (this.currentLevel === 6) {
         const tooltipHard = document.querySelectorAll('.tooltip-add-btn') as NodeListOf<HTMLElement>;
         const tooltipLearn = document.querySelectorAll('.tooltip-learn-btn') as NodeListOf<HTMLElement>;

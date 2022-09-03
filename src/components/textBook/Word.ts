@@ -117,16 +117,20 @@ export class WordUI {
 
   public listenHardWordBtn() {
     this.addToUserWordsBtn.addEventListener('click', () => {
+      const tooltip = this.addToUserWordsBtn.querySelector('.tooltip-add-btn') as HTMLElement;
+      console.log(this.addToUserWordsBtn);
       const { group } = this.storage.getData('textBook');
       let difficulty: 'easy' | 'hard';
       if (this.addToUserWordsBtn.classList.contains('hard-word-btn')) {
         this.addToUserWordsBtn.classList.remove('hard-word-btn');
         difficulty = 'easy';
         this.wordController.updateHardWord(difficulty, this.id);
+        tooltip.style.display = 'block';
       } else {
         this.addToUserWordsBtn.classList.add('hard-word-btn');
         difficulty = 'hard';
         this.wordController.updateHardWord(difficulty, this.id);
+        tooltip.style.display = 'none';
       }
       if (group === 6) {
         this.card.style.display = 'none';
@@ -139,6 +143,7 @@ export class WordUI {
 
   public listenLearnBtn() {
     this.learnWordBtn.addEventListener('click', () => {
+      const tooltip = this.learnWordBtn.querySelector('.tooltip-learn-btn') as HTMLElement;
       const { group } = this.storage.getData('textBook');
       let isLearned: boolean;
       if (this.learnWordBtn.classList.contains('learn-word-btn')) {
@@ -146,12 +151,14 @@ export class WordUI {
         this.addToUserWordsBtn.disabled = false;
         isLearned = false;
         this.wordController.updateLearnedWord(isLearned, this.id);
+        tooltip.style.display = 'block';
       } else {
         this.learnWordBtn.classList.add('learn-word-btn');
         this.addToUserWordsBtn.classList.remove('hard-word-btn');
         this.addToUserWordsBtn.disabled = true;
         isLearned = true;
         this.wordController.updateLearnedWord(isLearned, this.id);
+        tooltip.style.display = 'none';
       }
       if (group === 6) {
         this.card.style.display = 'none';
