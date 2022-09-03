@@ -5,8 +5,13 @@
   width: 62%;
   display: flex;
   justify-content: space-around;
+  margin-right: 1rem;
   .word-wrapper {
     width: 100%;
+  }
+  @media (max-width: $breakpoint-tablet) {
+    margin-right: 0;
+    padding: 1.2rem;
   }
   @media (max-width: $breakpoint-mobile) {
     width: 100%;
@@ -76,7 +81,7 @@
   padding-top: 1.6rem;
   padding-left: 2rem;
   text-align: center;
-  @media (max-width: $breakpoint-mobile) {
+  @media (max-width: $breakpoint-tablet) {
     padding-right: 2.8rem;
   }
   @media (max-width: $breakpoint-mobile) {
