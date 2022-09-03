@@ -21,7 +21,7 @@ export class UserUI {
 
   constructor() {
     this.headerEnterBtn = createNode({
-      tag: 'a', classes: ['enter-cabinet-link'], atributesAdnValues: [['href', '/user'], ['data-navigo', 'true']], inner: '<span class="material-icons-outlined user-icon">account_circle</span>',
+      tag: 'a', classes: ['enter-cabinet-link'], atributesAdnValues: [['href', '/user'], ['data-navigo', 'true']], inner: '<span class="material-icons-round user-icon">account_circle</span>',
     }) as HTMLButtonElement;
     this.userPage = createNode({ tag: 'div', classes: ['user-page'] });
     this.name = createNode({ tag: 'h2', classes: ['user-name'] });

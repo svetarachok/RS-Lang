@@ -57,10 +57,10 @@ export class WordUI {
       tag: 'p', classes: ['word'], inner: `${this.obj.word}`,
     }) as HTMLParagraphElement;
     this.addToUserWordsBtn = createNode({
-      tag: 'button', classes: ['btn-add', 'btn-secondary'], atributesAdnValues: [['style', 'display: none']], inner: '<span class="material-icons-outlined btn-icon">menu_book</span><span class="tooltip-add-btn">В сложные</span>',
+      tag: 'button', classes: ['btn-add', 'btn-secondary'], atributesAdnValues: [['style', 'display: none']], inner: '<span class="material-icons-round btn-icon">menu_book</span><span class="tooltip-add-btn">В сложные</span>',
     }) as HTMLButtonElement;
     this.learnWordBtn = createNode({
-      tag: 'button', classes: ['btn-learn', 'btn-secondary'], atributesAdnValues: [['style', 'display: none']], inner: '<span class="material-icons-outlined btn-icon">spellcheck</span><span class="tooltip-learn-btn">Выучить</span>',
+      tag: 'button', classes: ['btn-learn', 'btn-secondary'], atributesAdnValues: [['style', 'display: none']], inner: '<span class="material-icons-round btn-icon">spellcheck</span><span class="tooltip-learn-btn">Выучить</span>',
     }) as HTMLButtonElement;
     this.correct = createNode({ tag: 'span', classes: ['correct-answers'], inner: '0' }) as HTMLSpanElement;
     this.incorrect = createNode({ tag: 'span', classes: ['incorrect-answers'], inner: '0' }) as HTMLSpanElement;

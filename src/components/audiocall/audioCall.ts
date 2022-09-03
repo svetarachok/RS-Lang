@@ -51,7 +51,7 @@ export class AudioCall {
       atributesAdnValues: [['href', '/'], ['data-navigo', 'true']],
       inner: 'X',
     });
-    this.muteButton = createNode({ tag: 'span', classes: ['material-icons-outlined', 'mute-button'], inner: 'volume_up' });
+    this.muteButton = createNode({ tag: 'span', classes: ['material-icons-round', 'mute-button'], inner: 'volume_up' });
     this.userData = storage.getUserIdData();
   }
 
