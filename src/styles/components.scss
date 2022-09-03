@@ -30,7 +30,7 @@ a {
 
 .btn-secondary {
   @extend .btn;
-  background-color: $white-color;
+  background-color: transparent;
   border: 1px solid $dark-color;
   color: $dark-color;
 }
@@ -38,6 +38,7 @@ a {
 .video-btn {
   padding: 0 1rem 0 0.2rem;
   border-color: $white-color;
+  background-color: $white-color;
   color: $accent-color;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
     rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
