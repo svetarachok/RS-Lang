@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const EslingPlugin = require('eslint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const devmode = require('./webpack.dev.config');
 
 const baseConfig = {
   devtool: 'eval-source-map',
@@ -12,8 +14,12 @@ const baseConfig = {
   module: {
     rules: [
       {
-        test: /\.(scss|css)$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        test: /\.(sa|sc|c)ss$/,
+        use: [
+          devmode === 'development' ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader',
+        ],
       },
       {
         test: /\.html$/i,
@@ -54,6 +60,7 @@ const baseConfig = {
         },
       ],
     }),
+    new MiniCssExtractPlugin(),
   ],
 };
 
