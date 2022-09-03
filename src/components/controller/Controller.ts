@@ -160,6 +160,10 @@ export class Controller {
         await this.handleTextBook();
       }
     } else {
+      const loginMess = document.querySelector('.modal-err-message');
+      if (loginMess) {
+        loginMess.remove();
+      }
       this.modal.showLoginMessage();
     }
   }

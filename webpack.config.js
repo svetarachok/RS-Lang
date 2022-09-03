@@ -8,7 +8,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const devmode = require('./webpack.dev.config');
 
 const baseConfig = {
-  devtool: 'eval-source-map',
   entry: path.resolve(__dirname, './src/index.ts'),
   mode: 'development',
   module: {

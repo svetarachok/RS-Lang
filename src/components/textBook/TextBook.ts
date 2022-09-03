@@ -104,8 +104,6 @@ export class TextBook {
         if (tooltipHard && tooltipLearn) {
           // eslint-disable-next-line no-return-assign, no-param-reassign
           tooltipHard.forEach((tooltip) => tooltip.innerHTML = 'Удалить из сложных');
-          // eslint-disable-next-line no-return-assign, no-param-reassign
-          tooltipLearn.forEach((tooltip) => tooltip.innerHTML = 'Удалить из изученных');
         }
       }
     }

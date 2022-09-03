@@ -43,7 +43,6 @@ export class Modal {
   }
 
   showMessage(data: string) {
-    console.log('Success');
     this.modalContent.innerHTML = '';
     const p = createNode({ tag: 'p', classes: ['modal-message'], inner: `${data}` });
     this.modalContent.append(p);
@@ -51,7 +50,7 @@ export class Modal {
   }
 
   showLoginMessage() {
-    const errMessage = createNode({ tag: 'p', classes: ['modal-err-message'], inner: 'Такого пользователя не существует, проверьте данные' });
+    const errMessage = createNode({ tag: 'p', classes: ['modal-err-message'], inner: 'Неверный логин или пароль, проверьте данные' });
     this.modalContent.prepend(errMessage);
     return this.modalContent;
   }
