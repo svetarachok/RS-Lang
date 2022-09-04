@@ -98,6 +98,9 @@ export class Controller {
     this.registerForm.listenForm(this.handleRegistartion.bind(this));
     this.userUI.unAuthorize(this.handleUnLogin.bind(this));
     this.handleUser();
+    if (!window.location.href.match(/#\/$/)) {
+      window.location.href = `${window.location.href}#/`;
+    }
     this.router.updatePageLinks();
   }
 
