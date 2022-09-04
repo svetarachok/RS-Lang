@@ -49,7 +49,7 @@ export class AudioCall {
       tag: 'a',
       classes: ['close-button'],
       atributesAdnValues: [['href', '/'], ['data-navigo', 'true']],
-      inner: 'X',
+      // inner: 'X',
     });
     this.muteButton = createNode({ tag: 'span', classes: ['material-icons-outlined', 'mute-button'], inner: 'volume_up' });
     this.userData = storage.getUserIdData();
