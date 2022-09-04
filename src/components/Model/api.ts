@@ -50,7 +50,7 @@ export class Api {
       body: JSON.stringify(authData),
     });
 
-    if (response.status === 404) return 'Incorrect e-mail or password';
+    if (!response.ok) return response.text();
     const data = await response.json();
     data.tokenExpires = Date.now() + TOKEN_LIFETIME_IN_HOURS * 60 * 60 * 1000;
     return data;

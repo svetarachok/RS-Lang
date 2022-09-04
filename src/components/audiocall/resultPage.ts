@@ -71,7 +71,6 @@ export class ResultPage {
   private getTitleText() {
     const wordsCount = this.result.correct.length + this.result.incorrect.length;
     const percentOfCorrectAnswers = (this.result.correct.length / wordsCount) * 100;
-    console.log(percentOfCorrectAnswers);
     if (percentOfCorrectAnswers === 100) return 'Блестяще!';
     if (percentOfCorrectAnswers > 85) return 'Отличный результат!';
     if (percentOfCorrectAnswers > 65) return 'Хороший результат!';
@@ -91,7 +90,6 @@ export class ResultPage {
     document.removeEventListener('keydown', this.keyHandler);
     const game = new AudioCall();
     if (this.nextGameSettings) {
-      console.log('this.nextGameSettings');
       game.start({
         group: Number(this.nextGameSettings.group), page: Number(this.nextGameSettings.page),
       });
