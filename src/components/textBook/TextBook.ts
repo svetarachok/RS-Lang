@@ -104,8 +104,6 @@ export class TextBook {
         if (tooltipHard && tooltipLearn) {
           // eslint-disable-next-line no-return-assign, no-param-reassign
           tooltipHard.forEach((tooltip) => tooltip.innerHTML = 'Удалить из сложных');
-          // eslint-disable-next-line no-return-assign, no-param-reassign
-          tooltipLearn.forEach((tooltip) => tooltip.innerHTML = 'Удалить из изученных');
         }
       }
     }
@@ -182,7 +180,6 @@ export class TextBook {
     const levelBtn = this.level1Btns.filter((btn) => btn.classList.contains('btn-active'));
     const level = levelBtn.length === 0 ? '0' : Number(levelBtn[0].innerHTML) - 1;
     this.currentLevel = Number(level);
-    console.log(levelBtn[0].style.backgroundColor);
     return level;
   }
 

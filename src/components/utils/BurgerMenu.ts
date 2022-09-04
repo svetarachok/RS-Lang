@@ -8,11 +8,9 @@ export class BurgerMenu {
   initBurgerMenu() {
     // this.bindEvents.bind(this);
     this.bindEvents();
-    console.log(this.menu);
   }
 
   openMenu() {
-    console.log('open');
     this.burgerMenu.classList.add('clicked');
     this.menu.classList.add('opened');
     // overlay.classList.add('shadowed');
@@ -20,7 +18,6 @@ export class BurgerMenu {
   }
 
   closeMenu() {
-    console.log('close');
     this.burgerMenu.classList.remove('clicked');
     this.menu.classList.remove('opened');
     // overlay.classList.remove('shadowed');
@@ -28,7 +25,6 @@ export class BurgerMenu {
   }
 
   bindEvents() {
-    console.log('bind');
     this.burgerMenu.addEventListener('click', () => {
       if (this.burgerMenu.classList.contains('clicked')) {
         this.closeMenu();
@@ -38,9 +34,7 @@ export class BurgerMenu {
     });
     this.menu.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
-      console.log(target);
       if (target.classList.contains('menu-item') || target.closest('.menu-item')) {
-        // console.log('e.target');
         this.closeMenu();
       }
     });

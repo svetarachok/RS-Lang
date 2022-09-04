@@ -51,7 +51,7 @@ export class AudioCall {
       atributesAdnValues: [['href', '/'], ['data-navigo', 'true']],
       inner: 'X',
     });
-    this.muteButton = createNode({ tag: 'span', classes: ['material-icons-outlined', 'mute-button'], inner: 'volume_up' });
+    this.muteButton = createNode({ tag: 'span', classes: ['material-icons-round', 'mute-button'], inner: 'volume_up' });
     this.userData = storage.getUserIdData();
   }
 
@@ -109,7 +109,6 @@ export class AudioCall {
       const userAggregatedWords = await this.wordController.getUserBookWords();
       const words = (userAggregatedWords as UserAggregatedWord[])
         .map((word) => convertAggregatedWordToWord(word));
-      console.log(words);
       return shuffleArray(words).slice(0, MAX_COUNT_WORDS_PER_GAME);
     }
     // game from group 0-5

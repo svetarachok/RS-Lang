@@ -14,7 +14,7 @@ export class MainPage {
     <h1 class="hero-section-header">Learn Engish and play</h1>
     <p class="hero-section-text">Добро пожаловать в RS-Lang - приложение для самостоятельного изучения английского языка. Мы предлагаем словарь в более чем 3600 слов, отсортированных по уровням сложности, а также интерактивные игры, помогающие в игровой форме запоминать слова. Для зарегистрированных пользователей доступна статистика.</p>
     <a href="https://youtu.be/_86RUdmUWtk" target="_blank">
-    <button class="video-btn btn-secondary"><span class="material-icons-outlined video-icon">play_circle_filled</span>как учиться</button>
+    <button class="video-btn btn-secondary"><span class="material-icons-round video-icon">play_circle_filled</span>как учиться</button>
     </a>
       <section class="advantages-section">
       <div class="advantage_wrapper">
