@@ -5,7 +5,7 @@ import { Modal } from '../utils/Modal';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import {
-  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, APP_LINK, WORDS_PER_PAGE,
+  REGISTER_BTN, LOGIN_BTN, LEVELS_OF_TEXTBOOK, WORDS_PER_PAGE,
   REFRESHTOKEN_LIFETIME_IN_HOURS, TOKEN_LIFETIME_IN_HOURS,
 } from '../utils/constants';
 import { UserUI } from '../user/UserUI';
@@ -47,8 +47,8 @@ export class Controller {
     this.api = new Api();
     this.textBook = new TextBook(LEVELS_OF_TEXTBOOK);
     this.modal = new Modal();
-    this.loginForm = new LoginForm('login', 'Login');
-    this.registerForm = new RegisterForm('register', 'Register');
+    this.loginForm = new LoginForm('login', 'Вход');
+    this.registerForm = new RegisterForm('register', 'Регистрация');
     this.userUI = new UserUI();
     this.storage = new Storage();
     this.mainPage = new MainPage();
@@ -63,10 +63,12 @@ export class Controller {
         this.router.updatePageLinks();
       })
       .on('/book', async () => {
+        this.menu.closeMenu();
         await this.handleTextBook();
         this.router.updatePageLinks();
       })
       .on('/sprint', () => {
+        this.menu.closeMenu();
         this.initSprintFromMenu();
       })
       .on('/book/sprint', () => {
@@ -74,11 +76,13 @@ export class Controller {
       })
       .on('/audiocall', () => {
         this.initAudioCallfromMenu();
+        this.menu.closeMenu();
       })
       .on('/book/audiocall', () => {
         this.initAudioCallfromBook();
       })
       .on('/user', () => {
+        this.menu.closeMenu();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
       })
@@ -94,6 +98,9 @@ export class Controller {
     this.registerForm.listenForm(this.handleRegistartion.bind(this));
     this.userUI.unAuthorize(this.handleUnLogin.bind(this));
     this.handleUser();
+    if (!window.location.href.match(/#\/$/)) {
+      window.location.href = `${window.location.href}#/`;
+    }
     this.router.updatePageLinks();
   }
 
@@ -104,17 +111,17 @@ export class Controller {
       if (stored.group === 6) {
         const newData = await this.wordController.getUserBookWords();
         this.textBook.updateTextbook(newData, true, 6, 0);
-        console.log('Есть локал бук и залогинен, level hard');
+        // console.log('Есть локал бук и залогинен, level hard');
       } else {
         const newData = await this.api.getAggregatedUserWords(
           logined,
           { group: stored.group, page: stored.page, wordsPerPage: String(WORDS_PER_PAGE) },
         ) as UserAggregatedWord[];
-        console.log('Есть локал бук и залогинен');
+        // console.log('Есть локал бук и залогинен');
         this.textBook.updateTextbook(newData, true, stored.group, stored.page);
       }
     } else if (stored && !logined) {
-      console.log('Есть локал бук и НЕ залогинен');
+      // console.log('Есть локал бук и НЕ залогинен');
       const data = await this.api.getWords(stored);
       this.textBook.updateTextbook(data, false, stored.group, stored.page);
     } else if (!stored && logined) {
@@ -122,13 +129,14 @@ export class Controller {
         logined,
         { group: '0', page: '0', wordsPerPage: String(WORDS_PER_PAGE) },
       ) as UserAggregatedWord[];
-      console.log('Не ходит по учебнику и залогинен');
+      // console.log('Не ходит по учебнику и залогинен');
       this.textBook.updateTextbook(newData, true, 0, 0);
     } else {
-      console.log('Не ходит по учебнику и не залогинен');
+      // console.log('Не ходит по учебнику и не залогинен');
       const data = await this.api.getWords({ group: '0', page: '0' });
       this.textBook.updateTextbook(data, false, 0, 0);
     }
+    this.textBook.addLinksHandler();
   }
 
   public async handleTextBoookPageUpdate(groupStr: string, pageStr: string) {
@@ -151,18 +159,19 @@ export class Controller {
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
       this.router.updatePageLinks();
-      if (window.location.href === `${APP_LINK}/#/book`) {
-        console.log('boook');
+      if (window.location.href.match(/\/book$/)) {
         await this.handleTextBook();
       }
     } else {
-      // ! Вывести текст ошибки в модалку
-      console.log(res);
+      const loginMess = document.querySelector('.modal-err-message');
+      if (loginMess) {
+        loginMess.remove();
+      }
+      this.modal.showLoginMessage();
     }
   }
 
   public handleUser() {
-    console.log('handleUser');
     const stored = this.storage.getData('UserId') as AuthorizationData | null;
     if (stored) {
       const refreshTokenExpires = stored.tokenExpires
@@ -172,17 +181,31 @@ export class Controller {
     }
   }
 
-  public async handleRegistartion(name: string, email: string, password: string) {
+  public async handleRegistartion(
+    name: string,
+    email: string,
+    password: string,
+    errorMessage: HTMLElement,
+  ) {
     const object: UserCreationData = { name, email, password };
-    await this.api.createUser(object);
-    const obj: Pick<UserCreationData, 'email' | 'password'> = { email, password };
+    const regResponse = await this.api.createUser(object);
+    if (typeof regResponse === 'object') {
+      this.modal.showMessage(`Успешная регистрация! Добро пожаловать, ${name}`);
+      const obj: Pick<UserCreationData, 'email' | 'password'> = { email, password };
+      setTimeout(() => this.makeNewUser(obj), 3000);
+    } else {
+      // eslint-disable-next-line no-param-reassign
+      errorMessage.innerHTML = 'Пользователь с таким e-mail уже существует';
+    }
+  }
+
+  private async makeNewUser(obj: Pick<UserCreationData, 'email' | 'password'>) {
     const res = await this.api.authorize(obj);
-    // this.modal.showMessage('Успешная регистрация! <Войдите в аккаунт')
     if (typeof res === 'object') {
       this.modal.exitModal();
       this.storage.setData('UserId', res);
       this.userUI.authorise(res);
-      if (window.location.href === `${APP_LINK}/book`) {
+      if (window.location.href.match(/\/book$/)) {
         await this.handleTextBook();
       }
     }

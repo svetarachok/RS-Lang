@@ -96,7 +96,9 @@ export class Sprint {
 
   private renderSelectLevel(): HTMLElement {
     const select = createHTMLElement('div', ['sprint__select']);
-    const selectTitle = createHTMLElement('h2', ['sprint__select-title'], undefined, 'Выберите уровень:');
+    const selectTitle = createHTMLElement('h2', ['sprint__select-title'], undefined, 'Спринт');
+    const selectDescription = createHTMLElement('p', ['sprint__select-descr'], undefined, 'Учит быстро переводить на ваш родной язык');
+    const selectText = createHTMLElement('p', ['sprint__select-text'], undefined, 'Выберите уровень:');
     const levels = createHTMLElement('div', ['sprint__levels']);
     for (let i = 1; i <= 6; i += 1) {
       const level = createHTMLElement('div', ['sprint__level'], [['data-level', `${i - 1}`]], `${i}`);
@@ -108,7 +110,7 @@ export class Sprint {
       });
       levels.append(level);
     }
-    select.append(selectTitle, levels);
+    select.append(selectTitle, selectDescription, selectText, levels);
     return select;
   }
 

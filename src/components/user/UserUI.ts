@@ -11,8 +11,6 @@ export class UserUI {
 
   name: HTMLElement;
 
-  email: HTMLElement;
-
   exitBtn: HTMLButtonElement;
 
   statisticPage: HTMLElement;
@@ -23,12 +21,11 @@ export class UserUI {
 
   constructor() {
     this.headerEnterBtn = createNode({
-      tag: 'a', classes: ['enter-cabinet-link'], atributesAdnValues: [['href', '/user'], ['data-navigo', 'true']], inner: 'Enter Cabinet',
+      tag: 'a', classes: ['enter-cabinet-link'], atributesAdnValues: [['href', '/user'], ['data-navigo', 'true']], inner: '<span class="material-icons-round user-icon">account_circle</span>',
     }) as HTMLButtonElement;
     this.userPage = createNode({ tag: 'div', classes: ['user-page'] });
     this.name = createNode({ tag: 'h2', classes: ['user-name'] });
-    this.email = createNode({ tag: 'p', classes: ['user-name'] });
-    this.exitBtn = createNode({ tag: 'button', classes: ['btn', 'exit-cabinet-btn'], inner: 'Exit cabinet' }) as HTMLButtonElement;
+    this.exitBtn = createNode({ tag: 'button', classes: ['btn', 'exit-cabinet-btn'], inner: 'Выйти из аккаунта' }) as HTMLButtonElement;
     this.statisticPage = createNode({ tag: 'div', classes: ['statistic-block'] });
     this.statUI = new StatisticUI();
     this.charts = new Charts();
@@ -56,12 +53,13 @@ export class UserUI {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
     this.userPage.innerHTML = '';
-    console.log(this.userPage.innerHTML);
     const userSection = createNode({ tag: 'section', classes: ['user-section'] });
     const chartsSection = createNode({ tag: 'section', classes: ['charts-section'] });
     const dailyStatSection = createNode({ tag: 'section', classes: ['daily-stat-section'] });
     const userBlock = createNode({ tag: 'aside', classes: ['aside', 'user-sidebar'] });
-    userBlock.append(this.name, this.email, this.exitBtn);
+    const textBeforeName = createNode({ tag: 'div', classes: ['text-at-stat-page'], inner: 'Добро пожаловать на страницу пользователя,' });
+    const textAfterName = createNode({ tag: 'div', classes: ['text-at-stat-page'], inner: 'Здесь вам доступны: <ul> <li>данные по вашей активности по дням, </li> <li>общая статистика за весь период использования приложения.</li></ul> ' });
+    userBlock.append(textBeforeName, this.name, textAfterName, this.exitBtn);
     const todayStatistic = await this.renderTodayStatisticBlock();
     const dailyStatistic = await this.renderStatisticBlock();
     const charts = this.renderChartsBlock();
@@ -71,18 +69,23 @@ export class UserUI {
     this.userPage.append(userSection, chartsSection, dailyStatSection);
     container.append(this.userPage);
     const stat = await this.charts.getStatisticForCarts();
-    this.charts.createChart(
-      'myChart-1',
-      stat.dates,
-      stat.newWords,
-      'Количество новых',
-    );
-    this.charts.createChart(
-      'myChart-2',
-      stat.dates,
-      stat.learnedWords,
-      'Количество выученных',
-    );
+    if (stat) {
+      this.charts.createChart(
+        'myChart-1',
+        stat.dates,
+        stat.newWords,
+        'Количество новых',
+        'bar',
+      );
+      this.charts.createChart(
+        'myChart-2',
+        stat.dates,
+        stat.learnedWords,
+        'Количество выученных',
+        'line',
+      );
+    }
+
     return container;
   }
 

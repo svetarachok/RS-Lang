@@ -1,4 +1,3 @@
-import { BASE_LINK } from '../utils/constants';
 import createNode from '../utils/createNode';
 
 const AUDIO_CALL_DESCRIPTION = 'Тренировка улучшает восприятие речи на слух.';
@@ -28,12 +27,12 @@ export class LevelSelect {
   public render() {
     const title = createNode({ tag: 'h2', classes: ['game__title'], inner: GAME_NAME });
     const description = createNode({ tag: 'p', classes: ['game__descpiption'], inner: AUDIO_CALL_DESCRIPTION });
-    const selectBlock = this.createSelectBlock('Выбери уровень сложности');
+    const selectBlock = this.createSelectBlock('Выберите уровень сложности:');
     const button = createNode({ tag: 'button', atributesAdnValues: [['type', 'button']], inner: 'начать' });
     button.addEventListener('click', this.returnLevel);
     document.addEventListener('keydown', this.keyHandler);
     this.links.forEach((link) => link.addEventListener('click', () => {
-      if (link.href !== `${BASE_LINK}/audiocall`) {
+      if (!link.href.includes('/audiocall')) {
         this.removeListeners();
         this.container.remove();
       }

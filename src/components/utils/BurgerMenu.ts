@@ -6,7 +6,7 @@ export class BurgerMenu {
   menuLinks = document.querySelectorAll<HTMLElement>('.menu-item');
 
   initBurgerMenu() {
-    this.bindEvents.bind(this);
+    // this.bindEvents.bind(this);
     this.bindEvents();
   }
 
@@ -34,9 +34,7 @@ export class BurgerMenu {
     });
     this.menu.addEventListener('click', (e: Event) => {
       const target = e.target as HTMLElement;
-      console.log(123);
       if (target.classList.contains('menu-item') || target.closest('.menu-item')) {
-        console.log(e.target);
         this.closeMenu();
       }
     });

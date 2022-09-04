@@ -1,22 +1,36 @@
-.form-wrapper form {
-  height: 15rem;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-content: center;
-  align-items: center;
-  justify-content: center;
-  row-gap: 1.5rem;
-}
-
-.form-wrapper input {
+.form-wrapper {
+  form {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    row-gap: 1.5rem;
+  }
+  .input-wrapper {
+    width: 90%;
+    text-align: center;
+  }
+  input {
   height: 3rem;
+  width: 100%;
   border-bottom: 1px solid;
-  width: 70%;
   padding: 0 0.5rem;
   font-size: 1.2rem;
   font-family: $headers-font;
-  &:focus-visible {
+   &:focus-visible {
     outline: none;
+    }
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 1rem;
+   }
+   .btn-submit {
+    margin-top: 1rem;
+    }
   }
+}
+
+.error-message, .error-in-form {
+  color: red;
 }

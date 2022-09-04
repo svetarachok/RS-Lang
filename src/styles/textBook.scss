@@ -86,7 +86,7 @@
   border-radius: 30px;
   padding: 0.5rem;
   box-shadow: $box-shadow;
-  .material-icons-outlined {
+  .material-icons-round {
     font-size: 1.3rem;
   }
   @media (max-width: $breakpoint-tablet-vertical) {
@@ -242,6 +242,9 @@
   background-color: $accent-color;
   .btn-icon {
     color: $secondary-color;
+    &:hover {
+     color: $accent-color;
+    }
   }
 }
 
@@ -250,6 +253,9 @@
   background-color: $secondary-color;
   .btn-icon {
     color: $accent-color;
+    &:hover {
+      color: $accent-color;
+     }
   }
 }
 

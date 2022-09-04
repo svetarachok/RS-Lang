@@ -4,7 +4,7 @@ import createNode from '../utils/createNode';
 import { getRandomWordByGroup } from '../utils/getRandomWords';
 import { shuffleArray } from '../utils/shuffleArray';
 import { Answer } from './answer';
-import { SPEAKER } from './speakerSVG';
+// import { SPEAKER } from './speakerSVG';
 
 const ANSWERS_COUNT = 5;
 
@@ -49,7 +49,7 @@ export class Stage {
     this.wordText = createNode({ tag: 'span', classes: ['word__text'] });
     this.skipButton = createNode({ tag: 'button', classes: ['button', 'button-skip'], inner: 'не знаю' });
     this.nextStageButton = createNode({ tag: 'button', classes: ['button', 'button-next'], inner: '⟶' });
-    this.soundButton = createNode({ tag: 'button', classes: ['speaker-button'], inner: SPEAKER });
+    this.soundButton = createNode({ tag: 'button', classes: ['speaker-button'], inner: '<span class="material-icons-round speaker_icon">volume_up</span>' });
     this.links = document.querySelectorAll('a');
   }
 
@@ -59,7 +59,7 @@ export class Stage {
     this.render();
     document.addEventListener('keydown', this.keyHandler);
     this.links.forEach((link) => link.addEventListener('click', () => {
-      if (link.href !== `${BASE_LINK}/audiocall`) {
+      if (link.href.includes('/audiocall')) {
         this.removeListeners();
         this.container.remove();
       }
@@ -85,7 +85,6 @@ export class Stage {
     this.hasAnswer = true;
     if (answer?.isCorrect) this.result = true;
     this.showCorrectAnswer();
-    console.log('result of stage', this.result);
   }
 
   private render() {
@@ -112,7 +111,6 @@ export class Stage {
 
   private bindSkipButtonEvent(button: HTMLElement) {
     button.addEventListener('click', () => {
-      console.log('skip pressed');
       this.skipQuestion();
     });
   }

@@ -10,6 +10,9 @@
   // border-bottom: 1px solid $light-grey;
   z-index: 1;
   padding: 0 2rem;
+  @media (max-width: $breakpoint-mobile) {
+    padding: 0;
+  }
 }
 
 .logo {
@@ -40,7 +43,7 @@
     font-size: 32px;
     line-height: 51.2px;
     overflow-x: hidden;
-    transition: all .8s ease-in-out;
+    transition: all 0.8s ease-in-out;
   }
 }
 
@@ -64,6 +67,9 @@
     border-bottom: 2px solid $dark-color;
     padding-bottom: 27px;
   }
+  @media (max-width: $breakpoint-tablet) {
+    padding: 1rem;
+  }
 }
 
 .auth {
@@ -72,6 +78,7 @@
 }
 
 .burger-icon {
+  display: none;
   @media (max-width: $breakpoint-tablet-vertical) {
     display: inline-block;
     position: relative;
@@ -126,5 +133,5 @@
 }
 
 .opened {
-  right: 0;   
+  right: 0;
 }
