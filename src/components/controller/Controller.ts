@@ -47,8 +47,8 @@ export class Controller {
     this.api = new Api();
     this.textBook = new TextBook(LEVELS_OF_TEXTBOOK);
     this.modal = new Modal();
-    this.loginForm = new LoginForm('login', 'Login');
-    this.registerForm = new RegisterForm('register', 'Register');
+    this.loginForm = new LoginForm('login', 'Вход');
+    this.registerForm = new RegisterForm('register', 'Регистрация');
     this.userUI = new UserUI();
     this.storage = new Storage();
     this.mainPage = new MainPage();
