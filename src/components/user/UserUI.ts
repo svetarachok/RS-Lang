@@ -53,7 +53,6 @@ export class UserUI {
     const container: HTMLElement = document.querySelector('.main') as HTMLElement;
     container.innerHTML = '';
     this.userPage.innerHTML = '';
-    console.log(this.userPage.innerHTML);
     const userSection = createNode({ tag: 'section', classes: ['user-section'] });
     const chartsSection = createNode({ tag: 'section', classes: ['charts-section'] });
     const dailyStatSection = createNode({ tag: 'section', classes: ['daily-stat-section'] });

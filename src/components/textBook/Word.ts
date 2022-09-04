@@ -118,7 +118,6 @@ export class WordUI {
   public listenHardWordBtn() {
     this.addToUserWordsBtn.addEventListener('click', () => {
       const tooltip = this.addToUserWordsBtn.querySelector('.tooltip-add-btn') as HTMLElement;
-      console.log(this.addToUserWordsBtn);
       const { group } = this.storage.getData('textBook');
       let difficulty: 'easy' | 'hard';
       if (this.addToUserWordsBtn.classList.contains('hard-word-btn')) {

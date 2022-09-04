@@ -29,7 +29,6 @@ export class Answer {
   }
 
   private eventHandler = () => {
-    console.log('eventHandler');
     this.addEndStageStyleByClick();
     this.callback(this);
   };
@@ -49,7 +48,6 @@ export class Answer {
   }
 
   public addEndStageStyleByKeyboard(answer: Answer) {
-    console.log(answer === this);
     if (answer === this) this.addEndStageStyleByClick();
   }
 

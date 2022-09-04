@@ -109,7 +109,6 @@ export class AudioCall {
       const userAggregatedWords = await this.wordController.getUserBookWords();
       const words = (userAggregatedWords as UserAggregatedWord[])
         .map((word) => convertAggregatedWordToWord(word));
-      console.log(words);
       return shuffleArray(words).slice(0, MAX_COUNT_WORDS_PER_GAME);
     }
     // game from group 0-5

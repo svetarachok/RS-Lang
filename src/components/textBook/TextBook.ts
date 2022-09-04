@@ -180,7 +180,6 @@ export class TextBook {
     const levelBtn = this.level1Btns.filter((btn) => btn.classList.contains('btn-active'));
     const level = levelBtn.length === 0 ? '0' : Number(levelBtn[0].innerHTML) - 1;
     this.currentLevel = Number(level);
-    console.log(levelBtn[0].style.backgroundColor);
     return level;
   }
 

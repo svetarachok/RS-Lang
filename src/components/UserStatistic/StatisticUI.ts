@@ -37,7 +37,6 @@ export class StatisticUI {
 
   public async drawTodayStat() {
     const data: [string, DailyStatObj][] = await this.api.getStatDataForRender();
-    console.log(data);
     if (data.length) {
       const dayUi = new DayStatUI(data.shift() as [string, DailyStatObj]);
       const dailyCard = dayUi.drawFirstDayStat();
