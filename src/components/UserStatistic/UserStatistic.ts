@@ -154,7 +154,7 @@ export class UserStatistic {
   }
 
   sendStatistic() {
-    const test = api.setStatistic(
+    api.setStatistic(
       this.userData,
       {
         learnedWords: this.learnedWords,
@@ -164,7 +164,6 @@ export class UserStatistic {
         },
       },
     );
-    console.log(test);
   }
 
   initDateInWordStatistic(date: string) {

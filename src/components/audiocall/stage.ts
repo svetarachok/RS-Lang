@@ -85,7 +85,6 @@ export class Stage {
     this.hasAnswer = true;
     if (answer?.isCorrect) this.result = true;
     this.showCorrectAnswer();
-    console.log('result of stage', this.result);
   }
 
   private render() {
@@ -112,7 +111,6 @@ export class Stage {
 
   private bindSkipButtonEvent(button: HTMLElement) {
     button.addEventListener('click', () => {
-      console.log('skip pressed');
       this.skipQuestion();
     });
   }

@@ -60,7 +60,6 @@ export class Form {
   }
 
   public validateForm(form: HTMLFormElement) {
-    console.log('Validation started');
     const inputs = [...form.querySelectorAll<HTMLElement>('.input-wrapper')];
     const validated = inputs.every((input) => this.checkInputValue(input));
     if (validated) return true;

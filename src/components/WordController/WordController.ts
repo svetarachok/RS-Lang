@@ -94,7 +94,7 @@ export class WordController {
   public async getUserWords() {
     const userData = this.storage.getUserIdData();
     const userWords = await this.api.getUserWords(userData);
-    console.log(userWords);
+    return userWords;
   }
 
   public async updateHardWord(difficulty: 'easy' | 'hard', wordId: string) {
