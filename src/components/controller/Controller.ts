@@ -58,14 +58,16 @@ export class Controller {
 
   public initRouter(): void {
     this.router
-      .on(() => {
+      .on('/', () => {
         this.mainPage.renderMain();
         this.router.updatePageLinks();
+        this.removeSprintStyles();
       })
       .on('/book', async () => {
         this.menu.closeMenu();
         await this.handleTextBook();
         this.router.updatePageLinks();
+        this.removeSprintStyles();
       })
       .on('/sprint', () => {
         this.menu.closeMenu();
@@ -77,14 +79,17 @@ export class Controller {
       .on('/audiocall', () => {
         this.initAudioCallfromMenu();
         this.menu.closeMenu();
+        this.removeSprintStyles();
       })
       .on('/book/audiocall', () => {
         this.initAudioCallfromBook();
+        this.removeSprintStyles();
       })
       .on('/user', () => {
         this.menu.closeMenu();
         this.userUI.renderUserPage();
         this.router.updatePageLinks();
+        this.removeSprintStyles();
       })
       .resolve();
   }
@@ -98,9 +103,9 @@ export class Controller {
     this.registerForm.listenForm(this.handleRegistartion.bind(this));
     this.userUI.unAuthorize(this.handleUnLogin.bind(this));
     this.handleUser();
-    if (!window.location.href.match(/#\/$/)) {
-      window.location.href = `${window.location.href}#/`;
-    }
+    // if (!window.location.href.match(/#\/$/)) {
+    //   window.location.href = `${window.location.href}#/`;
+    // }
     this.router.updatePageLinks();
   }
 
@@ -224,12 +229,14 @@ export class Controller {
   }
 
   private initSprintFromMenu() {
+    console.log('sprint2');
     this.sprint = new Sprint('menu');
     this.sprint.renderGame();
   }
 
-  private closeSprint() {
-    this.sprint?.closeGame();
+  private removeSprintStyles() {
+    const body = <HTMLElement>document.querySelector('.body');
+    body.classList.remove('body--sprint');
   }
 
   public initAudioCallfromMenu() {
