@@ -49,9 +49,9 @@ export class AudioCall {
       tag: 'a',
       classes: ['close-button'],
       atributesAdnValues: [['href', '/'], ['data-navigo', 'true']],
-      inner: 'X',
+      // inner: 'X',
     });
-    this.muteButton = createNode({ tag: 'span', classes: ['material-icons-round', 'mute-button'], inner: 'volume_up' });
+    this.muteButton = createNode({ tag: 'span', classes: ['material-icons-round', 'mute-button'], inner: 'audiotrack' });
     this.userData = storage.getUserIdData();
   }
 
@@ -162,7 +162,7 @@ export class AudioCall {
   }
 
   private muteButtonHandler = () => {
-    this.muteButton.innerHTML = this.isMute ? 'volume_up' : 'volume_off';
+    this.muteButton.innerHTML = this.isMute ? 'audiotrack' : 'music_off';
     this.isMute = !this.isMute;
   };
 
