@@ -98,7 +98,7 @@ export class Controller {
     this.registerForm.listenForm(this.handleRegistartion.bind(this));
     this.userUI.unAuthorize(this.handleUnLogin.bind(this));
     this.handleUser();
-    if (!window.location.href.match(/#\/$/)) {
+    if (window.location.href.match(/RS-Lang\/$/)) {
       window.location.href = `${window.location.href}#/`;
     }
     this.router.updatePageLinks();
