@@ -1,3 +1,4 @@
+import { router } from '../controller/Controller';
 import { api } from '../Model/api';
 import { storage } from '../Storage/Storage';
 import { GAME } from '../types/enums';
@@ -10,7 +11,6 @@ import { getRandomWordsByGroup } from '../utils/getRandomWords';
 import { shuffleArray } from '../utils/shuffleArray';
 import { WordController } from '../WordController/WordController';
 import { LevelSelect } from './levelSelect';
-// eslint-disable-next-line import/no-cycle
 import { ResultPage } from './resultPage';
 import { Stage } from './stage';
 import { StartPage } from './startPage';
@@ -82,6 +82,7 @@ export class AudioCall {
     wrapper.append(buttonsWrapper);
     this.container.append(wrapper);
     main.append(this.container);
+    router.updatePageLinks();
   }
 
   private async startGameFromMenu(wordsGroup: string) {

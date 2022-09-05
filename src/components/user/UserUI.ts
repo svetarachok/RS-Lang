@@ -3,6 +3,7 @@ import { StatisticUI } from '../UserStatistic/StatisticUI';
 import { REGISTER_BTN, LOGIN_BTN, USER_AUTH_WRAPPER } from '../utils/constants';
 import createNode from '../utils/createNode';
 import { Charts } from '../Charts/Charts';
+import { router } from '../controller/Controller';
 
 export class UserUI {
   userPage: HTMLElement;
@@ -36,6 +37,7 @@ export class UserUI {
     REGISTER_BTN.style.display = 'none';
     LOGIN_BTN.style.display = 'none';
     USER_AUTH_WRAPPER.append(this.headerEnterBtn);
+    router.updatePageLinks();
     this.headerEnterBtn.style.display = 'flex';
     return USER_AUTH_WRAPPER;
   }
