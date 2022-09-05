@@ -43,7 +43,7 @@ export class ResultPage {
     const falseLi = this.result.incorrect.map((word) => this.createResultLi(word));
     this.button.addEventListener('click', this.startNewGame);
     document.addEventListener('keydown', this.keyHandler);
-
+    window.addEventListener('popstate', this.removeListeners);
     this.links.forEach((link) => link.addEventListener('click', () => {
       if (link.href !== `${BASE_LINK}/audiocall`) {
         this.removeListeners();
@@ -102,6 +102,7 @@ export class ResultPage {
 
   private removeListeners = () => {
     document.removeEventListener('keydown', this.keyHandler);
+    window.removeEventListener('popstate', this.removeListeners);
     this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
   };
 
