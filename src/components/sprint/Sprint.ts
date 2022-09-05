@@ -6,6 +6,7 @@ import { WordController } from '../WordController/WordController';
 import { Storage } from '../Storage/Storage';
 import { convertAggregatedWordToWord } from '../utils/convertAggregatedWordToWord';
 import { GAME } from '../types/enums';
+import { router } from '../controller/Controller';
 
 export class Sprint {
   mode: 'menu' | 'book';
@@ -91,6 +92,7 @@ export class Sprint {
       sprint.append(select, btnClose);
     }
     main.append(sprint);
+    router.updatePageLinks();
     this.addLinksHandler();
   }
 

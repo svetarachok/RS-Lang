@@ -17,8 +17,10 @@ import { MainPage } from '../MainPage/MainPage';
 import { BurgerMenu } from '../utils/BurgerMenu';
 import { WordController } from '../WordController/WordController';
 
+export const router = new Navigo('/', { hash: true });
+
 export class Controller {
-  router: Navigo;
+  router: Navigo = router;
 
   api: Api;
 
@@ -43,7 +45,6 @@ export class Controller {
   wordController: WordController;
 
   constructor() {
-    this.router = new Navigo('/', { hash: true });
     this.api = new Api();
     this.textBook = new TextBook(LEVELS_OF_TEXTBOOK);
     this.modal = new Modal();
