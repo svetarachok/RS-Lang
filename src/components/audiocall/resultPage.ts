@@ -1,7 +1,6 @@
 import { GameResult, Word } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
 import createNode from '../utils/createNode';
-// eslint-disable-next-line import/no-cycle
 import { AudioCall } from './audioCall';
 
 export class ResultPage {

@@ -10,7 +10,6 @@ import { getRandomWordsByGroup } from '../utils/getRandomWords';
 import { shuffleArray } from '../utils/shuffleArray';
 import { WordController } from '../WordController/WordController';
 import { LevelSelect } from './levelSelect';
-// eslint-disable-next-line import/no-cycle
 import { ResultPage } from './resultPage';
 import { Stage } from './stage';
 import { StartPage } from './startPage';
