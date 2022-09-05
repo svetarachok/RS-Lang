@@ -58,6 +58,8 @@ export class Stage {
     this.sayWord();
     this.render();
     document.addEventListener('keydown', this.keyHandler);
+    window.addEventListener('popstate', this.removeListeners);
+
     this.links.forEach((link) => link.addEventListener('click', () => {
       if (link.href.includes('/audiocall')) {
         this.removeListeners();
@@ -172,6 +174,7 @@ export class Stage {
 
   private removeListeners = () => {
     document.removeEventListener('keydown', this.keyHandler);
+    window.removeEventListener('popstate', this.removeListeners);
     this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
   };
 }

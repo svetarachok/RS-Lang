@@ -25,6 +25,7 @@ export class StartPage {
     const button = createNode({ tag: 'button', atributesAdnValues: [['type', 'button']], inner: 'начать' });
     button.addEventListener('click', this.startGame);
     document.addEventListener('keydown', this.keyHandler);
+    window.addEventListener('popstate', this.removeListeners);
     this.links.forEach((link) => link.addEventListener('click', () => {
       if (!link.href.includes('/audiocall')) {
         this.removeListeners();
@@ -48,6 +49,8 @@ export class StartPage {
 
   private removeListeners = () => {
     document.removeEventListener('keydown', this.keyHandler);
+    window.removeEventListener('popstate', this.removeListeners);
+
     this.links.forEach((link) => link.removeEventListener('click', this.removeListeners));
   };
 }
