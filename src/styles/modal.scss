@@ -25,6 +25,12 @@
   background-color: $white-color;
   padding: 3rem;
   border-radius: 1rem;
+  @media (max-width: $breakpoint-tablet) {
+    width: 80%;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    padding: 3rem 1.5rem;
+  }
 }
 
 .modal-close-btn {
@@ -41,6 +47,9 @@
   &:hover {
     background-color: $white-color;
   }
+  @media (max-width: $breakpoint-mobile) {
+    right: -32px;
+  } 
 }
 
 .modal_wrapper:hover .modal-close-btn {

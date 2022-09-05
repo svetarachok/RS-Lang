@@ -38,16 +38,17 @@
       color: #ffffff;
 
       &:hover {
-        border-bottom: 2px solid #ffffff;
+        border-bottom: 2px solid $white-color;
       }
     }
 
     .btn-secondary {
-      color: #000000;
+      color: $white-color;
+      border-color: $white-color;
     }
 
     .enter-cabinet-link {
-      color: #ffffff;
+      color: $white-color;
     }
 
     .main {
@@ -84,6 +85,8 @@
   padding: 20px 0;
   color: #ffffff;
   width: 100%;
+  margin: 0 auto;
+  max-width: 1440px;
 
   .sprint__select-title {
     font-size: 2.4rem;

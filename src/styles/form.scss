@@ -19,12 +19,15 @@
   padding: 0 0.5rem;
   font-size: 1.2rem;
   font-family: $headers-font;
-  &:focus-visible {
+   &:focus-visible {
     outline: none;
     }
-  }
-  .btn-submit {
+    @media (max-width: $breakpoint-mobile) {
+      font-size: 1rem;
+   }
+   .btn-submit {
     margin-top: 1rem;
+    }
   }
 }
 
