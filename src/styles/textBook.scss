@@ -301,3 +301,13 @@
 .page-input {
   -moz-appearance: textfield;
 }
+
+.correct-answers {
+  color: #28c38a;
+  padding-right: 3px;
+}
+
+.incorrect-answers {
+  color: #ed593b;
+  padding-left: 3px;
+}
