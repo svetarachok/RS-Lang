@@ -42,7 +42,7 @@ export class Form {
       return false;
     }
     if (input.type === 'password') {
-      if (value.length < 9) {
+      if (value.length < 8) {
         error.style.display = 'block';
         error.innerHTML = 'Длина пароля должна быть не менее 8 знаков';
         return false;

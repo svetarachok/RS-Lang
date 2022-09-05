@@ -225,7 +225,6 @@ export class Controller {
   }
 
   private initSprintFromMenu() {
-    console.log('sprint2');
     this.sprint = new Sprint('menu');
     this.sprint.renderGame();
   }
