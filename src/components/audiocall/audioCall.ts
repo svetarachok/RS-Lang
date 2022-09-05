@@ -1,3 +1,4 @@
+import { router } from '../controller/Controller';
 import { api } from '../Model/api';
 import { storage } from '../Storage/Storage';
 import { GAME } from '../types/enums';
@@ -81,6 +82,7 @@ export class AudioCall {
     wrapper.append(buttonsWrapper);
     this.container.append(wrapper);
     main.append(this.container);
+    router.updatePageLinks();
   }
 
   private async startGameFromMenu(wordsGroup: string) {
