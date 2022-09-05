@@ -184,7 +184,7 @@ export class Sprint {
     const ready = <HTMLElement>document.querySelector('.sprint__ready');
     ready.remove();
     this.renderTimer(sprint, 'timer--control');
-    this.startTimer('timer--control', 10, this.renderResult.bind(this));
+    this.startTimer('timer--control', 60, this.renderResult.bind(this));
     const sprintControl = createHTMLElement('div', ['sprint__control']);
     const score = createHTMLElement('h2', ['control__score'], undefined, '0');
     const sound = createHTMLElement('div', ['control__sound']);
