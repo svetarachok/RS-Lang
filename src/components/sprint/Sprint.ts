@@ -92,6 +92,7 @@ export class Sprint {
     }
     main.append(sprint);
     this.addLinksHandler();
+    window.addEventListener('popstate', this.closeGame);
   }
 
   private renderSelectLevel(): HTMLElement {
@@ -528,13 +529,14 @@ export class Sprint {
     document.removeEventListener('keydown', this.keyListener);
   }
 
-  public closeGame(): void {
+  public closeGame = (): void => {
+    window.removeEventListener('popstate', this.closeGame);
     const body = document.querySelector('.body') as HTMLElement;
     body?.classList.remove('body--sprint');
     clearInterval(this.timerInterval);
     this.timerSound?.pause();
     this.removeKeyboardControl();
-  }
+  };
 
   private async getHardWords(): Promise<Word[]> {
     const userHardWords = await this.wordController.getUserBookWords() as UserAggregatedWord[];
