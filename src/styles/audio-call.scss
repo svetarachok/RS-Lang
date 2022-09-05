@@ -109,7 +109,7 @@
 
   .word {
     display: flex;
-    align-items:  flex-end;
+    align-items: flex-end;
     justify-content: center;
     font-size: 2.5rem;
     color: $white-color;
@@ -159,6 +159,8 @@
     padding: 42px 16px;
     text-align: center;
     width: 100%;
+    margin-top: -120px;
+    overflow-y: scroll;
   }
 
   .result__score {
