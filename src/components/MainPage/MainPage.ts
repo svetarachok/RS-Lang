@@ -12,8 +12,10 @@ export class MainPage {
   makePage() {
     const template = `<section class="hero-section">
     <h1 class="hero-section-header">Learn Engish and play</h1>
-    <p class="hero-section-text">Some text about this cool and great and perfect app goes here may be some words about the rules and the text book and games or about that there are 6 level, but you may get statistic and 7th level after registration</p>
-    <button class="video-btn btn-secondary"><span class="material-icons-outlined video-icon">play_circle_filled</span>как учиться</button>
+    <p class="hero-section-text">Добро пожаловать в RS-Lang - приложение для самостоятельного изучения английского языка. Мы предлагаем словарь в более чем 3600 слов, отсортированных по уровням сложности, а также интерактивные игры, помогающие в игровой форме запоминать слова. Для зарегистрированных пользователей доступна статистика.</p>
+    <a href="https://youtu.be/_86RUdmUWtk" target="_blank">
+    <button class="video-btn btn-secondary"><span class="material-icons-round video-icon">play_circle_filled</span>о приложении</button>
+    </a>
       <section class="advantages-section">
       <div class="advantage_wrapper">
         <img src="./assets/books.jpg" alt="Преимущество - учебник с более чем 3600 слов" class="advantage-image">
@@ -39,7 +41,6 @@ export class MainPage {
   </section>
   <section class="team-section">
     <h2 class="team-section-header">Наша команда</h2>
-    <p class="team-section-text">Мы старались:)</p>
     <div class="team-members">
       <div class="team-member">
         <img src="./assets/sveta-photo.jpg" alt="" class="team-member-img">
@@ -48,15 +49,13 @@ export class MainPage {
         <div class="member-actions">
           <ul>
             <li>Учебник</li>
-            <li>Регистрация / Авторизация</li>
+            <li>Дизайн приложения</li>
+            <li>Регистрация и авторизация</li>
             <li>Главная страница</li>
+            <li>Рендер страницы статистика</li>
           </ul>
         </div>
-        <div class="git-icon">
-          <svg width="50px" height="50px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon-git">
-            <path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9a127.5 127.5 0 0 1 38.1 91v112.5c.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"/>
-          </svg>
-        </div>
+        <a class="git-icon" href="https://github.com/svetarachok" target="_blank"></a>
       </div>
       <div class="team-member">
         <img src="./assets/evgen-photo.jpg" alt="" class="team-member-img">
@@ -64,14 +63,12 @@ export class MainPage {
         <p class="member-duty">Developer, designer</p>
         <div class="member-actions">
           <ul>
-            <li>Роутер - маршрутизация страниц</li>
+            <li>Роутинг</li>
             <li>Игра Спринт</li>
+            <li>Логика работы со словами пользователя</li>
+            <li>Графики на странице статистики</li>
         </div>
-        <div class="git-icon">
-          <svg width="50px" height="50px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon-git">
-            <path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9a127.5 127.5 0 0 1 38.1 91v112.5c.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"/>
-          </svg>
-        </div>
+        <a class="git-icon" href="https://github.com/Parxommm" target="_blank"></a>
       </div>
       <div class="team-member">
         <img src="./assets/sergey-photo.jpg" alt="" class="team-member-img">
@@ -79,15 +76,13 @@ export class MainPage {
         <p class="member-duty">Developer, designer</p>
         <div class="member-actions">
           <ul>
-            <li>API - взаимодействие с бэкенд</li>
+            <li>Деплой и настройка бэкенда</li>
+            <li>Взаимодействие с API</li>
             <li>Игра Аудиовызов</li>
+            <li>Логика формирования статистики</li>
           </ul>
         </div>
-        <div class="git-icon">
-          <svg width="50px" height="50px" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" class="icon-git">
-            <path d="M511.6 76.3C264.3 76.2 64 276.4 64 523.5 64 718.9 189.3 885 363.8 946c23.5 5.9 19.9-10.8 19.9-22.2v-77.5c-135.7 15.9-141.2-73.9-150.3-88.9C215 726 171.5 718 184.5 703c30.9-15.9 62.4 4 98.9 57.9 26.4 39.1 77.9 32.5 104 26 5.7-23.5 17.9-44.5 34.7-60.8-140.6-25.2-199.2-111-199.2-213 0-49.5 16.3-95 48.3-131.7-20.4-60.5 1.9-112.3 4.9-120 58.1-5.2 118.5 41.6 123.2 45.3 33-8.9 70.7-13.6 112.9-13.6 42.4 0 80.2 4.9 113.5 13.9 11.3-8.6 67.3-48.8 121.3-43.9 2.9 7.7 24.7 58.3 5.5 118 32.4 36.8 48.9 82.7 48.9 132.3 0 102.2-59 188.1-200 212.9a127.5 127.5 0 0 1 38.1 91v112.5c.8 9 0 17.9 15 17.9 177.1-59.7 304.6-227 304.6-424.1 0-247.2-200.4-447.3-447.5-447.3z"/>
-          </svg>
-        </div>
+        <a class="git-icon" href="https://github.com/SiarheiHa" target="_blank"></a>
       </div>
     </div>
   </section>`;

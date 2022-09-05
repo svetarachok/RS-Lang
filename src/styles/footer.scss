@@ -4,12 +4,18 @@
   font-weight: 400;
   font-size: 0.9rem;
   line-height: 1.1;
-  height: 90px;
+  min-height: 90px;
   margin: auto;
   width: 100%;
   background-color: $dark-color;
   color: $white-color;
   padding: 0 20px;
+  flex-wrap: wrap;
+  @media (max-width: $breakpoint-tablet-vertical) {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem 0;
+  }
 }
 
 .team-github {
@@ -22,5 +28,5 @@
 }
 
 .rs-logo img {
-    width: 7rem;
+  width: 7rem;
 }

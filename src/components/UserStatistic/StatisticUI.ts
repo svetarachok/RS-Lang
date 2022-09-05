@@ -31,13 +31,12 @@ export class StatisticUI {
         this.dailyWrapper.append(card);
       });
       return this.dailyWrapper;
-    } this.dailyWrapper.innerHTML = '<p>No Statistic data</p>';
+    } this.dailyWrapper.innerHTML = '<p>У вас пока нет статистики. Сыграйте в игру и она появится.</p>';
     return this.dailyWrapper;
   }
 
   public async drawTodayStat() {
     const data: [string, DailyStatObj][] = await this.api.getStatDataForRender();
-    console.log(data);
     if (data.length) {
       const dayUi = new DayStatUI(data.shift() as [string, DailyStatObj]);
       const dailyCard = dayUi.drawFirstDayStat();

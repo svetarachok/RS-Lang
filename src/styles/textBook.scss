@@ -86,7 +86,7 @@
   border-radius: 30px;
   padding: 0.5rem;
   box-shadow: $box-shadow;
-  .material-icons-outlined {
+  .material-icons-round {
     font-size: 1.3rem;
   }
   @media (max-width: $breakpoint-tablet-vertical) {
@@ -242,6 +242,9 @@
   background-color: $accent-color;
   .btn-icon {
     color: $secondary-color;
+    &:hover {
+     color: $accent-color;
+    }
   }
 }
 
@@ -250,6 +253,9 @@
   background-color: $secondary-color;
   .btn-icon {
     color: $accent-color;
+    &:hover {
+      color: $accent-color;
+     }
   }
 }
 
@@ -294,4 +300,14 @@
 /* Firefox */
 .page-input {
   -moz-appearance: textfield;
+}
+
+.correct-answers {
+  color: #28c38a;
+  padding-right: 3px;
+}
+
+.incorrect-answers {
+  color: #ed593b;
+  padding-left: 3px;
 }

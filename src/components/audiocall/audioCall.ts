@@ -1,3 +1,4 @@
+import { router } from '../controller/Controller';
 import { api } from '../Model/api';
 import { storage } from '../Storage/Storage';
 import { GAME } from '../types/enums';
@@ -10,7 +11,6 @@ import { getRandomWordsByGroup } from '../utils/getRandomWords';
 import { shuffleArray } from '../utils/shuffleArray';
 import { WordController } from '../WordController/WordController';
 import { LevelSelect } from './levelSelect';
-// eslint-disable-next-line import/no-cycle
 import { ResultPage } from './resultPage';
 import { Stage } from './stage';
 import { StartPage } from './startPage';
@@ -49,9 +49,9 @@ export class AudioCall {
       tag: 'a',
       classes: ['close-button'],
       atributesAdnValues: [['href', '/'], ['data-navigo', 'true']],
-      inner: 'X',
+      // inner: 'X',
     });
-    this.muteButton = createNode({ tag: 'span', classes: ['material-icons-outlined', 'mute-button'], inner: 'volume_up' });
+    this.muteButton = createNode({ tag: 'span', classes: ['material-icons-round', 'mute-button'], inner: 'audiotrack' });
     this.userData = storage.getUserIdData();
   }
 
@@ -61,7 +61,7 @@ export class AudioCall {
       const levelSelect = new LevelSelect(this.container, this.startGameFromMenu.bind(this));
       levelSelect.render();
     } else {
-      this.closeButton.setAttribute('href', '#/book');
+      this.closeButton.setAttribute('href', '/book');
       this.settings = {
         group: String(settings.group),
         page: String(settings.page),
@@ -82,6 +82,7 @@ export class AudioCall {
     wrapper.append(buttonsWrapper);
     this.container.append(wrapper);
     main.append(this.container);
+    router.updatePageLinks();
   }
 
   private async startGameFromMenu(wordsGroup: string) {
@@ -109,7 +110,6 @@ export class AudioCall {
       const userAggregatedWords = await this.wordController.getUserBookWords();
       const words = (userAggregatedWords as UserAggregatedWord[])
         .map((word) => convertAggregatedWordToWord(word));
-      console.log(words);
       return shuffleArray(words).slice(0, MAX_COUNT_WORDS_PER_GAME);
     }
     // game from group 0-5
@@ -163,7 +163,7 @@ export class AudioCall {
   }
 
   private muteButtonHandler = () => {
-    this.muteButton.innerHTML = this.isMute ? 'volume_up' : 'volume_off';
+    this.muteButton.innerHTML = this.isMute ? 'audiotrack' : 'music_off';
     this.isMute = !this.isMute;
   };
 

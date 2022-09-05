@@ -14,19 +14,35 @@ a {
   padding: 0.5rem 1.2rem;
   cursor: pointer;
   transition: 0.5s all ease-in-out;
+  &__disabled {
+    background-color: transparent;
+    border: 1px solid $mid-grey;
+    color: $mid-grey;
+    pointer-events: none;
+  }
+  &:disabled {
+    background-color: transparent;
+    border: 1px solid $mid-grey;
+    color: $mid-grey;
+    pointer-events: none;
+  }
 }
 
 .btn-secondary {
   @extend .btn;
-  background-color: $white-color;
-  border: 2px solid $accent-color;
-  color: $accent-color;
+  background-color: transparent;
+  border: 1px solid $dark-color;
+  color: $dark-color;
 }
 
 .video-btn {
   padding: 0 1rem 0 0.2rem;
   border-color: $white-color;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px, rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+  background-color: $white-color;
+  color: $accent-color;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+    rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+    rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
   &:hover {
     box-shadow: $box-shadow;
   }
@@ -42,6 +58,19 @@ a {
   padding: 0;
   background-color: $white-color;
   box-shadow: $box-shadow;
+}
+
+//level buttons
+.btn-level {
+  box-shadow: $box-shadow;
+  border: 2px solid transparent;
+  &:hover {
+    background-color: $secondary-color;
+  }
+  &.btn-active {
+    border-color: $accent-color;
+    color: $dark-color;
+  }
 }
 
 //level buttons
@@ -76,15 +105,29 @@ a {
 .user-words-btn {
   background-color: $accent-color;
   color: $secondary-color;
+  position: relative;
   &.btn-active {
     background-color: $secondary-color;
     color: $accent-color;
   }
-}
-
-.btn-active {
-  background-color: $secondary-color;
-  color: $dark-color;
+  &::after {
+    content: '\ea19';
+    position: absolute;
+    font-family: Material Icons Round;
+    font-size: 1.3rem;
+    font-weight: 300;
+    font-style: normal;
+    background: #ffddb0;
+    color: #332A7C;
+    padding: 0.5rem;
+    box-shadow: 0px 1px 4px 1px rgb(50 50 71 / 15%);
+    border-radius: 30px;
+    right: -15px;
+    top: -6px;
+  }
+  &:hover {
+    color: $accent-color;
+  }
 }
 
 .btn:disabled {
@@ -93,13 +136,96 @@ a {
   color: $mid-grey;
 }
 
-.btn-add, .btn-learn {
+.btn-add {
   padding: 0.5rem;
   width: 3rem;
   height: 3rem;
+  color: $accent-color;
+  border-color: $accent-color;
+  transition: 0.5s all ease;
+  position: relative;
+  &:hover {
+    background-color: $secondary-color;
+    border-color: $secondary-color;
+    transition: all 0.5s ease-in-out;
+    .tooltip-add-btn {
+      visibility: visible;
+    }
+  }
+  .tooltip-add-btn {
+    visibility: hidden;
+    background-color: #191a15;
+    border: 1px solid $dark-color;
+    color: #ffffff;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 12px;
+    position: absolute;
+    z-index: 1;
+    top: 12px;
+    right: 105%;
+    font-size: 0.8rem;
+    width: max-content;
+    &::after {
+      content: " ";
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      margin-top: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent transparent $dark-color;
+    }
+  }
 }
 
-h1, h2, h3, h4 {
+.btn-learn {
+  padding: 0.5rem;
+  width: 3rem;
+  height: 3rem;
+  color: $accent-color;
+  border-color: $accent-color;
+  position: relative;
+  transition: all 0.5s ease-in-out;
+  &:hover {
+    background-color: $secondary-color;
+    border-color: $secondary-color;
+    transition: all 0.5s ease-in-out;
+    .tooltip-learn-btn {
+      visibility: visible;
+    }
+  }
+  .tooltip-learn-btn {
+    visibility: hidden;
+    background-color: #191a15;
+    border: 1px solid $dark-color;
+    color: #ffffff;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 12px;
+    position: absolute;
+    z-index: 1;
+    top: 12px;
+    right: 105%;
+    font-size: 0.8rem;
+    width: max-content;
+    &::after {
+      content: " ";
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      margin-top: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: transparent transparent transparent $dark-color;
+    }
+  }
+}
+
+h1,
+h2,
+h3,
+h4 {
   font-family: $headers-font;
 }
 
@@ -112,4 +238,14 @@ h1 {
 
 h2 {
   font-size: 2.4rem;
+}
+
+.user-icon {
+  background-color: transparent;
+  font-size: 45px;
+  border-radius: 50%;
+  transition: all 0.5s;
+  &:hover {
+    background-color: $secondary-color;
+  }
 }

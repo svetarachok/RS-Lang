@@ -1,4 +1,3 @@
-import { BASE_LINK } from '../utils/constants';
 import createNode from '../utils/createNode';
 
 const AUDIO_CALL_DESCRIPTION = 'Тренировка улучшает восприятие речи на слух.';
@@ -28,7 +27,7 @@ export class StartPage {
     document.addEventListener('keydown', this.keyHandler);
     window.addEventListener('popstate', this.removeListeners);
     this.links.forEach((link) => link.addEventListener('click', () => {
-      if (link.href !== `${BASE_LINK}/audiocall`) {
+      if (!link.href.includes('/audiocall')) {
         this.removeListeners();
         this.container.remove();
       }

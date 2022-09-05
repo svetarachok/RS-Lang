@@ -10,15 +10,15 @@
   color: hsla(0deg, 0%, 100%, 0.7);
   display: flex;
   align-items: center;
-  // justify-content: center;
-  /* max-width: 1440px; */
+  justify-content: flex-start;
   margin: 0 auto;
   flex-direction: column;
   padding: 80px 10px 0 10px;
   .container {
     margin: 0 auto;
-    width: 100%;
-    max-width: 1250px;
+    width: 90%;
+    max-width: 1400px;
+    position: relative;
   }
 
   .level-select {
@@ -26,7 +26,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    row-gap: 2rem;
   }
   .select-block {
     text-align: center;
@@ -34,7 +33,8 @@
       max-width: 500px;
     }
     .select-block__title {
-      padding: 1rem;
+      padding-top: 2rem;
+      padding-bottom: 1.2rem;
     }
   }
   .selected {
@@ -63,6 +63,11 @@
 
   .stage {
     text-align: center;
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
   }
 
   .stage__img {
@@ -104,36 +109,40 @@
 
   .word {
     display: flex;
-    align-items: center;
+    align-items:  flex-end;
     justify-content: center;
     font-size: 2.5rem;
+    color: $white-color;
   }
 
   .speaker-button {
     border: none;
     border-radius: 50%;
-    &:hover {
-      border: none;
-    }
-    svg {
-      padding: 0.2rem;
-      &:hover {
-        path {
-          fill: #3c3e3d !important;
-        }
-      }
-    }
-    padding: 0;
-    margin: 0;
+    padding: 2.5rem;
+    margin: 0 0 1.5rem;
     min-width: 0px;
     border-color: transparent;
+    color: $accent-color;
+    background-color: $white-color;
+    box-shadow: $box-shadow;
+    &:hover {
+      border: none;
+      color: $white-color;
+      background-color: $accent-color;
+    }
+    .speaker_icon {
+      font-size: 6rem;
+    }
   }
 
   .speaker-button_min {
-    padding: 0 1rem;
-    svg {
-      width: 3rem;
-      height: 3rem;
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    padding: 0.3rem 0 0;
+    margin: 0 1rem 0 0;
+    .speaker_icon {
+      font-size: 2rem;
     }
   }
 
@@ -161,6 +170,10 @@
 
   .game__lists {
     margin-top: 30px;
+  }
+
+  .game__descpiption {
+    margin-top: 2rem;
   }
 
   .result__true,
@@ -210,18 +223,64 @@
     }
   }
   .close-button {
-    border-radius: 50%;
-    width: 4rem;
-    height: 4rem;
-    text-align: center;
-    line-height: 22px;
-    font-size: 2rem;
-    min-width: min-content;
+    position: absolute;
+    border: 1px solid transparent;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    z-index: 1;
+    margin: 20px auto;
+    min-width: max-content;
+    cursor: pointer;
+    &:hover {
+      border: 1px solid transparent;
+    }
+    &:before {
+      content: "+";
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding-left: 2px;
+      padding-right: 19px;
+      z-index: 2;
+      transform: rotate(45deg);
+      font-size: 50px;
+      line-height: 1;
+      transition: all 0.3s cubic-bezier(0.77, 0, 0.2, 0.85);
+    }
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 100%;
+      background-color: hsla(0deg, 0%, 100%, 0.7);
+      z-index: 1;
+      transition: all 0.3s cubic-bezier(0.77, 0, 0.2, 0.85);
+      transform: scale(0.01);
+    }
+  }
+
+  .close-button:hover:before {
+    transform: scale(0.8) rotate(45deg);
+    color: $dark-color;
+  }
+
+  .close-button:hover:after {
+    transform: scale(1);
   }
 
   .mute-button {
     margin: 4px;
-    font-size: 3rem;
+    font-size: 2.2rem;
+    position: absolute;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    margin: 20px auto;
+    left: 0;
   }
 
   .result__button {
@@ -238,7 +297,13 @@
   .buttons-wrapper {
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
+    height: 25vh;
+    /* left: 1rem; */
+    /* top: 6.9rem; */
+    max-width: 1440px;
+    margin: 0 auto;
+    position: relative;
   }
 }

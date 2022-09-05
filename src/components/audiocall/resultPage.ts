@@ -1,7 +1,6 @@
 import { GameResult, Word } from '../types/interfaces';
 import { BASE_LINK } from '../utils/constants';
 import createNode from '../utils/createNode';
-// eslint-disable-next-line import/no-cycle
 import { AudioCall } from './audioCall';
 
 export class ResultPage {
@@ -45,7 +44,7 @@ export class ResultPage {
     document.addEventListener('keydown', this.keyHandler);
     window.addEventListener('popstate', this.removeListeners);
     this.links.forEach((link) => link.addEventListener('click', () => {
-      if (link.href !== `${BASE_LINK}/audiocall`) {
+      if (!link.href.includes('/audiocall')) {
         this.removeListeners();
         this.container.remove();
       }
@@ -71,7 +70,6 @@ export class ResultPage {
   private getTitleText() {
     const wordsCount = this.result.correct.length + this.result.incorrect.length;
     const percentOfCorrectAnswers = (this.result.correct.length / wordsCount) * 100;
-    console.log(percentOfCorrectAnswers);
     if (percentOfCorrectAnswers === 100) return 'Блестяще!';
     if (percentOfCorrectAnswers > 85) return 'Отличный результат!';
     if (percentOfCorrectAnswers > 65) return 'Хороший результат!';
@@ -91,7 +89,6 @@ export class ResultPage {
     document.removeEventListener('keydown', this.keyHandler);
     const game = new AudioCall();
     if (this.nextGameSettings) {
-      console.log('this.nextGameSettings');
       game.start({
         group: Number(this.nextGameSettings.group), page: Number(this.nextGameSettings.page),
       });

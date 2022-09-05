@@ -6,6 +6,7 @@ import { WordController } from '../WordController/WordController';
 import { Storage } from '../Storage/Storage';
 import { convertAggregatedWordToWord } from '../utils/convertAggregatedWordToWord';
 import { GAME } from '../types/enums';
+import { router } from '../controller/Controller';
 
 export class Sprint {
   mode: 'menu' | 'book';
@@ -83,7 +84,7 @@ export class Sprint {
     main.innerHTML = '';
     const btnClose = createHTMLElement('a', ['sprint__close'], [['href', '/'], ['data-navigo', 'true']]) as HTMLAnchorElement;
     if (this.mode === 'book') {
-      btnClose.href = '#/book';
+      btnClose.href = '/book';
       sprint.append(btnClose);
       this.startGame();
     } else if (this.mode === 'menu') {
@@ -91,12 +92,16 @@ export class Sprint {
       sprint.append(select, btnClose);
     }
     main.append(sprint);
+    router.updatePageLinks();
     this.addLinksHandler();
+    window.addEventListener('popstate', this.closeGame);
   }
 
   private renderSelectLevel(): HTMLElement {
     const select = createHTMLElement('div', ['sprint__select']);
-    const selectTitle = createHTMLElement('h2', ['sprint__select-title'], undefined, 'Выберите уровень:');
+    const selectTitle = createHTMLElement('h2', ['sprint__select-title'], undefined, 'Спринт');
+    const selectDescription = createHTMLElement('p', ['sprint__select-descr'], undefined, 'Учит быстро переводить на ваш родной язык');
+    const selectText = createHTMLElement('p', ['sprint__select-text'], undefined, 'Выберите уровень:');
     const levels = createHTMLElement('div', ['sprint__levels']);
     for (let i = 1; i <= 6; i += 1) {
       const level = createHTMLElement('div', ['sprint__level'], [['data-level', `${i - 1}`]], `${i}`);
@@ -108,7 +113,7 @@ export class Sprint {
       });
       levels.append(level);
     }
-    select.append(selectTitle, levels);
+    select.append(selectTitle, selectDescription, selectText, levels);
     return select;
   }
 
@@ -526,13 +531,14 @@ export class Sprint {
     document.removeEventListener('keydown', this.keyListener);
   }
 
-  public closeGame(): void {
+  public closeGame = (): void => {
+    window.removeEventListener('popstate', this.closeGame);
     const body = document.querySelector('.body') as HTMLElement;
     body?.classList.remove('body--sprint');
     clearInterval(this.timerInterval);
     this.timerSound?.pause();
     this.removeKeyboardControl();
-  }
+  };
 
   private async getHardWords(): Promise<Word[]> {
     const userHardWords = await this.wordController.getUserBookWords() as UserAggregatedWord[];
