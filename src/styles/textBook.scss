@@ -1,0 +1,313 @@
+.textbook {
+  display: flex;
+  position: relative;
+  align-items: stretch;
+  width: 100%;
+  margin-top: -2px;
+  @media (max-width: $breakpoint-tablet-vertical) {
+    flex-direction: column;
+  }
+}
+
+.aside {
+  padding: 2rem 1rem;
+  width: 15%;
+  flex-shrink: 0;
+  font-family: $headers-font;
+  @media (max-width: $breakpoint-tablet-vertical) {
+    width: 100%;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    padding: 1rem 0.2rem;
+  }
+}
+
+.sidebar-content {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-right: 1.5rem;
+  // border-right: 1px solid $light-grey;
+  gap: 0.7rem;
+  @media (max-width: $breakpoint-tablet-vertical) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    gap: 0.3rem;
+    padding: 0;
+    justify-content: center;
+    row-gap: 1.8rem;
+  }
+}
+
+.sidebar-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: center;
+  @media (max-width: $breakpoint-tablet-vertical) {
+    font-size: 1rem;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    display: none;
+  }
+}
+
+.btn-level {
+  @include display-flex-center;
+  height: 5.6rem;
+  width: 5.6rem;
+  border-radius: 50%;
+  padding: 2.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  @media (max-width: $breakpoint-tablet-vertical) {
+    height: 3.2rem;
+    width: 3.2rem;
+    padding: 0;
+    font-size: 1.5rem;
+  }
+}
+
+.userbook-mark {
+  display: flex;
+  position: absolute;
+  bottom: 3.8rem;
+  right: 2.4rem;
+  background: $secondary-color;
+  color: $accent-color;
+  border-radius: 30px;
+  padding: 0.5rem;
+  box-shadow: $box-shadow;
+  .material-icons-round {
+    font-size: 1.3rem;
+  }
+  @media (max-width: $breakpoint-tablet-vertical) {
+    bottom: 2rem;
+    right: 1rem;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    right: 9.1rem;
+  }
+}
+
+.text-book-page {
+  @include section-bg-colored;
+  display: flex;
+  flex-direction: column;
+  padding: 0 2.5rem 1.5rem;
+  width: 85%;
+  border: 3px solid #ffffff;
+  margin-bottom: 1.5rem;
+  @media (max-width: $breakpoint-tablet-vertical) {
+   width: 100%;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    padding: 1rem;
+   }
+}
+
+.text-book-page-head {
+  display: flex;
+  padding: 2.5rem;
+  align-items: center;
+  gap: 1.5rem;
+  margin-right: auto;
+  @media (max-width: $breakpoint-tablet-vertical) {
+    padding: 2.5rem 1.2rem;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    margin: 0;
+  }
+}
+
+.cards-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  row-gap: 1rem;
+}
+
+.card {
+  @include card-style;
+  display: flex;
+  flex-direction: column;
+  width: 32rem;
+  height: 25rem;
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.card-main-info-wrapper {
+  display: flex;
+  align-items: center;
+  font-family: $headers-font;
+  padding-bottom: 1.5rem;
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: column;
+    padding-bottom: 1rem;
+   }
+}
+
+.btn-play {
+  margin-left: -2rem;
+  &:hover {
+    background-color: $secondary-color;
+  }
+  svg {
+    width: 25px;
+    height: 25px;
+    path {
+      fill: $dark-color;
+      stroke: $dark-color;
+    }
+    &:hover {
+      fill: $accent-color;
+      path {
+        fill: $accent-color;
+        stroke: $accent-color;
+      }
+    }
+  }
+  @media (max-width: $breakpoint-mobile) {
+    margin-left: 0;
+    margin-top: -2rem;
+  }
+}
+
+.card-img {
+  width: 10rem;
+  height: 8rem;
+  border-radius: 30px;
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+    height: 10rem;
+  }
+}
+
+.card-word-info {
+  padding-left: 0.8rem;
+  @media (max-width: $breakpoint-mobile) {
+    text-align: center;
+  }
+}
+
+.word {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.word-transcription {
+  font-size: 1rem;
+  color: $mid-grey;
+  padding-bottom: 0.8rem;
+}
+
+.word-translate {
+  font-size: 1.3rem;
+}
+
+.user-btns {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: row;
+    margin: auto;
+    padding-top: 1rem;
+  }
+}
+
+.answers {
+  font-size: 0.8rem;
+}
+
+.hard-word-btn {
+  border-color: $accent-color;
+  background-color: $accent-color;
+  .btn-icon {
+    color: $secondary-color;
+    &:hover {
+     color: $accent-color;
+    }
+  }
+}
+
+.learn-word-btn {
+  border-color: $secondary-color;
+  background-color: $secondary-color;
+  .btn-icon {
+    color: $accent-color;
+    &:hover {
+      color: $accent-color;
+     }
+  }
+}
+
+.word-mean-translate, .word-ex-translate {
+  color: $mid-grey;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+.word-mean-translate {
+  padding-bottom: 1rem;
+}
+
+.pagination {
+  @include display-flex-center;
+  padding: 2.5rem 1rem 0;
+}
+
+.page-input {
+  margin: 0 3rem;
+  width: 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: $headers-font;
+  border-bottom: 1px solid;
+  text-align: center;
+  &:focus-visible {
+    outline: none;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    margin: 0 0.5rem;
+  }
+}
+
+/* Chrome, Safari, Edge, Opera */
+.page-input::-webkit-outer-spin-button,
+.page-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.page-input {
+  -moz-appearance: textfield;
+}
+
+.correct-answers {
+  color: #28c38a;
+  padding-right: 3px;
+}
+
+.incorrect-answers {
+  color: #ed593b;
+  padding-left: 3px;
+}

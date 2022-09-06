@@ -1,0 +1,58 @@
+.user-page {
+  @include section-bg-colored;
+  background-color: $l2;
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 1rem 1rem;
+  gap: 1.5rem;
+  
+}
+
+.user-sidebar {
+  display: flex;
+  line-height: 1.4;
+  flex-direction: column;
+  width: 36%;
+  padding: 2.5rem 1.5rem 1.5rem;
+  font-family: $text-font;
+  @media (max-width: $breakpoint-mobile) {
+    width: 100%;
+    padding: 0 1rem 1.5rem;
+    align-items: center;
+  }
+  .user-name {
+    padding-bottom: 1.2rem;
+  }
+  .text-at-stat-page {
+    ul {
+      margin-left: 1.2rem;
+      padding-top: 0.5rem;
+      margin-bottom: 1.2rem;
+    }
+  }
+  .exit-cabinet-btn {
+    width: 15rem;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    @media (max-width: $breakpoint-tablet) {
+      width: 13rem;
+    }
+  }
+}
+
+.user-section {
+  display: flex;
+  padding-bottom: 1rem;
+  gap: 2.5rem;
+  @media (max-width: $breakpoint-tablet) {
+    gap: 0;
+  }
+  @media (max-width: $breakpoint-mobile) {
+    flex-direction: column;
+  }
+}
+
+.enter-cabinet-link {
+  color: $dark-color;
+  font-weight: 600;
+}
