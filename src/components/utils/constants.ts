@@ -1,4 +1,4 @@
-export const BASE_LINK: string = 'https://rss-learnwords.herokuapp.com';
+export const BASE_LINK: string = 'https://rslang-back-55qw.onrender.com';
 export const TOKEN_LIFETIME_IN_HOURS: number = 3;
 export const REFRESHTOKEN_LIFETIME_IN_HOURS: number = 4;
 export const LEVELS_OF_TEXTBOOK: number = 7;
